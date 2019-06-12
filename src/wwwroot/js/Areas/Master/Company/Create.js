@@ -1,0 +1,161 @@
+﻿$(function () {
+
+    $('input').attr('autocomplete', 'off');
+    //Begin----check clear require---//
+    $("#CompanyCode").on("focusout", function () {
+        if ($("#CompanyCode").val() != '') {
+            $('#CompanyCode_validationMessage li').remove();
+        }
+    });
+
+    $("#CompanyName").on("focusout", function () {
+        if ($("#CompanyName").val() != '') {
+            $('#CompanyName_validationMessage li').remove();
+        }
+    });
+    //End----check clear require---//
+
+    global.applyIsActiveSwitch(true, false);
+
+    $("#btnSaveCreate").on("click", SaveCrate);
+
+});
+
+function onFocusOut(ctl) {
+
+    if (ctl.val() != '') {
+        document.querySelectorAll('.text-danger li')[0].remove();
+    }
+
+}
+
+function addRequestVerificationToken(data) {
+    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+    return data;
+};
+
+function SaveCrate(event) {
+
+    event.preventDefault();
+
+    resetValidationErrors();
+
+    var strCompCode = $("#CompanyCode").val().toUpperCase();
+    var logoFileName;
+
+    var fileLength = $("#imgCompanyLogo").get(0).files.length;
+    if (fileLength > 0) {
+
+        var selFilename = $("#imgCompanyLogo").get(0).files[0].name;
+        var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
+
+        logoFileName = strCompCode + '_LOGO.' + extension;
+    }
+
+    $.ajax({
+        async: true,
+        type: "POST",
+        url: $('#CreateData').data('comp-add-url'),
+        data: addRequestVerificationToken({
+            CompanyCode: strCompCode,
+            CompanyName: $("#CompanyName").val(),
+            CompanyLogoPath: logoFileName,
+            AddressL1: $("#AddressL1").val(),
+            AddressL2: $("#AddressL2").val(),
+            AddressL3: $("#AddressL3").val(),
+            AddressL4: $("#AddressL4").val(),
+            Telephone: $("#Telephone").val(),
+            Fax: $("#Fax").val(),
+            CompanyTaxId: $("#CompanyTaxId").val(),
+            Is_Active: $('#Is_Active').is(':checked')
+        }),
+        success: function (response) {
+
+            if (response.success) {
+
+                if (fileLength > 0) {
+                    UploadCompanyLogo(logoFileName);
+                }
+
+                $('#newCompModal').modal('hide');
+                $('#newCompContainer').html("");
+
+                $("#tblComp").DataTable().ajax.reload(null, false);
+                $("#tblComp").DataTable().page('last').draw('page');
+
+                global.successAlert(response.message);
+            }
+            else {
+                if (response.errors != null) {
+                    displayValidationErrors(response.errors);
+                } else {
+                    global.dangerAlert(response.message, 5000);
+                }
+            }
+
+        },
+        error: function () {
+            global.dangerAlert("error", 5000);
+        }
+    });
+}
+
+function UploadCompanyLogo(strName) {
+
+    var files = $("#imgCompanyLogo").get(0).files;
+    var fileData = new FormData();
+    fileData.append("fileName", strName);
+    for (var i = 0; i < files.length; i++) {
+        fileData.append("files", files[i]);
+    }
+
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: $('#CreateData').data('comp-upload-url'),
+        dataType: "json",
+        contentType: false, // Not to set any content header
+        processData: false, // Not to process data
+        data: fileData,
+        success: function (response) {
+            if (response.success) {
+                //return result
+            }
+        },
+        error: function (xhr, status, error) {
+            alert(status);
+        }
+    });
+}
+
+function displayValidationErrors(errors) {
+
+    $.each(errors, function (idx, errorMessage) {
+        var res = errorMessage.split("|");
+        //$("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
+        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
+    });
+}
+
+function resetValidationErrors() {
+
+    var listItems = document.querySelectorAll('.text-danger li');
+    for (let i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent != null)
+            listItems[i].remove();
+    };
+
+}
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imageLogo')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}

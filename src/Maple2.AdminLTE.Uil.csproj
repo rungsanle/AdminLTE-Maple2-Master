@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UserSecretsId>aspnet-Company.WebApplication1-9D1EA1F5-7AB4-45F7-A5BD-E3921331D6AF</UserSecretsId>
+    <AssemblyName>Maple2.AdminLTE.Uil</AssemblyName>
+    <RootNamespace>Maple2.AdminLTE.Uil</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="Migrations\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="Migrations\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Data\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Captcha" Version="4.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" PrivateAssets="All" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
+    <PackageReference Include="Sendgrid" Version="9.11.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Maple2.AdminLTE.Bel\Maple2.AdminLTE.Bel.csproj" />
+    <ProjectReference Include="..\Maple2.AdminLTE.Bll\Maple2.AdminLTE.Bll.csproj" />
+    <ProjectReference Include="..\Maple2.AdminLTE.Dal\Maple2.AdminLTE.Dal.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\Master\Data\" />
+    <Folder Include="Areas\Master\Models\" />
+    <Folder Include="wwwroot\img\compLogo\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\plugins\bootstrap-switch\bootstrap-switch.min.js" />
+    <None Include="wwwroot\plugins\Input-picker\jquery.inputpicker.js" />
+    <None Include="wwwroot\plugins\Input-picker\res\spinner.svg" />
+  </ItemGroup>
+</Project>
