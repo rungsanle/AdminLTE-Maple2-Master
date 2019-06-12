@@ -33,6 +33,18 @@ namespace Maple2.AdminLTE.Dal
         public DbSet<M_Menu> NavBarMenu { get; set; }
         public DbSet<M_ArrivalType> ArrivalType { get; set; }
         public DbSet<M_Location> Location { get; set; }
+        public DbSet<M_Machine> Machine { get; set; }
+        public DbSet<M_Material> Material { get; set; }
+        public DbSet<M_MaterialType> MaterialType { get; set; }
+        public DbSet<M_Process> Process { get; set; }
+        public DbSet<M_Product> Product { get; set; }
+        public DbSet<M_Product_Process> ProductProcess { get; set; }
+        public DbSet<M_ProductionType> ProductionType { get; set; }
+        public DbSet<M_RawMaterialType> RawMaterialType { get; set; }
+        public DbSet<M_Unit> Unit { get; set; }
+        public DbSet<M_Warehouse> Warehouse { get; set; }
+        public DbSet<M_Customer> Customer { get; set; }
+        public DbSet<M_Vendor> Vendor { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +74,74 @@ namespace Maple2.AdminLTE.Dal
                 .IsUnique(true);
 
             modelBuilder.Query<M_LocationObj>();
+
+            //Machine more specifications.
+            modelBuilder.Entity<M_Machine>()
+                .HasIndex(mc => new { mc.MachineCode, mc.CompanyCode })
+                .HasName("IX_MCANDCOMP")
+                .IsUnique(true);
+
+            modelBuilder.Query<M_MachineObj>();
+
+            //Material more specifications.
+            modelBuilder.Entity<M_Material>()
+                .HasIndex(m => new { m.MaterialCode, m.CompanyCode })
+                .HasName("IX_MATANDCOMP")
+                .IsUnique(true);
+
+            modelBuilder.Query<M_MaterialObj>();
+
+            //Material Type more specifications.
+            modelBuilder.Entity<M_MaterialType>()
+                .HasIndex(m => new { m.MatTypeCode, m.CompanyCode })
+                .HasName("IX_MATTYPECOMP")
+                .IsUnique(true);
+
+            //Process more specifications.
+            modelBuilder.Entity<M_Process>()
+                .HasIndex(p => new { p.ProcessCode, p.CompanyCode })
+                .HasName("IX_PROCESSCOMP")
+                .IsUnique(true);
+
+            //Product more specifications.
+            modelBuilder.Entity<M_Product>()
+                .HasIndex(p => new { p.ProductCode, p.CompanyCode })
+                .HasName("IX_PRODUCTANDCOMP")
+                .IsUnique(true);
+
+            modelBuilder.Query<M_ProductObj>();
+
+            modelBuilder.Query<M_Product_ProcessObj>();
+
+            //Production Type more specifications.
+            modelBuilder.Entity<M_ProductionType>()
+                .HasIndex(pt => new { pt.ProdTypeCode, pt.CompanyCode })
+                .HasName("IX_PRODTYPECOMP")
+                .IsUnique(true);
+
+            //Raw Material Type more specifications.
+            modelBuilder.Entity<M_RawMaterialType>()
+                .HasIndex(rt => new { rt.RawMatTypeCode, rt.CompanyCode })
+                .HasName("IX_RAWMATTYPECOMP")
+                .IsUnique(true);
+
+            //Warehouse more specifications.
+            modelBuilder.Entity<M_Warehouse>()
+                .HasIndex(w => new { w.WarehouseCode, w.CompanyCode })
+                .HasName("IX_WHANDCOMP")
+                .IsUnique(true);
+
+            //Customer more specifications.
+            modelBuilder.Entity<M_Customer>()
+                .HasIndex(c => new { c.CustomerCode, c.CompanyCode })
+                .HasName("IX_CUSTANDCOMP")
+                .IsUnique(true);
+
+            //Vendor more specifications.
+            modelBuilder.Entity<M_Vendor>()
+                .HasIndex(v => new { v.VendorCode, v.CompanyCode })
+                .HasName("IX_CUSTANDCOMP")
+                .IsUnique(true);
         }
     }
 }
