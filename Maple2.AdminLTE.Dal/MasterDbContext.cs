@@ -31,6 +31,8 @@ namespace Maple2.AdminLTE.Dal
         public DbSet<M_Company> Companies { get; set; }
         public DbSet<M_User> User { get; set; }
         public DbSet<M_Menu> NavBarMenu { get; set; }
+        public DbSet<M_ArrivalType> ArrivalType { get; set; }
+        public DbSet<M_Location> Location { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +54,14 @@ namespace Maple2.AdminLTE.Dal
 
             modelBuilder.Query<M_UserObj>();
             modelBuilder.Query<M_MenuObj>();
+
+            //Arrival Type more specifications.
+            modelBuilder.Entity<M_ArrivalType>()
+                .HasIndex(at => new { at.ArrivalTypeCode, at.CompanyCode })
+                .HasName("IX_ARRTYPEANDCOMP")
+                .IsUnique(true);
+
+            modelBuilder.Query<M_LocationObj>();
         }
     }
 }
