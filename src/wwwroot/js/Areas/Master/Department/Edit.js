@@ -3,13 +3,13 @@
     //Begin----check clear require---//
     $("#DeptCode").on("focusout", function () {
         if ($("#DeptCode").val() != '') {
-            $('#DeptCode_validationMessage li').remove();
+            global.removeValidationErrors('DeptCode');
         }
     });
 
     $("#DeptName").on("focusout", function () {
         if ($("#DeptName").val() != '') {
-            $('#DeptName_validationMessage li').remove();
+            global.removeValidationErrors('DeptName');
         }
     });
     //End----check clear require---//
@@ -53,7 +53,7 @@ function SaveEdit(event) {
 
     event.preventDefault();
 
-    resetValidationErrors();
+    global.resetValidationErrors();
 
     //var info = $('#tblMenu').DataTable().page.info();
 
@@ -82,7 +82,7 @@ function SaveEdit(event) {
             }
             else {
                 if (response.errors != null) {
-                    displayValidationErrors(response.errors);
+                    global.displayValidationErrors(response.errors);
                 } else {
                     global.dangerAlert(response.message, 5000);
                 }
@@ -95,21 +95,4 @@ function SaveEdit(event) {
         }
     });
 
-}
-
-function displayValidationErrors(errors) {
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        $("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
-    });
-}
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
-    };
-
-}
+};

@@ -218,6 +218,7 @@
             $.ajax({
                 type: 'POST',
                 url: api,
+                async: true,
                 data: addRequestVerificationToken({ id: deptId }),
                 success: function (response) {
 
