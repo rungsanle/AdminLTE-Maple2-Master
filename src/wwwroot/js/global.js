@@ -312,3 +312,24 @@ global.numberWithCommas = function (number) {
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
 }
+
+global.displayValidationErrors = function (errors) {
+
+    $.each(errors, function (idx, errorMessage) {
+        var res = errorMessage.split("|");
+        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
+    });
+}
+
+global.removeValidationErrors = function (id) {
+    $("span[data-valmsg-for='" + id + "'] li").remove();
+}
+
+global.resetValidationErrors = function() {
+
+    var listItems = document.querySelectorAll('.text-danger li');
+    for (let i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent != null)
+            listItems[i].remove();
+    };
+}
