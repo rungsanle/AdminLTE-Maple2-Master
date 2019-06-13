@@ -222,6 +222,7 @@
             $.ajax({
                 type: 'POST',
                 url: api,
+                async: true,
                 data: addRequestVerificationToken({ id: compId }),
                 success: function (response) {
 

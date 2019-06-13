@@ -4,13 +4,13 @@
     //Begin----check clear require---//
     $("#CompanyCode").on("focusout", function () {
         if ($("#CompanyCode").val() != '') {
-            $('#CompanyCode_validationMessage li').remove();
+            global.removeValidationErrors('CompanyCode');
         }
     });
 
     $("#CompanyName").on("focusout", function () {
         if ($("#CompanyName").val() != '') {
-            $('#CompanyName_validationMessage li').remove();
+            global.removeValidationErrors('CompanyName');
         }
     });
     //End----check clear require---//
@@ -38,7 +38,7 @@ function SaveCrate(event) {
 
     event.preventDefault();
 
-    resetValidationErrors();
+    global.resetValidationErrors();
 
     var strCompCode = $("#CompanyCode").val().toUpperCase();
     var logoFileName;
@@ -87,7 +87,7 @@ function SaveCrate(event) {
             }
             else {
                 if (response.errors != null) {
-                    displayValidationErrors(response.errors);
+                    global.displayValidationErrors(response.errors);
                 } else {
                     global.dangerAlert(response.message, 5000);
                 }
@@ -98,7 +98,7 @@ function SaveCrate(event) {
             global.dangerAlert("error", 5000);
         }
     });
-}
+};
 
 function UploadCompanyLogo(strName) {
 
@@ -126,26 +126,8 @@ function UploadCompanyLogo(strName) {
             alert(status);
         }
     });
-}
+};
 
-function displayValidationErrors(errors) {
-
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        //$("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
-        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
-    });
-}
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
-    };
-
-}
 
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -158,4 +140,4 @@ function readURL(input) {
 
         reader.readAsDataURL(input.files[0]);
     }
-}
+};

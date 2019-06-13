@@ -3,13 +3,13 @@
     //Begin----check clear require---//
     $("#CompanyCode").on("focusout", function () {
         if ($("#CompanyCode").val() != '') {
-            $('#CompanyCode_validationMessage li').remove();
+            global.removeValidationErrors('CompanyCode');
         }
     });
 
     $("#CompanyName").on("focusout", function () {
         if ($("#CompanyName").val() != '') {
-            $('#CompanyName_validationMessage li').remove();
+            global.removeValidationErrors('CompanyName');
         }
     });
     //End----check clear require---//
@@ -33,7 +33,7 @@ function SaveEdit(event) {
 
     event.preventDefault();
 
-    resetValidationErrors();
+    global.resetValidationErrors();
 
     var strCompCode = $("#CompanyCode").val().toUpperCase();
     var logoFileName = $("#CompanyLogoPath").val();
@@ -129,7 +129,7 @@ function UploadCompanyLogo(strName) {
 function displayValidationErrors(errors) {
     $.each(errors, function (idx, errorMessage) {
         var res = errorMessage.split("|");
-        $("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
+        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
     });
 }
 
