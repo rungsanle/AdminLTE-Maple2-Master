@@ -26,7 +26,8 @@
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    url: $('#IndexData').data('dept-get-url'),    
+                    url: $('#IndexData').data('dept-get-url'),  
+                    async: true,
                     type: "GET",
                     datatype: "json"
                 },

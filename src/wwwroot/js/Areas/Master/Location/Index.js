@@ -26,9 +26,10 @@
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('loc-get-url'),    //"/Customer/GetCustomers",
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('loc-get-url'),    //"/Customer/GetCustomers",
+                    async: true,
+                    type: "GET",
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "LocationCode", "className": "boldColumn", "autoWidth": false },
