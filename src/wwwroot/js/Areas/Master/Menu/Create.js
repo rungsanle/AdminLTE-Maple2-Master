@@ -1,18 +1,5 @@
 ﻿$(function () {
 
-    //Begin----check clear require---//
-    //$("#Mc_No").on("focusout", function () {
-    //    if ($("#Mc_No").val() != '') {
-    //        $('#Mc_No_validationMessage li').remove();
-    //    }
-    //});
-
-    //$("#Mc_Name").on("focusout", function () {
-    //    if ($("#Mc_Name").val() != '') {
-    //        $('#Mc_Name_validationMessage li').remove();
-    //    }
-    //});
-    //End----check clear require---//
     $('#parentName').inputpicker({
         url: $('#CreateData').data('menu-parent-url'),
         fields: [
@@ -36,14 +23,6 @@
 
 });
 
-function onFocusOut(ctl) {
-
-    if (ctl.val() != '') {
-        document.querySelectorAll('.text-danger li')[0].remove();
-    }
-
-}
-
 function addRequestVerificationToken(data) {
     data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
     return data;
@@ -52,8 +31,6 @@ function addRequestVerificationToken(data) {
 function SaveCrate(event) {
 
     event.preventDefault();
-
-    resetValidationErrors();
 
     $.ajax({
         async: true,
@@ -86,7 +63,7 @@ function SaveCrate(event) {
             else {
 
                 if (response.errors != null) {
-                    displayValidationErrors(response.errors);
+                    global.displayValidationErrors(response.errors);
                 } else {
                     global.dangerAlert(response.message, 5000);
                 }
@@ -98,22 +75,4 @@ function SaveCrate(event) {
         }
     });
 
-}
-
-function displayValidationErrors(errors) {
-
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
-    });
-}
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
-    };
-
-}
+};

@@ -1,18 +1,5 @@
 ﻿$(function () {
 
-    //Begin----check clear require---//
-    //$("#Mc_No").on("focusout", function () {
-    //    if ($("#Mc_No").val() != '') {
-    //        $('#Mc_No_validationMessage li').remove();
-    //    }
-    //});
-
-    //$("#Mc_Name").on("focusout", function () {
-    //    if ($("#Mc_Name").val() != '') {
-    //        $('#Mc_Name_validationMessage li').remove();
-    //    }
-    //});
-    //End----check clear require---//
     $('#parentName').inputpicker({
         url: $('#EditData').data('menu-parent-url'),
         fields: [
@@ -46,8 +33,6 @@ function SaveEdit(event) {
 
     event.preventDefault();
 
-    resetValidationErrors();
-
     //var info = $('#tblMenu').DataTable().page.info();
     $.ajax({
         async: true,
@@ -79,7 +64,7 @@ function SaveEdit(event) {
             }
             else {
                 if (response.errors != null) {
-                    displayValidationErrors(response.errors);
+                    global.displayValidationErrors(response.errors);
                 } else {
                     global.dangerAlert(response.message, 5000);
                 }
@@ -91,21 +76,4 @@ function SaveEdit(event) {
         }
     });
 
-}
-
-function displayValidationErrors(errors) {
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        $("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
-    });
-}
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
-    };
-
-}
+};
