@@ -23,7 +23,7 @@
 
             <div class="form-horizontal">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                @Html.HiddenFor(model => model.Id)
+                <input asp-for="Id" type="hidden" />
                 <div class="form-group">
                     <label asp-for="DeptCode" class="control-label col-md-3"></label>
                     <div class="col-md-5">
