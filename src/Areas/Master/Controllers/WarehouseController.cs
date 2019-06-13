@@ -13,29 +13,30 @@ using Maple2.AdminLTE.Bll;
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class LocationController : Controller
+    public class WarehouseController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public LocationController(IHostingEnvironment hostingEnvironment)
+        public WarehouseController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: Master/Location
+        // GET: Master/Warehouse
         public IActionResult Index()
         {
             return View();
         }
 
-        public async Task<IActionResult> GetLocation()
+        public async Task<IActionResult> GetWarehouse()
         {
-            using (var locationBll = new LocationBLL())
+            //Warehouse DbContext
+            using (var whBll = new WarehouseBLL())
             {
-                return Json(new { data = await locationBll.GetLocation(null) });
+                return Json(new { data = await whBll.GetWarehouse(null) });
             }
         }
 
-        // GET: Master/Location/Details/5
+        // GET: Master/Warehouse/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,60 +44,61 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            using (var locationBll = new LocationBLL())
+            using (var whBll = new WarehouseBLL())
             {
-                var lstLoc = await locationBll.GetLocation(id);
-                var m_Location = lstLoc.First();
+                var lstWh = await whBll.GetWarehouse(id);
+                var m_Warehouse = lstWh.First();
 
-                if (m_Location == null)
+                if (m_Warehouse == null)
                 {
                     return NotFound();
                 }
 
-                return PartialView(m_Location);
+                return PartialView(m_Warehouse);
             }
         }
 
-        // GET: Master/Location/Create
+        // GET: Master/Warehouse/Create
         public IActionResult Create()
         {
             ViewBag.CompCode = "ALL*";
             return View();
         }
 
-        // POST: Master/Location/Create
+        // POST: Master/Warehouse/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LocationCode,LocationName,LocationDesc,WarehouseId,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Location m_Location)
+        public async Task<IActionResult> Create([Bind("WarehouseCode,WarehouseName,WarehouseDesc,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Warehouse m_Warehouse)
         {
             if (ModelState.IsValid)
             {
-                m_Location.Created_By = 1;
+                m_Warehouse.Created_By = 1;
 
                 ResultObject resultObj;
 
                 try
                 {
-                    using (var locationBll = new LocationBLL())
+                    using (var whBll = new WarehouseBLL())
                     {
-                        resultObj = await locationBll.InsertLocation(m_Location);
+                        resultObj = await whBll.InsertWarehouse(m_Warehouse);
                     }
 
-                    return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Created." });
+                    return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Created." });
                 }
                 catch (Exception ex)
                 {
-                    return Json(new { success = false, data = m_Location, message = ex.Message });
+                    return Json(new { success = false, data = m_Warehouse, message = ex.Message });
                 }
             }
 
             var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Location, message = "Created Faield" });
+            return Json(new { success = false, errors = err, data = m_Warehouse, message = "Created Faield" });
+            
         }
 
-        // GET: Master/Location/Edit/5
+        // GET: Master/Warehouse/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,57 +106,58 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            using (var locationBll = new LocationBLL())
+            using (var whBll = new WarehouseBLL())
             {
-                var lstLoc = await locationBll.GetLocation(id);
+                var lstWh = await whBll.GetWarehouse(id);
 
-                var m_Location = lstLoc.First();
+                var m_Warehouse = lstWh.First();
 
-                if (m_Location == null)
+                if (m_Warehouse == null)
                 {
                     return NotFound();
                 }
 
                 ViewBag.CompCode = "ALL*";
 
-                return PartialView(m_Location);
+                return PartialView(m_Warehouse);
             }
+            
         }
 
-        // POST: Master/Location/Edit/5
+        // POST: Master/Warehouse/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("LocationCode,LocationName,LocationDesc,WarehouseId,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Location m_Location)
+        public async Task<IActionResult> Edit([Bind("WarehouseCode,WarehouseName,WarehouseDesc,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Warehouse m_Warehouse)
         {
             if (ModelState.IsValid)
             {
-                m_Location.Updated_By = 1;
+                m_Warehouse.Updated_By = 1;
 
                 ResultObject resultObj;
 
                 try
                 {
-                    using (var locationBll = new LocationBLL())
+                    using (var whBll = new WarehouseBLL())
                     {
-                        resultObj = await locationBll.UpdateLocation(m_Location);
+                        resultObj = await whBll.UpdateWarehouse(m_Warehouse);
                     }
 
-                    return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Update." });
+                    return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Update." });
                 }
                 catch (Exception ex)
                 {
-                    return Json(new { success = false, data = m_Location, message = ex.Message });
+                    return Json(new { success = false, data = m_Warehouse, message = ex.Message });
                 }
             }
 
             var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Location, message = "Update Failed" });
+            return Json(new { success = false, errors = err, data = m_Warehouse, message = "Update Failed" });
             
         }
 
-        // POST: Master/Location/Delete/5
+        // POST: Master/Warehouse/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
@@ -168,28 +171,29 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
-                using (var locationBll = new LocationBLL())
+                using (var whBll = new WarehouseBLL())
                 {
-                    var lstLoc = await locationBll.GetLocation(id);
+                    var lstWh = await whBll.GetWarehouse(id);
 
-                    var m_Location = lstLoc.First();
+                    var m_Warehouse = lstWh.First();
 
-                    if (m_Location == null)
+                    if (m_Warehouse == null)
                     {
                         return NotFound();
                     }
 
-                    m_Location.Updated_By = 1;
+                    m_Warehouse.Updated_By = 1;
 
-                    resultObj = await locationBll.DeleteLocation(m_Location);
+                    resultObj = await whBll.DeleteWarehouse(m_Warehouse);
                 }
 
-                return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Deleted." });
+                return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Warehouse Deleted." });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        
     }
 }
