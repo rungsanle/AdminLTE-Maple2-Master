@@ -1,0 +1,87 @@
+﻿@model Maple2.AdminLTE.Bel.M_Machine
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>M_Machine</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MachineCode" class="control-label"></label>
+                <input asp-for="MachineCode" class="form-control" />
+                <span asp-validation-for="MachineCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MachineName" class="control-label"></label>
+                <input asp-for="MachineName" class="form-control" />
+                <span asp-validation-for="MachineName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MachineProdType" class="control-label"></label>
+                <input asp-for="MachineProdType" class="form-control" />
+                <span asp-validation-for="MachineProdType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MachineSize" class="control-label"></label>
+                <input asp-for="MachineSize" class="form-control" />
+                <span asp-validation-for="MachineSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MachineRemark" class="control-label"></label>
+                <textarea asp-for="MachineRemark" class="form-control"></textarea>
+                <span asp-validation-for="MachineRemark" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyCode" class="control-label"></label>
+                <input asp-for="CompanyCode" class="form-control" />
+                <span asp-validation-for="CompanyCode" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Is_Active" /> @Html.DisplayNameFor(model => model.Is_Active)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created_Date" class="control-label"></label>
+                <input asp-for="Created_Date" class="form-control" />
+                <span asp-validation-for="Created_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created_By" class="control-label"></label>
+                <input asp-for="Created_By" class="form-control" />
+                <span asp-validation-for="Created_By" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated_Date" class="control-label"></label>
+                <input asp-for="Updated_Date" class="form-control" />
+                <span asp-validation-for="Updated_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated_By" class="control-label"></label>
+                <input asp-for="Updated_By" class="form-control" />
+                <span asp-validation-for="Updated_By" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
