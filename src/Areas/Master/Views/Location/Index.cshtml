@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/plugins/Input-picker/jquery.inputpicker.css">
 }
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <!-- DataTables -->
     <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -32,7 +33,7 @@
     <!-- page script -->
     <script src="~/js/Areas/Master/Location/Index.js"></script>
 }
-    
+
 <div id="IndexData"
      data-loc-get-url="@Url.Action("GetLocation", "Location", new { Area = "Master" })"
      data-image-url="@Url.Content("~/img")">
