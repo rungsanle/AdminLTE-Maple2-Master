@@ -1,10 +1,8 @@
 ﻿@model IEnumerable<Maple2.AdminLTE.Bel.M_Department>
-
 @{
     ViewData["Title"] = "Department";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @section Styles {
     <!-- Bootstrap-Switch -->
     <link rel="stylesheet" href="~/plugins/bootstrap-switch/bootstrap-switch.min.css">
@@ -15,8 +13,8 @@
     <!-- Input Picker -->
     <link rel="stylesheet" href="~/plugins/Input-picker/jquery.inputpicker.css">
 }
-
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <!-- DataTables -->
     <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -30,16 +28,13 @@
     <script src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
     <!-- Input Picker -->
     <script src="~/plugins/Input-picker/jquery.inputpicker.js"></script>
-
     <!-- page script -->
     <script src="~/js/Areas/Master/Department/Index.js"></script>
 }
-
 <div id="IndexData"
      data-dept-get-url="@Url.Action("GetDepartment", "Department", new { Area = "Master" })"
      data-image-url="@Url.Content("~/img")">
 </div>
-
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
@@ -52,7 +47,6 @@
         <li class="active">Department</li>
     </ol>
 </section>
-
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -63,9 +57,7 @@
                 <strong>Success! </strong>
                 <span id="sucAlertSpan">Department Status</span>&nbsp;
             </div>
-
             <div class="box">
-
                 <div class="box-body">
                     <div class="table-responsive">
                         <table id="tblDept" class="table table-striped table-bordered table-hover">
@@ -89,7 +81,6 @@
                     </button>
                 </div>
                 <!-- /.box-footer -->
-
             </div>
             <!-- /.box -->
         </div>
@@ -98,19 +89,15 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
-
 <div class="modal fade" id="newDeptModal" tabindex="-1" role="dialog" aria-labelledby="CreateDeptModal" aria-hidden="true" data-backdrop="static">
     <div id="newDeptContainer">
     </div>
 </div>
-
 <div class="modal fade" id="editDeptModal" tabindex="-1" role="dialog" aria-labelledby="EditDeptModal" aria-hidden="true" data-backdrop="static">
     <div id="editDeptContainer">
     </div>
 </div>
-
 <div class="modal fade" id="viewDeptModal" tabindex="-1" role="dialog" aria-labelledby="ViewDeptModal" aria-hidden="true" data-backdrop="static">
     <div id="viewDeptContainer">
     </div>
 </div>
-
