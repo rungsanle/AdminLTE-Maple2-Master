@@ -1,10 +1,8 @@
 ﻿@model IEnumerable<Maple2.AdminLTE.Bel.M_Company>
-
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @section Styles {
     <!-- Bootstrap-Switch -->
     <link rel="stylesheet" href="~/plugins/bootstrap-switch/bootstrap-switch.min.css">
@@ -12,12 +10,11 @@
     <link rel="stylesheet" href="~/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
     <!-- Buttons -->
     <link rel="stylesheet/scss" type="text/css" href="~/bower_components/datatables-buttons/css/buttons.dataTables.scss">
-
     <!-- Input Picker -->
     <link rel="stylesheet" href="~/plugins/Input-picker/jquery.inputpicker.css">
 }
-
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <!-- DataTables -->
     <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -33,14 +30,11 @@
     <script src="~/plugins/Input-picker/jquery.inputpicker.js"></script>
     <!-- Page Script -->
     <script src="~/js/Areas/Master/Company/Index.js"></script>
-
 }
-
 <div id="IndexData"
      data-comp-get-url="@Url.Action("GetCompany", "Company", new { Area = "Master" })"
      data-image-url="@Url.Content("~/img")">
 </div>
-
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
@@ -53,7 +47,6 @@
         <li class="active">Company</li>
     </ol>
 </section>
-
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -64,7 +57,6 @@
                 <strong>Success! </strong>
                 <span id="sucAlertSpan">Company Status</span>&nbsp;
             </div>
-
             <div class="box">
                 <div class="box-body">
                     <div class="table-responsive">
@@ -92,7 +84,6 @@
                     </button>
                 </div>
                 <!-- /.box-footer -->
-
             </div>
             <!-- /.box -->
         </div>
@@ -101,19 +92,15 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
-
 <div class="modal fade" id="newCompModal" tabindex="-1" role="dialog" aria-labelledby="CreateCompModal" aria-hidden="true" data-backdrop="static">
     <div id="newCompContainer">
     </div>
 </div>
-
 <div class="modal fade" id="viewCompModal" tabindex="-1" role="dialog" aria-labelledby="ViewCompModal" aria-hidden="true" data-backdrop="static">
     <div id="viewCompContainer">
     </div>
 </div>
-
 <div class="modal fade" id="editCompModal" tabindex="-1" role="dialog" aria-labelledby="EditCompModal" aria-hidden="true" data-backdrop="static">
     <div id="editCompContainer">
     </div>
 </div>
-
