@@ -52,6 +52,11 @@ namespace Maple2.AdminLTE.Dal
                 .HasIndex(p => new { p.CompanyCode })
                 .IsUnique(true);
 
+            //Unit more specifications.
+            modelBuilder.Entity<M_Unit>()
+                .HasIndex(u => new { u.UnitCode })
+                .IsUnique(true);
+
             //Department more specifications.
             modelBuilder.Entity<M_Department>()
                 .HasIndex(p => new { p.DeptCode, p.CompanyCode })
