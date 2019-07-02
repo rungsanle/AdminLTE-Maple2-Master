@@ -317,7 +317,7 @@ global.displayValidationErrors = function (errors) {
 
     $.each(errors, function (idx, errorMessage) {
         var res = errorMessage.split("|");
-        $("[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
+        $("span[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
     });
 }
 
