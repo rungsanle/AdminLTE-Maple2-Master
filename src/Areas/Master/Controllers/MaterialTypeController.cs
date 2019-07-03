@@ -201,7 +201,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public ActionResult UploadData()
         {
-            ViewBag.CompCode = 1;
+            ViewBag.CompCode = "ALL*";
             return PartialView();
         }
 
