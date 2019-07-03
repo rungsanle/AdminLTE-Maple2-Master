@@ -106,7 +106,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: true,
+            async: false,
             success: function (data) {
                 if (data) {
                     $('#newProdTypeContainer').html(data);

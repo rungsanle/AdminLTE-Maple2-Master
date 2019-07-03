@@ -36,20 +36,10 @@
 
 });
 
-function onFocusOut(ctl) {
-
-    if (ctl.val() != '') {
-        document.querySelectorAll('.text-danger li')[0].remove();
-    }
-
-};
-
 function addRequestVerificationToken(data) {
     data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
     return data;
 };
-
-
 
 function SaveCrate(event) {
 

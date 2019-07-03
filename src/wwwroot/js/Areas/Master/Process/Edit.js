@@ -1,20 +1,18 @@
 ﻿$(function () {
 
     //Begin----check clear require---//
-    $("#MatTypeCode").on("focusout", function () {
-        if ($("#MatTypeCode").val() != '') {
-            global.removeValidationErrors('MatTypeCode');
+    $("#ProcessCode").on("focusout", function () {
+        if ($("#ProcessCode").val() != '') {
+            global.removeValidationErrors('ProcessCode');
         }
     });
 
-    $("#MatTypeName").on("focusout", function () {
-        if ($("#MatTypeName").val() != '') {
-            global.removeValidationErrors('MatTypeName');
+    $("#ProcessName").on("focusout", function () {
+        if ($("#ProcessName").val() != '') {
+            global.removeValidationErrors('ProcessName');
         }
     });
     //End----check clear require---//
-
-    /*-------------- BEGIN COMPANY CODE --------------*/
     var compCode = $('#EditData').data('viewbag-compcode');
 
     global.applyCompanyCodeDropdown();
@@ -26,7 +24,7 @@
             $(".inputpicker-input:last").attr("disabled", true);
         }, 100);
     }
-    /*-------------- END COMPANY CODE --------------*/
+
 
     global.applyIsActiveSwitch($('#Is_Active').is(':checked'), false);
 
@@ -49,12 +47,13 @@ function SaveEdit(event) {
     $.ajax({
         async: true,
         type: "POST",
-        url: $('#EditData').data('mattype-edit-url'),
+        url: $('#EditData').data('proc-edit-url'),
         data: addRequestVerificationToken({
             Id: $("#Id").val(),
-            MatTypeCode: $("#MatTypeCode").val().toUpperCase(),
-            MatTypeName: $("#MatTypeName").val(),
-            MatTypeDesc: $("#MatTypeDesc").val(),
+            ProcessCode: $("#ProcessCode").val().toUpperCase(),
+            ProcessName: $("#ProcessName").val(),
+            ProcessDesc: $("#ProcessDesc").val(),
+            ProcessSeq: $("#ProcessSeq").val(),
             CompanyCode: $("#CompanyCode").val(),
             Is_Active: $('#Is_Active').is(':checked')
         }),
@@ -62,10 +61,10 @@ function SaveEdit(event) {
 
             if (response.success) {
 
-                $('#editMatTypeModal').modal('hide');
-                $('#editMatTypeContainer').html("");
+                $('#editProcessModal').modal('hide');
+                $('#editProcessContainer').html("");
 
-                $("#tblMatType").DataTable().ajax.reload(null, false);
+                $("#tblProcess").DataTable().ajax.reload(null, false);
 
                 global.successAlert(response.message);
 

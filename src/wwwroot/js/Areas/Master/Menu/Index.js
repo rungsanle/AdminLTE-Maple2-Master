@@ -152,7 +152,7 @@ $(function () {
         $.ajax({
             type: "GET",
             url: api,
-            async: true,
+            async: false,
             success: function (data) {
                 if (data) {
                     $('#newMenuContainer').html(data);

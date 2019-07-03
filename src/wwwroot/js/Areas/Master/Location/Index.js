@@ -109,7 +109,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: true,
+            async: false,
             success: function (data) {
                 if (data) {
                     $('#newLocationContainer').html(data);

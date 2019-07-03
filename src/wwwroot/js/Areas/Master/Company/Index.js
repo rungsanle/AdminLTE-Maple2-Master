@@ -111,7 +111,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: true,
+            async: false,
             success: function (data) {
                 if (data) {
                     $('#newCompContainer').html(data);
@@ -120,7 +120,8 @@
                     global.authenExpire();
                 }
 
-            }, error: function (xhr) {
+            },
+            error: function (xhr) {
                 alert('Create Error : ' + xhr);
 
             }

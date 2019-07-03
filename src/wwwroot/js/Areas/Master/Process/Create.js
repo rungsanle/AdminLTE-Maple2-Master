@@ -1,18 +1,29 @@
 ﻿$(function () {
 
     //Begin----check clear require---//
-    $("#UnitCode").on("focusout", function () {
-        if ($("#UnitCode").val() != '') {
-            global.removeValidationErrors('UnitCode');
+    $("#ProcessCode").on("focusout", function () {
+        if ($("#ProcessCode").val() != '') {
+            global.removeValidationErrors('ProcessCode');
         }
     });
 
-    $("#UnitName").on("focusout", function () {
-        if ($("#UnitName").val() != '') {
-            global.removeValidationErrors('UnitName');
+    $("#ProcessName").on("focusout", function () {
+        if ($("#ProcessName").val() != '') {
+            global.removeValidationErrors('ProcessName');
         }
     });
     //End----check clear require---//
+    var compCode = $('#CreateData').data('viewbag-compcode');
+
+    global.applyCompanyCodeDropdown();
+
+    if (compCode != 'ALL*') {
+        $('#CompanyCode').val(compCode);
+
+        $(function () {
+            $(".inputpicker-input:last").attr("disabled", true); // or removeAttr("disabled")
+        });
+    }
 
     global.applyIsActiveSwitch(true, false);
 
@@ -23,7 +34,7 @@
 function addRequestVerificationToken(data) {
     data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
     return data;
-}
+};
 
 function SaveCrate(event) {
 
@@ -34,11 +45,12 @@ function SaveCrate(event) {
     $.ajax({
         async: true,
         type: "POST",
-        url: $('#CreateData').data('unit-add-url'),
+        url: $('#CreateData').data('proc-add-url'),
         data: addRequestVerificationToken({
-            UnitCode: $("#UnitCode").val().toUpperCase(),
-            UnitName: $("#UnitName").val(),
-            UnitDesc: $("#UnitDesc").val(),
+            ProcessCode: $("#ProcessCode").val().toUpperCase(),
+            ProcessName: $("#ProcessName").val(),
+            ProcessDesc: $("#ProcessDesc").val(),
+            ProcessSeq: $("#ProcessSeq").val(),
             CompanyCode: $("#CompanyCode").val(),
             Is_Active: $('#Is_Active').is(':checked')
         }),
@@ -46,11 +58,11 @@ function SaveCrate(event) {
 
             if (response.success) {
 
-                $('#newUnitModal').modal('hide');
-                $('#newUnitContainer').html("");
+                $('#newProcessModal').modal('hide');
+                $('#newProcessContainer').html("");
 
-                $("#tblUnit").DataTable().ajax.reload(null, false);
-                $("#tblUnit").DataTable().page('last').draw('page');
+                $("#tblProcess").DataTable().ajax.reload(null, false);
+                $("#tblProcess").DataTable().page('last').draw('page');
 
                 global.successAlert(response.message);
             }

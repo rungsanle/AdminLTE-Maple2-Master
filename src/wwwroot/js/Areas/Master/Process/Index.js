@@ -2,10 +2,10 @@
 
     $("#message-alert").hide();
     //Grid Table Config
-    arrTypeVM = {
-        dtArrivalType: null,
+    processVM = {
+        dtProc: null,
         init: function () {
-            dtArrivalType = $('#tblArrivalType').DataTable({
+            dtProc = $('#tblProcess').DataTable({
                 dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
@@ -13,27 +13,28 @@
                     {
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel-o"></i> Excel',
-                        title: 'Arrival Type Master',
+                        title: 'Process Master',
                         titleAttr: 'Excel'
                     },
                     {
                         extend: 'csvHtml5',
                         text: '<i class="fa fa-file-text-o"></i> CSV',
-                        title: 'Arrival Type Master',
+                        title: 'Process Master',
                         titleAttr: 'CSV'
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('arrtype-get-url'),    //"/Customer/GetCustomers",
+                    "url": $('#IndexData').data('proc-get-url'),    //"/Customer/GetCustomers",
                     "type": "GET",
                     "datatype": "json"
                 },
                 columns: [
-                    { "data": "ArrivalTypeCode", "className": "boldColumn", "autoWidth": false },
-                    { "data": "ArrivalTypeName", "autoWidth": false },
-                    { "data": "ArrivalTypeDesc", "autoWidth": false },
+                    { "data": "ProcessCode", "className": "boldColumn", "autoWidth": false },
+                    { "data": "ProcessName", "autoWidth": false },
+                    { "data": "ProcessDesc", "autoWidth": false },
+                    { "data": "ProcessSeq", "autoWidth": false },
                     { "data": "CompanyCode", "className": "boldColumn", "autoWidth": false },
                     {
                         "data": "Is_Active",
@@ -42,7 +43,7 @@
                             if (type === 'display') {
                                 //return '<input type="checkbox" disabled="disabled" class="chkIs_Active">';
                                 if (data) {
-                                    return '<img src="' + $('#IndexData').data('image-url') + '/mswitch/isavtive_yes.png" />';;
+                                    return '<img src="' + $('#IndexData').data('image-url') + '/mswitch/isavtive_yes.png" />';
                                 } else {
                                     return '<img src="' + $('#IndexData').data('image-url') + '/mswitch/isavtive_no.png" />';
                                 }
@@ -51,20 +52,21 @@
                         }
                     },
                     {
-                        "render": function (data, type, arrType, meta) {
-                            return '<a id="viewArrivalType" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="ArrivalType/Details/' + arrType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editArrivalType" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="ArrivalType/Edit/' + arrType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delArrivalType" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="ArrivalType/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                        "render": function (data, type, process, meta) {
+                            return '<a id="viewProcess" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="Process/Details/' + process.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editProcess" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="Process/Edit/' + process.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delProcess" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="Process/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
-                    { "width": "24%", "targets": 1 },
-                    { "width": "28%", "targets": 2 },
-                    { "width": "10%", "targets": 3 },
-                    { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "8%", "targets": 5, "orderable": false }
+                    { "width": "22%", "targets": 1 },
+                    { "width": "30%", "targets": 2 },
+                    { "className": "dt-center", "width": "10%", "targets": 3 },
+                    { "width": "10%", "targets": 4 },
+                    { "className": "dt-center", "width": "8%", "targets": 5, "orderable": false },
+                    { "width": "8%", "targets": 6, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -82,20 +84,20 @@
         },
 
         refresh: function () {
-            dtArrivalType.ajax.reload();
+            dtProc.ajax.reload();
         }
     }
 
     // initialize the datatables
-    arrTypeVM.init();
+    processVM.init();
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
     };
 
-    //Add
-    $("#btnCreateArrivalType").on("click", function (event) {
+    //Add Machine
+    $("#btnCreateProcess").on("click", function (event) {
 
         event.preventDefault();
 
@@ -104,11 +106,11 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: false,
+            async: true,
             success: function (data) {
                 if (data) {
-                    $('#newArrivalTypeContainer').html(data);
-                    $('#newArrivalTypeModal').modal('show');
+                    $('#newProcessContainer').html(data);
+                    $('#newProcessModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
@@ -118,26 +120,19 @@
 
             }
         });
-
-        //$.get(api, function (data) {
-        //    $('#newMenuContainer').html(data);
-
-        //    $('#newMenuModal').modal('show');
-        //});
-
     });
 
-    $("#newArrivalTypeModal").on("shown.bs.modal", function () {
+    $("#newProcessModal").on("shown.bs.modal", function () {
         //$('input[type=text]:visible:first').focus();
-        $('#ArrivalTypeCode').focus();
+        $('#ProcessCode').focus();
     });
     //clear html data for create new;
-    $("#newArrivalTypeModal").on("hidden.bs.modal", function () {
-        $('#newArrivalTypeContainer').html("");
+    $("#newProcessModal").on("hidden.bs.modal", function () {
+        $('#newProcessContainer').html("");
     });
 
-    //View
-    $('#tblArrivalType').on("click", "#viewArrivalType", function (event) {
+    //view Machine
+    $('#tblProcess').on("click", "#viewProcess", function (event) {
 
         event.preventDefault();
 
@@ -149,27 +144,25 @@
             async: true,
             success: function (data) {
                 if (data) {
-                    $('#viewArrivalTypeContainer').html(data);
-                    $('#viewArrivalTypeModal').modal('show');
+                    $('#viewProcessContainer').html(data);
+                    $('#viewProcessModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
-
             }, error: function (xhr) {
                 alert('View Error : ' + xhr);
 
             }
         });
-
     });
 
     //clear html data for View;
-    $("#viewArrivalTypeModal").on("hidden.bs.modal", function () {
-        $('#viewArrivalTypeContainer').html("");
+    $("#viewProcessModal").on("hidden.bs.modal", function () {
+        $('#viewProcessContainer').html("");
     });
 
-    //Edit
-    $('#tblArrivalType').on("click", "#editArrivalType", function (event) {
+    //Edit Machine
+    $('#tblProcess').on("click", "#editProcess", function (event) {
 
         event.preventDefault();
 
@@ -181,12 +174,11 @@
             async: true,
             success: function (data) {
                 if (data) {
-                    $('#editArrivalTypeContainer').html(data);
-                    $('#editArrivalTypeModal').modal('show');
+                    $('#editProcessContainer').html(data);
+                    $('#editProcessModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
-
             }, error: function (xhr) {
                 alert('Edit Error : ' + xhr);
 
@@ -195,33 +187,31 @@
     });
 
     //clear html data for edit;
-    $("#editArrivalTypeModal").on("hidden.bs.modal", function () {
-        $('#editArrivalTypeContainer').html("");
+    $("#editProcessModal").on("hidden.bs.modal", function () {
+        $('#editProcessContainer').html("");
     });
 
     //Delete
-    $('#tblArrivalType').on('click', '#delArrivalType', function (event) {
+    $('#tblProcess').on('click', '#delProcess', function (event) {
 
         event.preventDefault();
-
         var api = $(this).attr("href");
         var row = $(this).parents('tr')[0];
-        var arrTypeData = (dtArrivalType.row(row).data());
-        var arrTypeId = arrTypeData["Id"];
-        var arrTypeName = arrTypeData["ArrivalTypeName"];
-        var con = confirm("Are you sure you want to delete this " + arrTypeName)
+        var processData = (dtProc.row(row).data());
+        var processId = processData["Id"];
+        var processName = processData["ProcessName"];
+        var con = confirm("Are you sure you want to delete this " + processName)
         if (con) {
 
             $.ajax({
                 type: 'POST',
                 url: api,
-                async: true,
-                data: addRequestVerificationToken({ id: arrTypeId }),
+                data: addRequestVerificationToken({ id: processId }),
                 success: function (response) {
 
                     if (response.success) {
 
-                        arrTypeVM.refresh();
+                        processVM.refresh();
 
                         global.successAlert(response.message);
                     }

@@ -3,13 +3,13 @@
     //Begin----check clear require---//
     $("#MatTypeCode").on("focusout", function () {
         if ($("#MatTypeCode").val() != '') {
-            $('#MatTypeCode_validationMessage li').remove();
+            global.removeValidationErrors('MatTypeCode');
         }
     });
 
     $("#MatTypeName").on("focusout", function () {
         if ($("#MatTypeName").val() != '') {
-            $('#MatTypeName_validationMessage li').remove();
+            global.removeValidationErrors('MatTypeName');
         }
     });
     //End----check clear require---//
@@ -34,14 +34,6 @@
 
 });
 
-function onFocusOut(ctl) {
-
-    if (ctl.val() != '') {
-        document.querySelectorAll('.text-danger li')[0].remove();
-    }
-
-}
-
 function addRequestVerificationToken(data) {
     data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
     return data;
@@ -51,7 +43,7 @@ function SaveCrate(event) {
 
     event.preventDefault();
 
-    resetValidationErrors();
+    global.resetValidationErrors();
 
     $.ajax({
         async: true,
@@ -79,7 +71,7 @@ function SaveCrate(event) {
             else {
 
                 if (response.errors != null) {
-                    displayValidationErrors(response.errors);
+                    global.displayValidationErrors(response.errors);
                 } else {
                     global.dangerAlert(response.message, 5000);
                 }
@@ -91,22 +83,4 @@ function SaveCrate(event) {
         }
     });
 
-}
-
-function displayValidationErrors(errors) {
-
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        $("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
-    });
-}
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
-    };
-
-}
+};
