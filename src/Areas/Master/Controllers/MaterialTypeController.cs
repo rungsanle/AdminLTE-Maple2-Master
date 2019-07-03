@@ -199,10 +199,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             }
         }
 
-        public ActionResult UploadData()
+        public async Task<IActionResult> UploadData()
         {
             ViewBag.CompCode = "ALL*";
-            return PartialView();
+            return await Task.Run(() => PartialView());
         }
 
         [HttpPost]
