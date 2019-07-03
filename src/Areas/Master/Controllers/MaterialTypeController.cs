@@ -26,9 +26,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/MaterialType
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return await Task.Run(() => View());
         }
 
         public async Task<IActionResult> GetMaterialType()
@@ -63,10 +63,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/MaterialType/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewBag.CompCode = "ALL*";
-            return View();
+            return await Task.Run(() => View());
         }
 
         // POST: Master/MaterialType/Create

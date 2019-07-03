@@ -20,12 +20,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     [Area("Master")]
     public class CompanyController : Controller
     {
-        //private readonly MasterDbContext _context;
-        //public CompanyController(MasterDbContext context)
-        //{
-        //    _context = context;
-        //}
-
         private readonly IHostingEnvironment _hostingEnvironment;
         public CompanyController(IHostingEnvironment hostingEnvironment)
         {
@@ -34,10 +28,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
 
         // GET: Master/Company
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //return View(await _context.Companies.ToListAsync());
-            return View();
+            return await Task.Run(() => View());
         }
 
         public async Task<IActionResult> GetCompany()
@@ -73,9 +66,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/Company/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            return await Task.Run(() => View());
         }
 
         // POST: Master/Company/Create
@@ -224,33 +217,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // POST: Master/Company/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit([Bind("CompanyCode,CompanyName,CompanyLogoPath,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CompanyTaxId,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Company m_Company)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        m_Company.Updated_By = 1;
-
-        //        try
-        //        {
-        //            using (var compBll = new CompanyBLL())
-        //            {
-        //                var rowaffected = compBll.UpdateCompany(m_Company);
-        //            }
-
-        //            return Json(new { success = true, data = m_Company, message = "Company Update." });
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return Json(new { success = false, data = m_Company, message = ex.Message });
-        //        }
-        //    }
-
-        //    var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-        //    return Json(new { success = false, errors = err, data = m_Company, message = "Update Failed" });
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("CompanyCode,CompanyName,CompanyLogoPath,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CompanyTaxId,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Company m_Company)
@@ -279,24 +245,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
             return Json(new { success = false, errors = err, data = m_Company, message = "Update Failed" });
         }
-
-        //// GET: Master/Company/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var m_Company = await _context.Companies
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (m_Company == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(m_Company);
-        //}
 
         // POST: Master/Company/Delete/5
         [HttpPost, ActionName("Delete")]

@@ -22,9 +22,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/Machine
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return await Task.Run(() => View());
         }
 
         public async Task<IActionResult> GetMachine()
@@ -66,10 +66,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/Machine/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewBag.CompCode = "ALL*";
-            return View();
+            return await Task.Run(() => View());
         }
 
         // POST: Master/Machine/Create

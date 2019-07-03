@@ -22,9 +22,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/Menu
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return await Task.Run(() => View());
         }
 
         public async Task<IActionResult> GetMenu()
@@ -79,9 +79,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         }
 
         // GET: Master/Menu/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            return await Task.Run(() => View());
         }
 
         // POST: Master/Menu/Create
