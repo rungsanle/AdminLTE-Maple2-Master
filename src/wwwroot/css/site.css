@@ -102,8 +102,18 @@ td.boldColumn {
     text-align: right;
 }
 
+.form-group {
+    margin-bottom: 9px !important;
+}
+
 .form-horizontal .control-label.text-left {
     text-align: left !important;
+}
+
+.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 .login-System-logo img {
@@ -114,7 +124,7 @@ td.boldColumn {
 .checkbox label, .radio label {
     min-height: 20px;
     padding-left: 0px !important;
-    margin-bottom: 0;
+    margin-bottom: 0px;
     font-weight: 400;
     cursor: pointer;
 }
