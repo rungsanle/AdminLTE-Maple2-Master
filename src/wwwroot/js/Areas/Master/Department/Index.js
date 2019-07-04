@@ -1,6 +1,10 @@
 ﻿$(function () {
 
     $("#success-alert").hide();
+
+    
+    
+
     //Grid Table Config
     deptVM = {
         dtDept: null,
@@ -88,6 +92,9 @@
 
     // initialize the datatables
     deptVM.init();
+
+    //set width of input search.
+    $('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
