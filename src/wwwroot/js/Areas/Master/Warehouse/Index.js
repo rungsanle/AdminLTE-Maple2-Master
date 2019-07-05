@@ -53,9 +53,9 @@
                     },
                     {
                         "render": function (data, type, wh, meta) {
-                            return '<a id="viewWH" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="Warehouse/Details/' + wh.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editWH" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="Warehouse/Edit/' + wh.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delWH" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="Warehouse/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewWH" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Warehouse/Details/' + wh.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editWH" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Warehouse/Edit/' + wh.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delWH" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Warehouse/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
