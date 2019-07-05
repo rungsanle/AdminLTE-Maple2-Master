@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<Maple2.AdminLTE.Bel.M_Customer>*@
-@model Maple2.AdminLTE.Bel.M_Customer
+﻿@model IEnumerable<Maple2.AdminLTE.Bel.M_Customer>
 
 @{
     ViewData["Title"] = "Index";
@@ -68,23 +67,15 @@
                         <table id="tblCust" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    @*<th>@Html.DisplayNameFor(model => model.CustomerCode)</th>
-                                    <th>@Html.DisplayNameFor(model => model.CustomerName)</th>
-                                    <th>@Html.DisplayNameFor(model => model.AddressL1)</th>
-                                    <th>@Html.DisplayNameFor(model => model.AddressL2)</th>
-                                    <th>@Html.DisplayNameFor(model => model.CustomerEmail)</th>
-                                    <th>@Html.DisplayNameFor(model => model.CustomerContact)</th>
-                                    <th>@Html.DisplayNameFor(model => model.CompanyCode)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Is_Active)</th>*@
-                                    <th>Code</th>
-                                    <th><label asp-for="CustomerName"></label></th>
-                                    <th><label asp-for="AddressL1"></label></th>
-                                    <th><label asp-for="AddressL2"></label></th>
-                                    <th><label asp-for="CustomerEmail"></label></th>
-                                    <th><label asp-for="CustomerContact"></label></th>
-                                    <th><label asp-for="CompanyCode"></label></th>
-                                    <th><label asp-for="Is_Active"></label></th>
-                                    <th>ACTIONS</th>
+                                    <th><label asp-for="@Model.First().CustomerCode"></label></th>
+                                    <th><label asp-for="@Model.First().CustomerName"></label></th>
+                                    <th><label asp-for="@Model.First().AddressL1"></label></th>
+                                    <th><label asp-for="@Model.First().AddressL2"></label></th>
+                                    <th><label asp-for="@Model.First().CustomerEmail"></label></th>
+                                    <th><label asp-for="@Model.First().CustomerContact"></label></th>
+                                    <th><label asp-for="@Model.First().CompanyCode"></label></th>
+                                    <th><label asp-for="@Model.First().Is_Active"></label></th>
+                                    <th><label>ACTIONS</label></th>
                                 </tr>
                             </thead>
                         </table>
@@ -92,10 +83,10 @@
                 </div>
                 <div class=" box-footer">
     @*<button type="button" id="btnNewMachine" class="btn btn-primary">Create</button>*@
-    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Customer", new { Area = "Master" })" id="btnCreateCust">
+    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Customer", new { Area = "Master" })" id="btnCreateCust">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add
     </button>
-    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Customer", new { Area = "Master" })" id="btnUpload">
+    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Customer", new { Area = "Master" })" id="btnUpload">
         <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>&nbsp; Upload
     </button>
 </div>
