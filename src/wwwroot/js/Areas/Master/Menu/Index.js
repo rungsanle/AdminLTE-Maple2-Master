@@ -88,9 +88,9 @@ $(function () {
                     },
                     {
                         "render": function (data, type, menu, meta) {
-                            return '<a id="viewMenu" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="Menu/Details/' + menu.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editMenu" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="Menu/Edit/' + menu.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delMenu" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="Menu/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewMenu" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Menu/Details/' + menu.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editMenu" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Menu/Edit/' + menu.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delMenu" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Menu/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
