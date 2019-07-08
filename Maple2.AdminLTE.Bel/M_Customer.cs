@@ -10,7 +10,7 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_customer")]
     public class M_Customer : Base_Related_Field
     {
-        [Display(Name = "CUSTOMER CODE")]
+        [Display(Name = "CODE")]
         [Required(ErrorMessage = "CustomerCode|CUSTOMER CODE IS REQUIRED!!")]
         [MaxLength(30)]
         public string CustomerCode { get; set; }
