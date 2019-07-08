@@ -55,9 +55,9 @@
                     },
                     {
                         "render": function (data, type, mc, meta) {
-                            return '<a id="viewMachine" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="Machine/Details/' + mc.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editMachine" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="Machine/Edit/' + mc.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delMachine" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="Machine/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewMachine" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Machine/Details/' + mc.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editMachine" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Machine/Edit/' + mc.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delMachine" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Machine/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
