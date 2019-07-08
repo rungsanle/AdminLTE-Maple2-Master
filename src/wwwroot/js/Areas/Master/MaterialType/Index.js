@@ -52,9 +52,9 @@
                     },
                     {
                         "render": function (data, type, matType, meta) {
-                            return '<a id="viewMatType" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="MaterialType/Details/' + matType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editMatType" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="MaterialType/Edit/' + matType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delMatType" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="MaterialType/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewMatType" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="MaterialType/Details/' + matType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editMatType" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="MaterialType/Edit/' + matType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delMatType" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="MaterialType/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
