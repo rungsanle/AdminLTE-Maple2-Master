@@ -56,9 +56,9 @@
                     },
                     {
                         "render": function (data, type, dept, meta) {
-                            return '<a id="viewDept" class="btn btn-default btn-sm" data-toggle="tooltip" title="View" href="Department/Details/' + dept.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                   '<a id="editDept" class="btn btn-default btn-sm" data-toggle="tooltip" title="Edit" href="Department/Edit/' + dept.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                   '<a id="delDept" class="btn btn-default btn-sm" data-toggle="tooltip" title="Remove" href="Department/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewDept" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Department/Details/' + dept.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                   '<a id="editDept" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Department/Edit/' + dept.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                   '<a id="delDept" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Department/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
