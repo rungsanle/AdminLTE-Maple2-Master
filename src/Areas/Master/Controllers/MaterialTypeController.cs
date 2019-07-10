@@ -12,6 +12,7 @@ using Maple2.AdminLTE.Bll;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -20,9 +21,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class MaterialTypeController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public MaterialTypeController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public MaterialTypeController(IHostingEnvironment hostingEnvironment,
+                                      IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/MaterialType
@@ -33,10 +38,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMaterialType()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            {
+                return Json(new { data = c_lstMatType });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var matTypeBll = new MaterialTypeBLL())
             {
-                return Json(new { data = await matTypeBll.GetMaterialType(null) });
+                var lstMatType = await matTypeBll.GetMaterialType(null);
+
+                _cache.Set("CACHE_MASTER_MATERIALTYPE", lstMatType, options);
+
+                return Json(new { data = lstMatType });
             }
+
+            //using (var matTypeBll = new MaterialTypeBLL())
+            //{
+            //    return Json(new { data = await matTypeBll.GetMaterialType(null) });
+            //}
         }
 
         // GET: Master/MaterialType/Details/5
@@ -87,6 +113,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var matTypeBll = new MaterialTypeBLL())
                     {
                         resultObj = await matTypeBll.InsertMaterialType(m_MaterialType);
+
+                        _cache.Remove("CACHE_MASTER_MATERIALTYPE");
                     }
 
                     return Json(new { success = true, data = (M_MaterialType)resultObj.ObjectValue, message = "Material Type Created." });
@@ -146,6 +174,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var matTypeBll = new MaterialTypeBLL())
                     {
                         resultObj = await matTypeBll.UpdateMaterialType(m_MaterialType);
+
+                        _cache.Remove("CACHE_MASTER_MATERIALTYPE");
                     }
 
                     return Json(new { success = true, data = (M_MaterialType)resultObj.ObjectValue, message = "Material Type Update." });
@@ -189,6 +219,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_MaterialType.Updated_By = 1;
 
                     resultObj = await matTypeBll.DeleteMaterialType(m_MaterialType);
+
+                    _cache.Remove("CACHE_MASTER_MATERIALTYPE");
                 }
 
                 return Json(new { success = true, data = (M_MaterialType)resultObj.ObjectValue, message = "Material Type Deleted." });
@@ -253,6 +285,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 using (var matTypeBll = new MaterialTypeBLL())
                 {
                     var rowaffected = await matTypeBll.BulkInsertMaterialType(lstMatType);
+
+                    _cache.Remove("CACHE_MASTER_MATERIALTYPE");
                 }
 
                 return Json(new { success = true, data = lstMatType, message = "Import Success." });

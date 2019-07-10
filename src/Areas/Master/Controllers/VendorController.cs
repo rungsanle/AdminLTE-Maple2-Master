@@ -12,6 +12,7 @@ using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -20,9 +21,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class VendorController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public VendorController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public VendorController(IHostingEnvironment hostingEnvironment,
+                                    IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Vendor
@@ -34,10 +39,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Vendor
         public async Task<IActionResult> GetVendor()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Customer> c_lstVend))
+            {
+                return Json(new { data = c_lstVend });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var vendBll = new VendorBLL())
             {
-                return Json(new { data = await vendBll.GetVendor(null) });
+                var lstVend = await vendBll.GetVendor(null);
+
+                _cache.Set("CACHE_MASTER_VENDOR", lstVend, options);
+
+                return Json(new { data = lstVend });
             }
+
+            //using (var vendBll = new VendorBLL())
+            //{
+            //    return Json(new { data = await vendBll.GetVendor(null) });
+            //}
         }
 
         // GET: Master/Vendor/Details/5
@@ -87,6 +113,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var vendBll = new VendorBLL())
                     {
                         resultObj = await vendBll.InsertVendor(m_Vendor);
+
+                        _cache.Remove("CACHE_MASTER_VENDOR");
                     }
 
                     return Json(new { success = true, data = (M_Vendor)resultObj.ObjectValue, message = "Vendor Created." });
@@ -144,6 +172,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var vendBll = new VendorBLL())
                     {
                         resultObj = await vendBll.UpdateVendor(m_Vendor);
+
+                        _cache.Remove("CACHE_MASTER_VENDOR");
                     }
 
                     return Json(new { success = true, data = (M_Vendor)resultObj.ObjectValue, message = "Vendor Update." });
@@ -186,6 +216,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Vendor.Updated_By = 1;
 
                     resultObj = await vendBll.DeleteVendor(m_Vendor);
+
+                    _cache.Remove("CACHE_MASTER_VENDOR");
                 }
 
                 return Json(new { success = true, data = (M_Vendor)resultObj.ObjectValue, message = "Vendor Deleted." });
@@ -250,6 +282,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 using (var vendBll = new VendorBLL())
                 {
                     var rowaffected = await vendBll.BulkInsertVendor(lstVend);
+
+                    _cache.Remove("CACHE_MASTER_VENDOR");
                 }
 
                 return Json(new { success = true, data = lstVend, message = "Import Success." });

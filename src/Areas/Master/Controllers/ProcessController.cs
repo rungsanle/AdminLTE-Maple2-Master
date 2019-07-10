@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class ProcessController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public ProcessController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public ProcessController(IHostingEnvironment hostingEnvironment,
+                                 IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Process
@@ -29,10 +34,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetProcess()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            {
+                return Json(new { data = c_lstProc });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var processBll = new ProcessBLL())
             {
-                return Json(new { data = await processBll.GetProcess(null) });
+                var lstProc = await processBll.GetProcess(null);
+
+                _cache.Set("CACHE_MASTER_PROCESS", lstProc, options);
+
+                return Json(new { data = lstProc });
             }
+
+            //using (var processBll = new ProcessBLL())
+            //{
+            //    return Json(new { data = await processBll.GetProcess(null) });
+            //}
         }
 
         // GET: Master/Process/Details/5
@@ -82,6 +108,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var processBll = new ProcessBLL())
                     {
                         resultObj = await processBll.InsertProcess(m_Process);
+
+                        _cache.Remove("CACHE_MASTER_PROCESS");
                     }
 
                     return Json(new { success = true, data = (M_Process)resultObj.ObjectValue, message = "Process Created." });
@@ -140,6 +168,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var processBll = new ProcessBLL())
                     {
                         resultObj = await processBll.UpdateProcess(m_Process);
+
+                        _cache.Remove("CACHE_MASTER_PROCESS");
                     }
 
                     return Json(new { success = true, data = (M_Process)resultObj.ObjectValue, message = "Process Update." });
@@ -183,6 +213,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Process.Updated_By = 1;
 
                     resultObj = await processBll.DeleteProcess(m_Process);
+
+                    _cache.Remove("CACHE_MASTER_PROCESS");
                 }
 
                 return Json(new { success = true, data = (M_Process)resultObj.ObjectValue, message = "Process Deleted." });

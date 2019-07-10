@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class DepartmentController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public DepartmentController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public DepartmentController(IHostingEnvironment hostingEnvironment,
+                                    IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Department
@@ -29,10 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetDepartment()
         {
+            if(_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            {
+                return Json(new { data = c_lstDept });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var deptBll = new DepartmentBLL())
             {
-                return Json(new { data = await deptBll.GetDepartment(null) });
+                var lstDept = await deptBll.GetDepartment(null);
+
+                _cache.Set("CACHE_MASTER_DEPARTMENT", lstDept, options);
+
+                return Json(new { data = lstDept });
             }
+
+
+            //using (var deptBll = new DepartmentBLL())
+            //{
+            //    return Json(new { data = await deptBll.GetDepartment(null) });
+            //}
         }
 
         // GET: Master/Department/Details/5
@@ -109,6 +136,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var deptBll = new DepartmentBLL())
                     {
                         resultObj = await deptBll.InsertDepartment(m_Department);
+
+                        _cache.Remove("CACHE_MASTER_DEPARTMENT");
                     }
 
                     return Json(new { success = true, data = (M_Department)resultObj.ObjectValue, message = "Department Created." });
@@ -193,6 +222,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var deptBll = new DepartmentBLL())
                     {
                         resultObj = await deptBll.UpdateDepartment(m_Department);
+
+                        _cache.Remove("CACHE_MASTER_DEPARTMENT");
                     }
 
                     return Json(new { success = true, data = (M_Department)resultObj.ObjectValue, message = "Department Update." });
@@ -253,6 +284,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Department.Updated_By = 1;
 
                     resultObj = await deptBll.DeleteDepartment(m_Department);
+
+                    _cache.Remove("CACHE_MASTER_DEPARTMENT");
                 }
 
                 return Json(new { success = true, data = (M_Department)resultObj.ObjectValue, message = "Department Deleted." });

@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class UnitController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public UnitController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public UnitController(IHostingEnvironment hostingEnvironment,
+                              IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Unit
@@ -29,10 +34,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetUnit()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            {
+                return Json(new { data = c_lstUnit });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var unitBll = new UnitBLL())
             {
-                return Json(new { data = await unitBll.GetUnit(null) });
+                var lstUnit = await unitBll.GetUnit(null);
+
+                _cache.Set("CACHE_MASTER_UNIT", lstUnit, options);
+
+                return Json(new { data = lstUnit });
             }
+
+            //using (var unitBll = new UnitBLL())
+            //{
+            //    return Json(new { data = await unitBll.GetUnit(null) });
+            //}
         }
 
         // GET: Master/Unit/Details/5
@@ -83,6 +109,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var unitBll = new UnitBLL())
                     {
                         resultObj = await unitBll.InsertUnit(m_Unit);
+
+                        _cache.Remove("CACHE_MASTER_UNIT");
                     }
 
                     return Json(new { success = true, data = (M_Unit)resultObj.ObjectValue, message = "Unit Created." });
@@ -140,6 +168,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var unitBll = new UnitBLL())
                     {
                         resultObj = await unitBll.UpdateUnit(m_Unit);
+
+                        _cache.Remove("CACHE_MASTER_UNIT");
                     }
 
                     return Json(new { success = true, data = (M_Unit)resultObj.ObjectValue, message = "Unit Update." });
@@ -181,6 +211,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Unit.Updated_By = 1;
 
                     resultObj = await unitBll.DeleteUnit(m_Unit);
+
+                    _cache.Remove("CACHE_MASTER_UNIT");
                 }
 
                 return Json(new { success = true, data = (M_Unit)resultObj.ObjectValue, message = "Unit Deleted." });

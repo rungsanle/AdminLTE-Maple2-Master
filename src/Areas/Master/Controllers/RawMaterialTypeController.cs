@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class RawMaterialTypeController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public RawMaterialTypeController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public RawMaterialTypeController(IHostingEnvironment hostingEnvironment,
+                                         IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/RawMaterialType
@@ -29,11 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetRawMaterialType()
         {
-            //RawMaterial Type DbContext
+            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            {
+                return Json(new { data = c_lstRawMatType });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var rawMatTypeBll = new RawMaterialTypeBLL())
             {
-                return Json(new { data = await rawMatTypeBll.GetRawMaterialType(null) });
+                var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(null);
+
+                _cache.Set("CACHE_MASTER_RAWMATTYPE", lstRawMatType, options);
+
+                return Json(new { data = lstRawMatType });
             }
+
+            //RawMaterial Type DbContext
+            //using (var rawMatTypeBll = new RawMaterialTypeBLL())
+            //{
+            //    return Json(new { data = await rawMatTypeBll.GetRawMaterialType(null) });
+            //}
         }
 
         // GET: Master/RawMaterialType/Details/5
@@ -83,6 +109,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var rawMatTypeBll = new RawMaterialTypeBLL())
                     {
                         resultObj = await rawMatTypeBll.InsertRawMaterialType(m_RawMaterialType);
+
+                        _cache.Remove("CACHE_MASTER_RAWMATTYPE");
                     }
 
                     return Json(new { success = true, data = (M_RawMaterialType)resultObj.ObjectValue, message = "Raw Mat. Type Created." });
@@ -140,6 +168,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var rawMatTypeBll = new RawMaterialTypeBLL())
                     {
                         resultObj = await rawMatTypeBll.UpdateRawMaterialType(m_RawMaterialType);
+
+                        _cache.Remove("CACHE_MASTER_RAWMATTYPE");
                     }
 
                     return Json(new { success = true, data = (M_RawMaterialType)resultObj.ObjectValue, message = "Raw Mat. Type Update." });
@@ -182,6 +212,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_RawMaterialType.Updated_By = 1;
 
                     resultObj = await rawMatTypeBll.DeleteRawMaterialType(m_RawMaterialType);
+
+                    _cache.Remove("CACHE_MASTER_RAWMATTYPE");
                 }
 
                 return Json(new { success = true, data = (M_RawMaterialType)resultObj.ObjectValue, message = "Raw Mat. Type Deleted." });

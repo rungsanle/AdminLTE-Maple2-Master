@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class MenuController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public MenuController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public MenuController(IHostingEnvironment hostingEnvironment,
+                              IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Menu
@@ -29,17 +34,63 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMenu()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            {
+                return Json(new { data = c_lstMenu });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var menuBll = new MenuBLL())
             {
-                return Json(new { data = await menuBll.GetMenu(null) });
+                var lstMenu = await menuBll.GetMenu(null);
+
+                _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
+
+                return Json(new { data = lstMenu });
             }
+
+            //using (var menuBll = new MenuBLL())
+            //{
+            //    return Json(new { data = await menuBll.GetMenu(null) });
+            //}
         }
 
         public async Task<IActionResult> GetParrentMenu()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            {
+                var parrentList = c_lstMenu
+                                  .OrderBy(pm => pm.Id)
+                                  .Where(pm => pm.isParent == true)
+                                  .Select(pm => new M_Menu
+                                  {
+                                      Id = pm.Id,
+                                      nameOption = pm.nameOption
+                                  }).ToList();
+
+                parrentList.Insert(0, new M_Menu { Id = 0, nameOption = "Home" });
+
+                return Json(new { data = parrentList });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var menuBll = new MenuBLL())
             {
                 var lstMenu = await menuBll.GetMenu(null);
+
+                _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
 
                 var parrentList = lstMenu
                                   .OrderBy(pm => pm.Id)
@@ -102,6 +153,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var menuBll = new MenuBLL())
                     {
                         resultObj = await menuBll.InsertMenu(m_Menu);
+
+                        _cache.Remove("CACHE_MASTER_MENU");
                     }
 
                     return Json(new { success = true, data = (M_Menu)resultObj.ObjectValue, message = "Menu Created." });
@@ -159,6 +212,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var menuBll = new MenuBLL())
                     {
                         resultObj = await menuBll.UpdateMenu(m_Menu);
+
+                        _cache.Remove("CACHE_MASTER_MENU");
                     }
 
                     return Json(new { success = true, data = (M_Menu)resultObj.ObjectValue, message = "Menu Update." });
@@ -201,6 +256,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Menu.Updated_By = 1;
 
                     resultObj = await menuBll.DeleteMenu(m_Menu);
+
+                    _cache.Remove("CACHE_MASTER_MENU");
                 }
 
                 return Json(new { success = true, data = (M_Menu)resultObj.ObjectValue, message = "Menu Deleted." });

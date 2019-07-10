@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class LocationController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public LocationController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public LocationController(IHostingEnvironment hostingEnvironment,
+                                  IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Location
@@ -29,10 +34,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetLocation()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Department> c_lstLoc))
+            {
+                return Json(new { data = c_lstLoc });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var locationBll = new LocationBLL())
             {
-                return Json(new { data = await locationBll.GetLocation(null) });
+                var lstLoc = await locationBll.GetLocation(null);
+
+                _cache.Set("CACHE_MASTER_LOCATION", lstLoc, options);
+
+                return Json(new { data = lstLoc });
             }
+
+            //using (var locationBll = new LocationBLL())
+            //{
+            //    return Json(new { data = await locationBll.GetLocation(null) });
+            //}
         }
 
         // GET: Master/Location/Details/5
@@ -82,6 +108,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var locationBll = new LocationBLL())
                     {
                         resultObj = await locationBll.InsertLocation(m_Location);
+
+                        _cache.Remove("CACHE_MASTER_LOCATION");
                     }
 
                     return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Created." });
@@ -139,6 +167,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var locationBll = new LocationBLL())
                     {
                         resultObj = await locationBll.UpdateLocation(m_Location);
+
+                        _cache.Remove("CACHE_MASTER_LOCATION");
                     }
 
                     return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Update." });
@@ -182,6 +212,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Location.Updated_By = 1;
 
                     resultObj = await locationBll.DeleteLocation(m_Location);
+
+                    _cache.Remove("CACHE_MASTER_LOCATION");
                 }
 
                 return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Deleted." });

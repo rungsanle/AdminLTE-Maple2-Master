@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class MachineController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public MachineController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public MachineController(IHostingEnvironment hostingEnvironment,
+                                 IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Machine
@@ -29,10 +34,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMachine()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Department> c_lstMac))
+            {
+                return Json(new { data = c_lstMac });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var mcBll = new MachineBLL())
             {
-                return Json(new { data = await mcBll.GetMachine(null) });
+                var lstMac = await mcBll.GetMachine(null);
+
+                _cache.Set("CACHE_MASTER_MACHINE", lstMac, options);
+
+                return Json(new { data = lstMac });
             }
+
+            //using (var mcBll = new MachineBLL())
+            //{
+            //    return Json(new { data = await mcBll.GetMachine(null) });
+            //}
         }
 
         public async Task<IActionResult> GetMachineByProdType(int? id)
@@ -90,6 +116,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var mcBll = new MachineBLL())
                     {
                         resultObj = await mcBll.InsertMachine(m_Machine);
+
+                        _cache.Remove("CACHE_MASTER_MACHINE");
                     }
 
                     return Json(new { success = true, data = (M_Machine)resultObj.ObjectValue, message = "Machine Created." });
@@ -149,6 +177,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var mcBll = new MachineBLL())
                     {
                         resultObj = await mcBll.UpdateMachine(m_Machine);
+
+                        _cache.Remove("CACHE_MASTER_MACHINE");
                     }
 
                     return Json(new { success = true, data = (M_Machine)resultObj.ObjectValue, message = "Machine Update." });
@@ -192,6 +222,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Machine.Updated_By = 1;
 
                     resultObj = await mcBll.DeleteMachine(m_Machine);
+
+                    _cache.Remove("CACHE_MASTER_MACHINE");
                 }
 
                 return Json(new { success = true, data = (M_Machine)resultObj.ObjectValue, message = "Machine Deleted." });

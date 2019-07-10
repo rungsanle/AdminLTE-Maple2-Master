@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class ArrivalTypeController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public ArrivalTypeController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public ArrivalTypeController(IHostingEnvironment hostingEnvironment,
+                                    IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/ArrivalType
@@ -29,10 +34,30 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetArrivalType()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            {
+                return Json(new { data = c_lstArrType });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var arrTypeBll = new ArrivalTypeBLL())
             {
-                return Json(new { data = await arrTypeBll.GetArrivalType(null) });
+                var lstArrType = await arrTypeBll.GetArrivalType(null);
+
+                _cache.Set("CACHE_MASTER_ARRIVALTYPE", lstArrType, options);
+
+                return Json(new { data = lstArrType });
             }
+            //using (var arrTypeBll = new ArrivalTypeBLL())
+            //{
+            //    return Json(new { data = await arrTypeBll.GetArrivalType(null) });
+            //}
         }
 
         // GET: Master/ArrivalType/Details/5
@@ -82,6 +107,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var arrTypeBll = new ArrivalTypeBLL())
                     {
                         resultObj = await arrTypeBll.InsertArrivalType(m_ArrivalType);
+
+                        _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
                     }
 
                     return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Created." });
@@ -140,6 +167,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var arrTypeBll = new ArrivalTypeBLL())
                     {
                         resultObj = await arrTypeBll.UpdateArrivalType(m_ArrivalType);
+
+                        _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
                     }
 
                     return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Update." });
@@ -183,6 +212,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_ArrivalType.Updated_By = 1;
 
                     resultObj = await arrTypeBll.DeleteArrivalType(m_ArrivalType);
+
+                    _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
                 }
 
                 return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Deleted." });

@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class WarehouseController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public WarehouseController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public WarehouseController(IHostingEnvironment hostingEnvironment,
+                                   IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Warehouse
@@ -29,11 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetWarehouse()
         {
-            //Warehouse DbContext
+            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            {
+                return Json(new { data = c_lstWh });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var whBll = new WarehouseBLL())
             {
-                return Json(new { data = await whBll.GetWarehouse(null) });
+                var lstWh = await whBll.GetWarehouse(null);
+
+                _cache.Set("CACHE_MASTER_WAREHOUSE", lstWh, options);
+
+                return Json(new { data = lstWh });
             }
+
+            //Warehouse DbContext
+            //using (var whBll = new WarehouseBLL())
+            //{
+            //    return Json(new { data = await whBll.GetWarehouse(null) });
+            //}
         }
 
         // GET: Master/Warehouse/Details/5
@@ -83,6 +109,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var whBll = new WarehouseBLL())
                     {
                         resultObj = await whBll.InsertWarehouse(m_Warehouse);
+
+                        _cache.Remove("CACHE_MASTER_WAREHOUSE");
                     }
 
                     return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Created." });
@@ -142,6 +170,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var whBll = new WarehouseBLL())
                     {
                         resultObj = await whBll.UpdateWarehouse(m_Warehouse);
+
+                        _cache.Remove("CACHE_MASTER_WAREHOUSE");
                     }
 
                     return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Update." });
@@ -185,6 +215,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Warehouse.Updated_By = 1;
 
                     resultObj = await whBll.DeleteWarehouse(m_Warehouse);
+
+                    _cache.Remove("CACHE_MASTER_WAREHOUSE");
                 }
 
                 return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Warehouse Deleted." });

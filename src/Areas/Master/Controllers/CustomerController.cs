@@ -12,6 +12,7 @@ using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -20,9 +21,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class CustomerController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public CustomerController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public CustomerController(IHostingEnvironment hostingEnvironment,
+                                    IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/Customer
@@ -34,10 +39,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Customer
         public async Task<IActionResult> GetCustomer()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            {
+                return Json(new { data = c_lstCust });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var custBll = new CustomerBLL())
             {
-                return Json(new { data = await custBll.GetCustomer(null) });
+                var lstCust = await custBll.GetCustomer(null);
+
+                _cache.Set("CACHE_MASTER_CUSTOMER", lstCust, options);
+
+                return Json(new { data = lstCust });
             }
+
+
+            //using (var custBll = new CustomerBLL())
+            //{
+            //    return Json(new { data = await custBll.GetCustomer(null) });
+            //}
         }
 
         // GET: Master/Customer/Details/5
@@ -87,6 +113,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var custBll = new CustomerBLL())
                     {
                         resultObj = await custBll.InsertCustomer(m_Customer);
+
+                        _cache.Remove("CACHE_MASTER_CUSTOMER");
                     }
 
                     return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Created." });
@@ -144,6 +172,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var custBll = new CustomerBLL())
                     {
                         resultObj = await custBll.UpdateCustomer(m_Customer);
+
+                        _cache.Remove("CACHE_MASTER_CUSTOMER");
                     }
 
                     return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Update." });
@@ -186,6 +216,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Customer.Updated_By = 1;
 
                     resultObj = await custBll.DeleteCustomer(m_Customer);
+
+                    _cache.Remove("CACHE_MASTER_CUSTOMER");
                 }
 
                 return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Deleted." });
@@ -250,6 +282,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 using (var custBll = new CustomerBLL())
                 {
                     var rowaffected = await custBll.BulkInsertCustomer(lstCust);
+
+                    _cache.Remove("CACHE_MASTER_CUSTOMER");
                 }
 
                 return Json(new { success = true, data = lstCust, message = "Import Success." });

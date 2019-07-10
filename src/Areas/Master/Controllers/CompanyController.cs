@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -21,9 +22,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class CompanyController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public CompanyController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public CompanyController(IHostingEnvironment hostingEnvironment,
+                                 IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
 
@@ -35,10 +40,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetCompany()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            {
+                return Json(new { data = c_lstComp });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var compBll = new CompanyBLL())
             {
-                return Json(new { data = await compBll.GetCompany(null) });
+                var lstComp = await compBll.GetCompany(null);
+
+                _cache.Set("CACHE_MASTER_COMPANY", lstComp, options);
+
+                return Json(new { data = lstComp });
             }
+
+            //using (var compBll = new CompanyBLL())
+            //{
+            //    return Json(new { data = await compBll.GetCompany(null) });
+            //}
         }
 
         // GET: Master/Company/Details/5
@@ -116,6 +142,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var compBll = new CompanyBLL())
                     {
                         resultObj = await compBll.InsertCompany(m_Company);
+
+                        _cache.Remove("CACHE_MASTER_COMPANY");
                     }
 
                     return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Created." });
@@ -232,6 +260,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var compBll = new CompanyBLL())
                     {
                         resultObj = await compBll.UpdateCompany(m_Company);
+
+                        _cache.Remove("CACHE_MASTER_COMPANY");
                     }
 
                     return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Update." });
@@ -278,6 +308,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_Company.Updated_By = 1;
 
                     resultObj = await compBll.DeleteCompany(m_Company);
+
+                    _cache.Remove("CACHE_MASTER_COMPANY");
                 }
 
                 return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Deleted." });

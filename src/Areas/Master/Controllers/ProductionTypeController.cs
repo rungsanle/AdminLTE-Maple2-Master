@@ -9,6 +9,7 @@ using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -16,9 +17,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     public class ProductionTypeController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        public ProductionTypeController(IHostingEnvironment hostingEnvironment)
+        private readonly IMemoryCache _cache;
+
+        public ProductionTypeController(IHostingEnvironment hostingEnvironment,
+                                        IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _cache = memoryCache;
         }
 
         // GET: Master/ProductionType
@@ -29,10 +34,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetProductionType()
         {
+            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            {
+                return Json(new { data = c_lstProdType });
+            }
+
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                SlidingExpiration = TimeSpan.FromSeconds(60),
+                Priority = CacheItemPriority.NeverRemove
+            };
+
             using (var prodTypeBll = new ProductionTypeBLL())
             {
-                return Json(new { data = await prodTypeBll.GetProductionType(null) });
+                var lstProdType = await prodTypeBll.GetProductionType(null);
+
+                _cache.Set("CACHE_MASTER_PRODUCTIONTYPE", lstProdType, options);
+
+                return Json(new { data = lstProdType });
             }
+
+            //using (var prodTypeBll = new ProductionTypeBLL())
+            //{
+            //    return Json(new { data = await prodTypeBll.GetProductionType(null) });
+            //}
         }
 
         // GET: Master/ProductionType/Details/5
@@ -82,6 +108,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var prodTypeBll = new ProductionTypeBLL())
                     {
                         resultObj = await prodTypeBll.InsertProductionType(m_ProductionType);
+
+                        _cache.Remove("CACHE_MASTER_PRODUCTIONTYPE");
                     }
 
                     return Json(new { success = true, data = (M_ProductionType)resultObj.ObjectValue, message = "Production Type Created." });
@@ -139,6 +167,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     using (var prodTypeBll = new ProductionTypeBLL())
                     {
                         resultObj = await prodTypeBll.UpdateProductionType(m_ProductionType);
+
+                        _cache.Remove("CACHE_MASTER_PRODUCTIONTYPE");
                     }
 
                     return Json(new { success = true, data = (M_ProductionType)resultObj.ObjectValue, message = "Production Type Update." });
@@ -181,6 +211,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     m_ProductionType.Updated_By = 1;
 
                     resultObj = await prodTypeBll.DeleteProductionType(m_ProductionType);
+
+                    _cache.Remove("CACHE_MASTER_PRODUCTIONTYPE");
                 }
 
                 return Json(new { success = true, data = (M_ProductionType)resultObj.ObjectValue, message = "Production Type Deleted." });
