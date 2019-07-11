@@ -82,6 +82,9 @@ namespace Maple2.AdminLTE.Uil
             services.AddDbContext<MasterDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
+            //Imprement In-Memory Cache
+            services.AddMemoryCache();
+
             services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
