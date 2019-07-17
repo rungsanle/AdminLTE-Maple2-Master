@@ -90,8 +90,6 @@ namespace Maple2.AdminLTE.Bll
             }
         }
 
-
-
         public async Task<List<M_MaterialType>> GetMaterialType(int? id)
         {
             try
