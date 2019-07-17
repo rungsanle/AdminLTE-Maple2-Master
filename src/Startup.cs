@@ -146,9 +146,12 @@ namespace Maple2.AdminLTE.Uil
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            //app.UseCookiePolicy();
 
             // configures Session middleware 
             app.UseSession();
@@ -169,6 +172,7 @@ namespace Maple2.AdminLTE.Uil
                     template: "{area:exists}/{controller=Master}/{action=Index}/{id?}");
             });
 
+            app.UseCookiePolicy();
         }
     }
 }
