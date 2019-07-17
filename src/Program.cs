@@ -14,23 +14,23 @@ namespace Maple2.AdminLTE.Uil
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            //BuildWebHost(args).Run();
 
-            //var config = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json", optional: true)
-            //    .Build();
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .Build();
 
-            //var host = new WebHostBuilder()
-            //    .UseKestrel()
-            //    .UseConfiguration(config)
-            //    .UseContentRoot(Directory.GetCurrentDirectory())
-            //    .UseUrls("http://localhost:5100", "http://localhost:5101", "http://*:5102")
-            //    .UseIISIntegration()
-            //    .UseStartup<Startup>()
-            //    .Build();
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseConfiguration(config)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseUrls("https://localhost:5100", "https://localhost:5101", "https://*:5102")
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
 
-            //host.Run();
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
