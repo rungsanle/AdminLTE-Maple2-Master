@@ -39,7 +39,9 @@ namespace Maple2.AdminLTE.Bel
         [Display(Name = "UNIT")]
         public string Unit { get; set; }
 
-        [Display(Name = "STD. PACKAGE")]
+
+        [Display(Name = "PACKAGE")]
+        [DisplayFormat(DataFormatString = "{0:#,##0.00}", ApplyFormatInEditMode = true)]
         public decimal? PackageStdQty { get; set; }
 
         [Display(Name = "W/H")]
@@ -57,7 +59,7 @@ namespace Maple2.AdminLTE.Bel
         public string Location { get; set; }
 
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "COMPANY")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 
