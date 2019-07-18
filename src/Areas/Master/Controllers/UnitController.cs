@@ -69,6 +69,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            {
+                var m_Unit = c_lstUnit.Find(u => u.Id == id);
+
+                if (m_Unit == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Unit);
+            }
+
             using (var unitBll = new UnitBLL())
             {
                 var lstUnit = await unitBll.GetUnit(id);
@@ -134,6 +146,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            {
+                var m_Unit = c_lstUnit.Find(u => u.Id == id);
+
+                if (m_Unit == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Unit);
+            }
+
+            ViewBag.CompCode = "ALL*";
+
             using (var unitBll = new UnitBLL())
             {
                 var lstUnit = await unitBll.GetUnit(id);
@@ -143,8 +169,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Unit);
             }
@@ -198,6 +222,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+                {
+                    var m_Unit = c_lstUnit.Find(u => u.Id == id);
+
+                    if (m_Unit == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Unit.Updated_By = 1;
+
+                    using (var unitBll = new UnitBLL())
+                    {
+                        resultObj = await unitBll.DeleteUnit(m_Unit);
+
+                        _cache.Remove("CACHE_MASTER_UNIT");
+                    }
+
+                    return Json(new { success = true, data = (M_Unit)resultObj.ObjectValue, message = "Unit Deleted." });
+                }
+
                 using (var unitBll = new UnitBLL())
                 {
                     var lstUnit = await unitBll.GetUnit(id);

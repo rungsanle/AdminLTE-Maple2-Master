@@ -70,6 +70,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            {
+                var m_Department = c_lstDept.Find(d => d.Id == id);
+
+                if (m_Department == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Department);
+            }
+
             using (var deptBll = new DepartmentBLL())
             {
                 var lstDept = await deptBll.GetDepartment(id);
@@ -160,6 +172,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            {
+                var m_Department = c_lstDept.Find(d => d.Id == id);
+
+                if (m_Department == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Department);
+            }
+
             using (var deptBll = new DepartmentBLL())
             {
                 var lstDept = await deptBll.GetDepartment(id);
@@ -170,8 +196,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Department);
             }
@@ -270,6 +294,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+                {
+                    var m_Department = c_lstDept.Find(d => d.Id == id);
+
+                    if (m_Department == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Department.Updated_By = 1;
+
+                    using (var deptBll = new DepartmentBLL())
+                    {
+                        resultObj = await deptBll.DeleteDepartment(m_Department);
+
+                        _cache.Remove("CACHE_MASTER_DEPARTMENT");
+                    }
+
+                    return Json(new { success = true, data = (M_Department)resultObj.ObjectValue, message = "Department Deleted." });
+                }
+
                 using (var deptBll = new DepartmentBLL())
                 {
                     var lstDept = await deptBll.GetDepartment(id);

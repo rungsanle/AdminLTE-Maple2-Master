@@ -41,7 +41,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Material
         public async Task<IActionResult> GetMaterial()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Customer> c_lstMat))
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
             {
                 return Json(new { data = c_lstMat });
             }
@@ -70,6 +70,19 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             {
                 return NotFound();
             }
+
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+            {
+                var m_Material = c_lstMat.Find(m => m.Id == id);
+
+                if (m_Material == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Material);
+            }
+
 
             using (var matBll = new MaterialBLL())
             {
@@ -192,6 +205,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+            {
+                var m_Material = c_lstMat.Find(m => m.Id == id);
+
+                if (m_Material == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Material);
+            }
+
             using (var matBll = new MaterialBLL())
             {
                 var lstMat = await matBll.GetMaterial(id);
@@ -201,8 +228,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Material);
             }
@@ -257,6 +282,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+                {
+                    var m_Material = c_lstMat.Find(m => m.Id == id);
+
+                    if (m_Material == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Material.Updated_By = 1;
+
+                    using (var matBll = new MaterialBLL())
+                    {
+                        resultObj = await matBll.DeleteMaterial(m_Material);
+
+                        _cache.Remove("CACHE_MASTER_MATERIAL");
+                    }
+
+                    return Json(new { success = true, data = (M_Material)resultObj.ObjectValue, message = "Material Deleted." });
+                }
+
                 using (var matBll = new MaterialBLL())
                 {
                     var lstMat = await matBll.GetMaterial(id);

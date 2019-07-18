@@ -70,6 +70,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            {
+                var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
+
+                if (m_RawMaterialType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_RawMaterialType);
+            }
+
             using (var rawMatTypeBll = new RawMaterialTypeBLL())
             {
                 var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
@@ -134,6 +146,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            {
+                var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
+
+                if (m_RawMaterialType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_RawMaterialType);
+            }
+
             using (var rawMatTypeBll = new RawMaterialTypeBLL())
             {
                 var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
@@ -143,8 +169,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_RawMaterialType);
             }
@@ -199,6 +223,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+                {
+                    var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
+
+                    if (m_RawMaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_RawMaterialType.Updated_By = 1;
+
+                    using (var rawMatTypeBll = new RawMaterialTypeBLL())
+                    {
+                        resultObj = await rawMatTypeBll.DeleteRawMaterialType(m_RawMaterialType);
+
+                        _cache.Remove("CACHE_MASTER_RAWMATTYPE");
+                    }
+
+                    return Json(new { success = true, data = (M_RawMaterialType)resultObj.ObjectValue, message = "Raw Mat. Type Deleted." });
+                }
+
                 using (var rawMatTypeBll = new RawMaterialTypeBLL())
                 {
                     var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);

@@ -39,7 +39,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Vendor
         public async Task<IActionResult> GetVendor()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Customer> c_lstVend))
+            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
             {
                 return Json(new { data = c_lstVend });
             }
@@ -72,6 +72,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+            {
+                var m_Vendor = c_lstVend.Find(v => v.Id == id);
+
+                if (m_Vendor == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Vendor);
             }
 
             using (var vendBll = new VendorBLL())
@@ -138,6 +150,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+            {
+                var m_Vendor = c_lstVend.Find(v => v.Id == id);
+
+                if (m_Vendor == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Vendor);
+            }
+
             using (var vendBll = new VendorBLL())
             {
                 var lstVend = await vendBll.GetVendor(id);
@@ -147,8 +173,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Vendor);
             }
@@ -203,6 +227,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+                {
+                    var m_Vendor = c_lstVend.Find(v => v.Id == id);
+
+                    if (m_Vendor == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Vendor.Updated_By = 1;
+
+                    using (var vendBll = new VendorBLL())
+                    {
+                        resultObj = await vendBll.DeleteVendor(m_Vendor);
+
+                        _cache.Remove("CACHE_MASTER_VENDOR");
+                    }
+
+                    return Json(new { success = true, data = (M_Vendor)resultObj.ObjectValue, message = "Vendor Deleted." });
+                }
+
                 using (var vendBll = new VendorBLL())
                 {
                     var lstVend = await vendBll.GetVendor(id);

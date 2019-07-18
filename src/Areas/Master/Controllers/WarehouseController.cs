@@ -70,6 +70,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            {
+                var m_Warehouse = c_lstWh.Find(w => w.Id == id);
+
+                if (m_Warehouse == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Warehouse);
+            }
+
             using (var whBll = new WarehouseBLL())
             {
                 var lstWh = await whBll.GetWarehouse(id);
@@ -134,6 +146,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            {
+                var m_Warehouse = c_lstWh.Find(w => w.Id == id);
+
+                if (m_Warehouse == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Warehouse);
+            }
+
             using (var whBll = new WarehouseBLL())
             {
                 var lstWh = await whBll.GetWarehouse(id);
@@ -144,8 +170,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Warehouse);
             }
@@ -201,6 +225,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+                {
+                    var m_Warehouse = c_lstWh.Find(w => w.Id == id);
+
+                    if (m_Warehouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Warehouse.Updated_By = 1;
+
+                    using (var whBll = new WarehouseBLL())
+                    {
+                        resultObj = await whBll.DeleteWarehouse(m_Warehouse);
+
+                        _cache.Remove("CACHE_MASTER_WAREHOUSE");
+                    }
+
+                    return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Deleted." });
+                }
+
                 using (var whBll = new WarehouseBLL())
                 {
                     var lstWh = await whBll.GetWarehouse(id);
@@ -219,7 +264,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     _cache.Remove("CACHE_MASTER_WAREHOUSE");
                 }
 
-                return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Warehouse Deleted." });
+                return Json(new { success = true, data = (M_Warehouse)resultObj.ObjectValue, message = "Warehouse Deleted." });
             }
             catch (Exception ex)
             {

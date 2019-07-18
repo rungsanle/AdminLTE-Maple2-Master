@@ -69,6 +69,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            {
+                var m_Process = c_lstProc.Find(p => p.Id == id);
+
+                if (m_Process == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Process);
+            }
+
             using (var processBll = new ProcessBLL())
             {
                 var lstProcess = await processBll.GetProcess(id);
@@ -132,6 +144,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            {
+                var m_Process = c_lstProc.Find(p => p.Id == id);
+
+                if (m_Process == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Process);
+            }
+
             using (var processBll = new ProcessBLL())
             {
                 var lstProcess = await processBll.GetProcess(id);
@@ -142,8 +168,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Process);
             }
@@ -199,6 +223,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+                {
+                    var m_Process = c_lstProc.Find(p => p.Id == id);
+
+                    if (m_Process == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Process.Updated_By = 1;
+
+                    using (var processBll = new ProcessBLL())
+                    {
+                        resultObj = await processBll.DeleteProcess(m_Process);
+
+                        _cache.Remove("CACHE_MASTER_PROCESS");
+                    }
+
+                    return Json(new { success = true, data = (M_Process)resultObj.ObjectValue, message = "Process Deleted." });
+                }
+
                 using (var processBll = new ProcessBLL())
                 {
                     var lstProcess = await processBll.GetProcess(id);

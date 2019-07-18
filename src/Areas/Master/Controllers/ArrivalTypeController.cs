@@ -68,6 +68,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            {
+                var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
+
+                if (m_ArrivalType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_ArrivalType);
+            }
+
             using (var arrTypeBll = new ArrivalTypeBLL())
             {
                 var lstArrType = await arrTypeBll.GetArrivalType(id);
@@ -131,6 +143,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            {
+                var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
+
+                if (m_ArrivalType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_ArrivalType);
+            }
+
             using (var arrTypeBll = new ArrivalTypeBLL())
             {
                 var lstArrType = await arrTypeBll.GetArrivalType(id);
@@ -141,8 +167,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_ArrivalType);
             }
@@ -198,6 +222,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+                {
+                    var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
+
+                    if (m_ArrivalType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_ArrivalType.Updated_By = 1;
+
+                    using (var arrTypeBll = new ArrivalTypeBLL())
+                    {
+                        resultObj = await arrTypeBll.DeleteArrivalType(m_ArrivalType);
+
+                        _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
+                    }
+
+                    return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Deleted." });
+                }
+
                 using (var arrTypeBll = new ArrivalTypeBLL())
                 {
                     var lstArrType = await arrTypeBll.GetArrivalType(id);

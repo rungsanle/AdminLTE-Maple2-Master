@@ -69,6 +69,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            {
+                var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
+
+                if (m_ProductionType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_ProductionType);
+            }
+
             using (var prodTypeBll = new ProductionTypeBLL())
             {
                 var lstProdType = await prodTypeBll.GetProductionType(id);
@@ -133,6 +145,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            {
+                var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
+
+                if (m_ProductionType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_ProductionType);
+            }
+
             using (var prodTypeBll = new ProductionTypeBLL())
             {
                 var lstProdType = await prodTypeBll.GetProductionType(id);
@@ -142,8 +168,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_ProductionType);
             }
@@ -198,6 +222,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+                {
+                    var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
+
+                    if (m_ProductionType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_ProductionType.Updated_By = 1;
+
+                    using (var prodTypeBll = new ProductionTypeBLL())
+                    {
+                        resultObj = await prodTypeBll.DeleteProductionType(m_ProductionType);
+
+                        _cache.Remove("CACHE_MASTER_PRODUCTIONTYPE");
+                    }
+
+                    return Json(new { success = true, data = (M_ProductionType)resultObj.ObjectValue, message = "Production Type Deleted." });
+                }
+
                 using (var prodTypeBll = new ProductionTypeBLL())
                 {
                     var lstProdType = await prodTypeBll.GetProductionType(id);

@@ -115,6 +115,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            {
+                var m_Menu = c_lstMenu.Find(m => m.Id == id);
+
+                if (m_Menu == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Menu);
+            }
+
             using (var menuBll = new MenuBLL())
             {
                 var lstMenu = await menuBll.GetMenu(id);
@@ -177,6 +189,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            {
+                var m_Menu = c_lstMenu.Find(m => m.Id == id);
+
+                if (m_Menu == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Menu);
+            }
+
             using (var menuBll = new MenuBLL())
             {
                 var lstMenu = await menuBll.GetMenu(id);
@@ -187,8 +213,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Menu);
             }
@@ -242,6 +266,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+                {
+                    var m_Menu = c_lstMenu.Find(m => m.Id == id);
+
+                    if (m_Menu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Menu.Updated_By = 1;
+
+                    using (var menuBll = new MenuBLL())
+                    {
+                        resultObj = await menuBll.DeleteMenu(m_Menu);
+
+                        _cache.Remove("CACHE_MASTER_MENU");
+                    }
+
+                    return Json(new { success = true, data = (M_Menu)resultObj.ObjectValue, message = "Menu Deleted." });
+                }
+
                 using (var menuBll = new MenuBLL())
                 {
                     var lstMenu = await menuBll.GetMenu(id);

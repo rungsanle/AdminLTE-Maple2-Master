@@ -74,6 +74,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            {
+                var m_Customer = c_lstCust.Find(c => c.Id == id);
+
+                if (m_Customer == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Customer);
+            }
+
             using (var custBll = new CustomerBLL())
             {
                 var lstCust = await custBll.GetCustomer(id);
@@ -138,6 +150,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            {
+                var m_Customer = c_lstCust.Find(c => c.Id == id);
+
+                if (m_Customer == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Customer);
+            }
+
             using (var custBll = new CustomerBLL())
             {
                 var lstCust = await custBll.GetCustomer(id);
@@ -148,7 +174,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                     return NotFound();
                 }
 
-                ViewBag.CompCode = "ALL*";
+                
 
                 return PartialView(m_Customer);
             }
@@ -203,6 +229,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+                {
+                    var m_Customer = c_lstCust.Find(c => c.Id == id);
+
+                    if (m_Customer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Customer.Updated_By = 1;
+
+                    using (var custBll = new CustomerBLL())
+                    {
+                        resultObj = await custBll.DeleteCustomer(m_Customer);
+
+                        _cache.Remove("CACHE_MASTER_CUSTOMER");
+                    }
+
+                    return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Deleted." });
+                }
+
                 using (var custBll = new CustomerBLL())
                 {
                     var lstCust = await custBll.GetCustomer(id);

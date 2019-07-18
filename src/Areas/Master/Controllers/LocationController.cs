@@ -34,7 +34,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetLocation()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Department> c_lstLoc))
+            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
             {
                 return Json(new { data = c_lstLoc });
             }
@@ -67,6 +67,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+            {
+                var m_Location = c_lstLoc.Find(l => l.Id == id);
+
+                if (m_Location == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Location);
             }
 
             using (var locationBll = new LocationBLL())
@@ -132,6 +144,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+            {
+                var m_Location = c_lstLoc.Find(l => l.Id == id);
+
+                if (m_Location == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Location);
+            }
+
             using (var locationBll = new LocationBLL())
             {
                 var lstLoc = await locationBll.GetLocation(id);
@@ -142,8 +168,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Location);
             }
@@ -198,6 +222,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+                {
+                    var m_Location = c_lstLoc.Find(l => l.Id == id);
+
+                    if (m_Location == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Location.Updated_By = 1;
+
+                    using (var locationBll = new LocationBLL())
+                    {
+                        resultObj = await locationBll.DeleteLocation(m_Location);
+
+                        _cache.Remove("CACHE_MASTER_LOCATION");
+                    }
+
+                    return Json(new { success = true, data = (M_Location)resultObj.ObjectValue, message = "Location Deleted." });
+                }
+
                 using (var locationBll = new LocationBLL())
                 {
                     var lstLoc = await locationBll.GetLocation(id);

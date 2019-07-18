@@ -75,20 +75,31 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            List<M_Company> lstCompany = null;
+            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            {
+                var m_Company = c_lstComp.Find(c => c.Id == id);
+
+                if (m_Company == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Company);
+            }
+
+
             using (var compBll = new CompanyBLL())
             {
-                lstCompany = await compBll.GetCompany(id);
-            }
+                var lstCompany = await compBll.GetCompany(id);
+                var m_Company = lstCompany.First();
 
-            var m_Company = lstCompany.First();
+                if (m_Company == null)
+                {
+                    return NotFound();
+                }
 
-            if (m_Company == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView(m_Company);
+                return PartialView(m_Company);
+            }            
         }
 
         // GET: Master/Company/Create
@@ -226,20 +237,30 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            List<M_Company> lstCompany = null;
+            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            {
+                var m_Company = c_lstComp.Find(c => c.Id == id);
+
+                if (m_Company == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Company);
+            }
+
             using (var compBll = new CompanyBLL())
             {
-                lstCompany = await compBll.GetCompany(id);
+                var lstCompany = await compBll.GetCompany(id);
+                var m_Company = lstCompany.First();
+
+                if (m_Company == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Company);
             }
-
-            var m_Company = lstCompany.First();
-
-            if (m_Company == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView(m_Company);
         }
 
         // POST: Master/Company/Edit/5
@@ -286,19 +307,36 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            M_Company m_Company = null;
-
             ResultObject resultObj;
 
             try
             {
-                List<M_Company> lstCompany = null;
+                if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+                {
+                    var m_Company = c_lstComp.Find(c => c.Id == id);
+
+                    if (m_Company == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Company.Updated_By = 1;
+
+                    using (CompanyBLL compBll = new CompanyBLL())
+                    {
+                        resultObj = await compBll.DeleteCompany(m_Company);
+
+                        _cache.Remove("CACHE_MASTER_COMPANY");
+                    }
+
+                    return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Deleted." });
+                }
 
                 using (CompanyBLL compBll = new CompanyBLL())
                 {
-                    lstCompany = await compBll.GetCompany(id);
+                    var lstCompany = await compBll.GetCompany(id);
 
-                    m_Company = lstCompany.First();
+                    var m_Company = lstCompany.First();
 
                     if (m_Company == null)
                     {
@@ -316,7 +354,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, data = m_Company, message = ex.Message });
+                return Json(new { success = false, message = ex.Message });
             }
         }
     }

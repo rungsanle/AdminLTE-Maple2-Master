@@ -73,6 +73,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            {
+                var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
+
+                if (m_MaterialType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_MaterialType);
+            }
+
             using (var matTypeBll = new MaterialTypeBLL())
             {
                 var lstMatType = await matTypeBll.GetMaterialType(id);
@@ -138,6 +150,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            {
+                var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
+
+                if (m_MaterialType == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_MaterialType);
+            }
+
             using (var matTypeBll = new MaterialTypeBLL())
             {
                 var lstMatType = await matTypeBll.GetMaterialType(id);
@@ -148,8 +174,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_MaterialType);
             }
@@ -205,6 +229,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+                {
+                    var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
+
+                    if (m_MaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_MaterialType.Updated_By = 1;
+
+                    using (var matTypeBll = new MaterialTypeBLL())
+                    {
+                        resultObj = await matTypeBll.DeleteMaterialType(m_MaterialType);
+
+                        _cache.Remove("CACHE_MASTER_MATERIALTYPE");
+                    }
+
+                    return Json(new { success = true, data = (M_MaterialType)resultObj.ObjectValue, message = "Material Type Deleted." });
+                }
+
                 using (var matTypeBll = new MaterialTypeBLL())
                 {
                     var lstMatType = await matTypeBll.GetMaterialType(id);

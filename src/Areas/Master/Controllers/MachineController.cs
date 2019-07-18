@@ -34,7 +34,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMachine()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Department> c_lstMac))
+            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
             {
                 return Json(new { data = c_lstMac });
             }
@@ -75,6 +75,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+
+            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+            {
+                var m_Machine = c_lstMac.Find(m => m.Id == id);
+
+                if (m_Machine == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Machine);
             }
 
             using (var mcBll = new MachineBLL())
@@ -141,6 +153,20 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
+            ViewBag.CompCode = "ALL*";
+
+            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+            {
+                var m_Machine = c_lstMac.Find(m => m.Id == id);
+
+                if (m_Machine == null)
+                {
+                    return NotFound();
+                }
+
+                return PartialView(m_Machine);
+            }
+
             using (var mcBll = new MachineBLL())
             {
                 var lstMc = await mcBll.GetMachine(id);
@@ -151,8 +177,6 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 {
                     return NotFound();
                 }
-
-                ViewBag.CompCode = "ALL*";
 
                 return PartialView(m_Machine);
             }
@@ -208,6 +232,27 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             try
             {
+                if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+                {
+                    var m_Machine = c_lstMac.Find(m => m.Id == id);
+
+                    if (m_Machine == null)
+                    {
+                        return NotFound();
+                    }
+
+                    m_Machine.Updated_By = 1;
+
+                    using (var mcBll = new MachineBLL())
+                    {
+                        resultObj = await mcBll.DeleteMachine(m_Machine);
+
+                        _cache.Remove("CACHE_MASTER_MACHINE");
+                    }
+
+                    return Json(new { success = true, data = (M_Machine)resultObj.ObjectValue, message = "Machine Deleted." });
+                }
+
                 using (var mcBll = new MachineBLL())
                 {
                     var lstMc = await mcBll.GetMachine(id);
