@@ -88,9 +88,9 @@ $(function () {
                     },
                     {
                         "render": function (data, type, menu, meta) {
-                            return '<a id="viewMenu" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Menu/Details/' + menu.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editMenu" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Menu/Edit/' + menu.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delMenu" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Menu/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewMenu" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Menu/Details/' + menu.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editMenu" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Menu/Edit/' + menu.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delMenu" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Menu/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
@@ -101,18 +101,18 @@ $(function () {
                 //    //$('input.chkIs_Active', row).prop('checked', data.Is_Active == 1);
                 //},
                 columnDefs: [
-                    { "width": "15%", "targets": 0 },
-                    { "width": "15%", "targets": 1 },
+                    { "width": "12%", "targets": 0 },
+                    { "width": "12%", "targets": 1 },
                     { "width": "8%", "targets": 2 },
                     { "width": "10%", "targets": 3 },
-                    { "className": "dt-center", "width": "6%", "targets": 4 },
-                    { "className": "dt-center", "width": "6%", "targets": 5 },
+                    { "className": "dt-center", "width": "8%", "targets": 4 },
+                    { "className": "dt-center", "width": "8%", "targets": 5 },
                     { "width": "0%", "targets": 6, "visible": false },
                     { "width": "10%", "targets": 7 },
                     { "width": "10%", "targets": 8 },
                     { "className": "dt-center", "width": "6%", "targets": 9 },
                     { "className": "dt-center", "width": "6%", "targets": 10, "orderable": false },
-                    { "width": "8%", "targets": 11, "orderable": false }
+                    { "width": "10%", "targets": 11, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

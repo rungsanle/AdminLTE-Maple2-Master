@@ -51,18 +51,18 @@
                     },
                     {
                         "render": function (data, type, wh, meta) {
-                            return '<a id="viewUnit" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Unit/Details/' + wh.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editUnit" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Unit/Edit/' + wh.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delUnit" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Unit/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewUnit" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Unit/Details/' + wh.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editUnit" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Unit/Edit/' + wh.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delUnit" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Unit/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
                 columnDefs: [
                     { "width": "15%", "targets": 0 },
                     { "width": "25%", "targets": 1 },
-                    { "width": "44%", "targets": 2 },
+                    { "width": "42%", "targets": 2 },
                     { "className": "dt-center", "width": "8%", "targets": 3, "orderable": false },
-                    { "width": "8%", "targets": 4, "orderable": false }
+                    { "width": "10%", "targets": 4, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

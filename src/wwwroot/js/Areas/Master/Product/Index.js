@@ -1,11 +1,11 @@
 ﻿$(function () {
 
-    $("#success-alert").hide();
+    $("#message-alert").hide();
     //Grid Table Config
-    custVM = {
-        dtCust: null,
+    productVM = {
+        dtProd: null,
         init: function () {
-            dtCust = $('#tblCust').DataTable({
+            dtProd = $('#tblProduct').DataTable({
                 dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
@@ -13,30 +13,35 @@
                     {
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel-o"></i> Excel',
-                        title: 'Customer Master',
+                        title: 'Product Master',
                         titleAttr: 'Excel'
                     },
                     {
                         extend: 'csvHtml5',
                         text: '<i class="fa fa-file-text-o"></i> CSV',
-                        title: 'Customer Master',
+                        title: 'Product Master',
                         titleAttr: 'CSV'
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('cust-get-url'),
+                    "url": $('#IndexData').data('prod-get-url'),    //"/Customer/GetCustomers",
                     "type": "GET",
                     "datatype": "json"
                 },
                 columns: [
-                    { "data": "CustomerCode", "className": "boldColumn", "autoWidth": false },
-                    { "data": "CustomerName", "autoWidth": false },
-                    { "data": "AddressL1", "autoWidth": false },
-                    { "data": "AddressL2", "autoWidth": false },
-                    { "data": "CustomerEmail", "autoWidth": false },
-                    { "data": "CustomerContact", "autoWidth": false },
+                    { "data": "ProductCode", "className": "boldColumn", "autoWidth": false },
+                    { "data": "ProductName", "autoWidth": false },
+                    { "data": "MaterialTypeId", "autoWidth": false },
+                    { "data": "MaterialType", "autoWidth": false },
+                    { "data": "ProductionTypeId", "autoWidth": false },
+                    { "data": "ProductionType", "autoWidth": false },
+                    { "data": "MachineId", "autoWidth": false },
+                    { "data": "Machine", "autoWidth": false },
+                    { "data": "PackageStdQty", "autoWidth": false, render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "UnitId", "autoWidth": false },
+                    { "data": "Unit", "autoWidth": false },
                     { "data": "CompanyCode", "className": "boldColumn", "autoWidth": false },
                     {
                         "data": "Is_Active",
@@ -54,23 +59,28 @@
                         }
                     },
                     {
-                        "render": function (data, type, cust, meta) {
-                            return '<a id="viewCust" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Customer/Details/' + cust.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editCust" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Customer/Edit/' + cust.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delCust" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Customer/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                        "render": function (data, type, prod, meta) {
+                            return '<a id="viewProduct" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Product/Details/' + prod.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editProduct" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Product/Edit/' + prod.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delProduct" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Product/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
                 columnDefs: [
-                    { "width": "13%", "targets": 0 },
-                    { "width": "18%", "targets": 1 },
-                    { "width": "13%", "targets": 2 },
-                    { "width": "13%", "targets": 3 },
-                    { "width": "10%", "targets": 4 },
-                    { "width": "9%", "targets": 5 },
-                    { "width": "8%", "targets": 6 },
-                    { "className": "dt-center", "width": "6%", "targets": 7, "orderable": false },
-                    { "width": "10%", "targets": 8, "orderable": false }
+                    { "width": "12%", "targets": 0 },
+                    { "width": "16%", "targets": 1 },
+                    { "width": "0%", "targets": 2, "visible": false },
+                    { "width": "12%", "targets": 3 },
+                    { "width": "0%", "targets": 4, "visible": false },
+                    { "width": "6%", "targets": 5 },
+                    { "width": "0%", "targets": 6, "visible": false },
+                    { "width": "10%", "targets": 7 },
+                    { "className": "dt-right", "width": "10%", "targets": 8 },
+                    { "width": "0%", "targets": 9, "visible": false },
+                    { "width": "10%", "targets": 10 },
+                    { "width": "10%", "targets": 11 },
+                    { "className": "dt-center", "width": "6%", "targets": 12, "orderable": false },
+                    { "width": "8%", "targets": 13, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -88,20 +98,20 @@
         },
 
         refresh: function () {
-            dtCust.ajax.reload();
+            dtProd.ajax.reload();
         }
     }
 
     // initialize the datatables
-    custVM.init();
+    productVM.init();
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
     };
 
-    //Add Company
-    $("#btnCreateCust").on("click", function (event) {
+    //Add
+    $("#btnCreateProduct").on("click", function (event) {
 
         event.preventDefault();
 
@@ -113,26 +123,26 @@
             async: true,
             success: function (data) {
                 if (data) {
-                    $('#newCustContainer').html(data);
-                    $('#newCustModal').modal('show');
+                    $('#newProdContainer').html(data);
+                    $('#newProdModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
-
             }, error: function (xhr) {
                 alert('Create Error : ' + xhr);
-
             }
         });
+
     });
 
-    $("#newCustModal").on("shown.bs.modal", function () {
+    $("#newProdModal").on("shown.bs.modal", function () {
         //$('input[type=text]:visible:first').focus();
-        $('#CustomerCode').focus();
+        $('#ProductCode').focus();
     });
     //clear html data for create new;
-    $("#newCustModal").on("hidden.bs.modal", function () {
-        $('#newCustContainer').html("");
+    $("#newProdModal").on("hidden.bs.modal", function () {
+        prodProcessVM.tbdestroy();
+        $('#newProdContainer').html("");
     });
 
     //Upload Customer
@@ -143,10 +153,9 @@
         var api = $(this).data("url");
 
         $.get(api, function (data) {
-
             if (data) {
-                $('#uploadCustContainer').html(data);
-                $('#uploadCustModal').modal('show');
+                $('#uploadProdContainer').html(data);
+                $('#uploadProdModal').modal('show');
             } else {
                 global.authenExpire();
             }
@@ -154,16 +163,16 @@
 
     });
 
-    $("#uploadCustModal").on("shown.bs.modal", function () {
+    $("#uploadProdModal").on("shown.bs.modal", function () {
 
     });
     //clear html data for create new;
-    $("#uploadCustModal").on("hidden.bs.modal", function () {
+    $("#uploadProdModal").on("hidden.bs.modal", function () {
         $('#uploadCustContainer').html("");
     });
 
-    //view Machine
-    $('#tblCust').on("click", "#viewCust", function (event) {
+    //View
+    $('#tblProduct').on("click", "#viewProduct", function (event) {
 
         event.preventDefault();
 
@@ -175,8 +184,8 @@
             async: true,
             success: function (data) {
                 if (data) {
-                    $('#viewCustContainer').html(data);
-                    $('#viewCustModal').modal('show');
+                    $('#viewProdContainer').html(data);
+                    $('#viewProdModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
@@ -185,15 +194,16 @@
 
             }
         });
+
     });
 
     //clear html data for View;
-    $("#viewCustModal").on("hidden.bs.modal", function () {
-        $('#viewCustContainer').html("");
+    $("#viewProdModal").on("hidden.bs.modal", function () {
+        $('#viewProdContainer').html("");
     });
 
-    //Edit Machine
-    $('#tblCust').on("click", "#editCust", function (event) {
+    //Edit
+    $('#tblProduct').on("click", "#editProduct", function (event) {
 
         event.preventDefault();
 
@@ -205,8 +215,8 @@
             async: true,
             success: function (data) {
                 if (data) {
-                    $('#editCustContainer').html(data);
-                    $('#editCustModal').modal('show');
+                    $('#editProdContainer').html(data);
+                    $('#editProdModal').modal('show');
                 } else {
                     global.authenExpire();
                 }
@@ -215,41 +225,42 @@
 
             }
         });
+
     });
 
-    $("#editCustModal").on("shown.bs.modal", function () {
-        $('#CustomerName').focus();   //.select()
+    $("#editProdModal").on("shown.bs.modal", function () {
+        $('#ProductName').focus();   //.select()
     });
 
     //clear html data for edit;
-    $("#editCustModal").on("hidden.bs.modal", function () {
-        $('#editCustContainer').html("");
+    $("#editProdModal").on("hidden.bs.modal", function () {
+        prodProcessVM.tbdestroy();
+        $('#editProdContainer').html("");
     });
 
-
-
     //Delete
-    $('#tblCust').on('click', '#delCust', function (event) {
+    $('#tblProduct').on('click', '#delProduct', function (event) {
 
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var custData = (dtCust.row(row).data());
-        var custId = custData["Id"];
-        var custName = custData["CustomerName"];
-        var con = confirm("Are you sure you want to delete this " + custName)
+        var rowSelect = $(this).parents('tr')[0];
+        var productData = (dtProd.row(rowSelect).data());
+        var productId = productData["Id"];
+
+        var productName = productData["ProductName"];
+        var con = confirm("Are you sure you want to delete this " + productName)
         if (con) {
 
             $.ajax({
                 type: 'POST',
                 url: api,
-                data: addRequestVerificationToken({ id: custId }),
+                data: addRequestVerificationToken({ id: productId }),
                 success: function (response) {
 
                     if (response.success) {
 
-                        custVM.refresh();
+                        productVM.refresh();
 
                         global.successAlert(response.message);
                     }
@@ -259,12 +270,11 @@
                 },
                 error: function (xhr) {
                     global.dangerAlert("error", 5000);
-
                 }
             });
         }
         else {
-            //deptVM.refresh();
+            //productVM.refresh();
         }
     });
 

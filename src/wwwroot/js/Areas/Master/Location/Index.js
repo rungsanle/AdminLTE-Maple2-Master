@@ -55,21 +55,21 @@
                     },
                     {
                         "render": function (data, type, location, meta) {
-                            return '<a id="viewLocation" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="Location/Details/' + location.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editLocation" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="Location/Edit/' + location.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delLocation" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="Location/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewLocation" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Location/Details/' + location.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editLocation" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Location/Edit/' + location.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delLocation" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Location/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
-                    { "width": "24%", "targets": 1 },
-                    { "width": "25%", "targets": 2 },
+                    { "width": "20%", "targets": 1 },
+                    { "width": "23%", "targets": 2 },
                     { "width": "0%", "targets": 3, "visible": false },
                     { "width": "13%", "targets": 4 },
-                    { "width": "10%", "targets": 5 },
+                    { "width": "14%", "targets": 5 },
                     { "className": "dt-center", "width": "8%", "targets": 6, "orderable": false },
-                    { "width": "8%", "targets": 7, "orderable": false }
+                    { "width": "10%", "targets": 7, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

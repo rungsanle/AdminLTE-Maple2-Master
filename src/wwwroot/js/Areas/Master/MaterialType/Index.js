@@ -52,19 +52,19 @@
                     },
                     {
                         "render": function (data, type, matType, meta) {
-                            return '<a id="viewMatType" class="btn btn-info btn-sm" data-toggle="tooltip" title="View" href="MaterialType/Details/' + matType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editMatType" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Edit" href="MaterialType/Edit/' + matType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delMatType" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Remove" href="MaterialType/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                            return '<a id="viewMatType" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="MaterialType/Details/' + matType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="editMatType" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="MaterialType/Edit/' + matType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                '<a id="delMatType" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="MaterialType/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
                     { "width": "24%", "targets": 1 },
-                    { "width": "28%", "targets": 2 },
+                    { "width": "26%", "targets": 2 },
                     { "width": "10%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "8%", "targets": 5, "orderable": false }
+                    { "width": "10%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
