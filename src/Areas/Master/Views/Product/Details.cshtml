@@ -1,0 +1,181 @@
+﻿@model Maple2.AdminLTE.Bel.M_Product
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>M_Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductNameRef)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductNameRef)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductDesc)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductDesc)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MaterialTypeId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MaterialTypeId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductionTypeId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductionTypeId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MachineId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MachineId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UnitId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PackageStdQty)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PackageStdQty)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalesPrice1)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalesPrice1)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalesPrice2)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalesPrice2)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalesPrice3)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalesPrice3)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalesPrice4)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalesPrice4)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SalesPrice5)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SalesPrice5)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GLSalesAccount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GLSalesAccount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GLInventAccount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GLInventAccount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.GLCogsAccount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GLCogsAccount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RevisionNo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RevisionNo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WarehouseId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WarehouseId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LocationId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LocationId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductImagePath)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductImagePath)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Is_Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Is_Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_By)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_By)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_By)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_By)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
