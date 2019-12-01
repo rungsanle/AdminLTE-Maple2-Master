@@ -76,7 +76,7 @@
                                     <th>@Html.DisplayNameFor(model => model.MaterialTypeId)</th>
                                     <th>MATERIAL</th>
                                     <th>@Html.DisplayNameFor(model => model.ProductionTypeId)</th>
-                                    <th>PRODUCTION</th>
+                                    <th>Type</th>
                                     <th>@Html.DisplayNameFor(model => model.MachineId)</th>
                                     <th>MACHINE</th>
                                     <th>@Html.DisplayNameFor(model => model.PackageStdQty)</th>
@@ -91,10 +91,10 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Product", new { Area = "Master" })" id="btnCreateProduct">
+                    <button type="button" class="btn btn-create btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Product", new { Area = "Master" })" id="btnCreateProduct">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add
                     </button>
-                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Product", new { Area = "Master" })" id="btnUpload">
+                    <button type="button" class="btn btn-upload btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Product", new { Area = "Master" })" id="btnUpload">
                         <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>&nbsp; Upload
                     </button>
                 </div>

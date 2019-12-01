@@ -30,8 +30,7 @@
             width: 40px;
         }
 </style>
-
-<script src="~/Scripts/Areas/Master/Product/js/UploadData.js"></script>
+<script src="~/js/Areas/Master/Product/UploadData.js"></script>
 <div id="UploadData"
      data-prod-upload-url="@Url.Action("UploadModelData", "Product", new { Area = "Master" })"
      data-prodtype-get-url="@Url.Action("GetProductionType", "ProductionType", new { Area = "Master" })"
@@ -75,13 +74,13 @@
                                     <div class="input-group input-file" name="Fichier1">
                                         <input type="text" class="form-control input-sm" placeholder='Choose a Product Master file...' />
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default btn-sm btn-choose" type="button"><span class="fa fa-file-text" aria-hidden="true"></span>&nbsp;Browse</button>
+                                            <button class="btn btn-browse btn-sm btn-choose" type="button"><span class="fa fa-file-text" aria-hidden="true"></span>&nbsp;Browse</button>
                                         </span>
                                     </div>
                                 </div>
                                 <!-- COMPONENT END -->
                                 <div class="form-group">
-                                    <button type="button" id="fileButton" class="btn btn-default btn-sm pull-right" data-url="@Url.Action("UploadFiles", "Product", new { Area = "Master" })"><span class="fa fa-eye" aria-hidden="true"></span>&nbsp;Display</button>
+                                    <button type="button" id="fileButton" class="btn btn-display btn-sm pull-right" data-url="@Url.Action("UploadFiles", "Product", new { Area = "Master" })"><span class="fa fa-eye" aria-hidden="true"></span>&nbsp;Display</button>
                                 </div>
                             </form>
                         </div>
@@ -97,8 +96,8 @@
             </div>
             <div class="modal-footer">
                 <div class="form-group">
-                    <button type="button" id="btnUploadData" class="btn btn-default btn-sm"><span class="fa fa-upload" aria-hidden="true"></span>&nbsp;Upload</button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                    <button type="button" id="btnUploadData" class="btn btn-save btn-sm"><span class="fa fa-upload" aria-hidden="true"></span>&nbsp;Upload</button>
+                    <button type="button" class="btn btn-cancel btn-sm" data-dismiss="modal"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
                 </div>
             </div>
         </div>
