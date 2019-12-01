@@ -1,6 +1,6 @@
 ﻿$(function () {
-    
 
+    $('input').attr('autocomplete', 'off');
 
     //Begin----check clear require---//
     $("#ProductCode").on("focusout", function () {
@@ -310,9 +310,9 @@
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 if (data == 1) {
-                                    return '<input id="chkProcess" type="checkbox" checked>';
+                                    return '<input id="chkProcess" type="checkbox" class="gridCheckbox" checked>';
                                 } else {
-                                    return '<input id="chkProcess" type="checkbox">';
+                                    return '<input id="chkProcess" type="checkbox" class="gridCheckbox" >';
                                 }
                             }
                             return data;
@@ -324,9 +324,9 @@
                 columnDefs: [
                     { "width": "0%", "targets": 0, "visible": false },
                     { "width": "0%", "targets": 1, "visible": false },
-                    { "className": "dt-center", "width": "10%", "targets": 2 },
+                    { "className": "dt-center", "width": "20%", "targets": 2 },
                     { "className": "dt-center", "width": "15%", "targets": 3 },
-                    { "width": "75%", "targets": 4 },
+                    { "width": "65%", "targets": 4 },
                 ],
                 paging: false,
                 searching: false,
@@ -380,8 +380,6 @@
     });
 
     /*-- END TABLE PRODUCT PROCESS --*/
-
-
     $("#btnSaveEdit").on("click", SaveEdit);
 
 
@@ -437,10 +435,10 @@ function SaveEdit(event) {
     var strCompanyCode = $("#CompanyCode").val();
     var productFileName = $("#ProductImagePath").val();
 
-    var fileLength = $("#fileImage").get(0).files.length;
+    var fileLength = $("#imgProduct").get(0).files.length;
     if (fileLength > 0) {
 
-        var selFilename = $("#fileImage").get(0).files[0].name;
+        var selFilename = $("#imgProduct").get(0).files[0].name;
         var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
 
         productFileName = strCompanyCode + '_' + strProductCode + '.' + extension;
@@ -513,8 +511,12 @@ function SaveEdit(event) {
 
     function GetProductionProcess() {
 
+        
+
         var prodpros = new Array();
         var jsonData = JSON.parse(JSON.stringify($('#tblProdProcess').dataTable().fnGetData()));
+
+        
 
         for (var obj in jsonData) {
             if (jsonData.hasOwnProperty(obj)) {
@@ -528,12 +530,13 @@ function SaveEdit(event) {
             }
         }
 
+
         return prodpros;
     }
 
     function UploadProductImage(strName) {
 
-        var files = $("#imgMaterial").get(0).files;
+        var files = $("#imgProduct").get(0).files;
         var fileData = new FormData();
         fileData.append("fileName", strName);
         for (var i = 0; i < files.length; i++) {
@@ -558,42 +561,6 @@ function SaveEdit(event) {
             }
         });
     }
-
-    //function UpdateProductProcess(event) {
-
-    //    event.preventDefault();
-
-    //    var prodpros = new Array();
-    //    var jsonData = JSON.parse(JSON.stringify($('#tblProdProcess').dataTable().fnGetData()));
-
-    //    for (var obj in jsonData) {
-    //        if (jsonData.hasOwnProperty(obj)) {
-
-    //            var prodpro = {};
-    //            prodpro.ProductId = jsonData[obj]["ProductId"];
-    //            prodpro.ProcessId = jsonData[obj]["ProcessId"];
-    //            prodpro.Is_Active = jsonData[obj]["Is_Active"];
-
-    //            prodpros.push(prodpro);
-    //        }
-    //    }
-
-    //    $.ajax({
-    //        async: true,
-    //        type: "POST",
-    //        url: $('#EditData').data('proc-update-url'),
-    //        data: addRequestVerificationToken({ lstProdProcess: prodpros }),   //JSON.stringify(products),
-    //        success: function (response) {
-    //            if (response.success) {
-    //                //
-    //            }
-    //        },
-    //        error: function (xhr, status, error) {
-    //            alert(status);
-    //        }
-
-    //    });
-    //}
 }
 
 function displayValidationErrors(errors) {

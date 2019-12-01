@@ -1,5 +1,9 @@
 ﻿$(function () {
 
+
+
+    $('input').attr('autocomplete', 'off');
+
     //Begin----check clear require---//
     $("#ProductCode").on("focusout", function () {
         if ($("#ProductCode").val() != '') {
@@ -308,10 +312,10 @@
                         render: function (data, type, row) {
                             if (type === 'display') {
                                 if (data == 1) {
-                                    return '<input type="checkbox" checked>';
+                                    return '<input id="chkProcess" type="checkbox" class="gridCheckbox" checked >';
                                     //return '<div><input type="checkbox" checked id="' + row.DT_RowId + '" class="editor-active"><label for="' + row.DT_RowId + '">  <span></span></label></div>';
                                 } else {
-                                    return '<input type="checkbox">';
+                                    return '<input id="chkProcess" type="checkbox" class="gridCheckbox" >';
                                     //return '<div><input type="checkbox" id="' + row.DT_RowId + '" class="editor-active"><label for="' + row.DT_RowId + '">  <span></span></label></div>';
                                 }
                             }

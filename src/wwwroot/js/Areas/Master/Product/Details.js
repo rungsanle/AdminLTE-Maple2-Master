@@ -1,4 +1,5 @@
 ﻿$(function () {
+
     
     /*-------------- BEGIN PRODUCTION TYPE --------------*/
     $('#ProductionType').inputpicker({
@@ -95,16 +96,13 @@
                         data: "Is_Active",
                         render: function (data, type, row) {
                             if (type === 'display') {
-                                //if (data == 1) {
-                                //    return '<span class="glyphicon glyphicon-check" aria-hidden="true"></span>';
-                                //} else {
-                                //    return '<span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>';
-                                //}
+
                                 if (data == 1) {
-                                    return '<img src="' + $('#DetailsData').data('image-url') + '/checkbox/checkbox_checked.gif" />';
+                                    return '<img src="' + $('#DetailsData').data('image-url') + '/checkbox/checkbox_checked.gif" class="gridCheckbox" />';
                                 } else {
-                                    return '<img src="' + $('#DetailsData').data('image-url') + '/checkbox/checkbox_uncheck.gif" />';
+                                    return '<img src="' + $('#DetailsData').data('image-url') + '/checkbox/checkbox_uncheck.gif" class="gridCheckbox" />';
                                 }
+
                             }
                             return data;
                         }
@@ -115,9 +113,9 @@
                 columnDefs: [
                     { "width": "0%", "targets": 0, "visible": false },
                     { "width": "0%", "targets": 1, "visible": false },
-                    { "className": "dt-center", "width": "10%", "targets": 2 },
+                    { "className": "dt-center", "width": "20%", "targets": 2 },
                     { "className": "dt-center", "width": "15%", "targets": 3 },
-                    { "width": "75%", "targets": 4 },
+                    { "width": "65%", "targets": 4 },
                 ],
                 paging: false,
                 searching: false,
