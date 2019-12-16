@@ -31,14 +31,14 @@ table.dataTable {
     word-wrap:break-word;
 }
 
-    table.dataTable th {
-        /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,eeeeee+100;Grey+Flat */
-        background: #eeeeee; /* Old browsers */
-        background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%); /* FF3.6-15 */
-        background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Chrome10-25,Safari5.1-6 */
-        background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
-    }
+table.dataTable th {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,eeeeee+100;Grey+Flat */
+    background: #eeeeee; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+}
 
 /*table.dataTable tbody tr:nth-child(even):hover td {
     background-color: red !important;
@@ -64,12 +64,12 @@ table.dataTable tbody > tr > td {
     max-width: 180px;
     min-width: 20px;
     /*word-wrap: normal;
-    word-break: break-all;*/
+word-break: break-all;*/
     vertical-align: middle;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-
+    font-size: small;
     border: 0.01em solid #dddddd !important;
 }
 
@@ -191,7 +191,7 @@ td.boldColumn {
     border-radius: 8px;
 }
 
-/*-- Button --*/
+/*-- For Button --*/
 .btn-create {
     background-color: #f4f4f4;
     color: #444;
@@ -274,4 +274,38 @@ td.boldColumn {
 .btn-upload:active,
 .btn-upload.hover {
     background-color: #e7e7e7;
+}
+
+.btn-browse {
+    background-color: #f4f4f4;
+    color: #444;
+    border-color: #ddd;
+}
+
+.btn-browse:hover,
+.btn-browse:active,
+.btn-browse.hover {
+    background-color: #e7e7e7;
+}
+
+.btn-display {
+    background-color: #f4f4f4;
+    color: #444;
+    border-color: #ddd;
+}
+
+.btn-display:hover,
+.btn-display:active,
+.btn-display.hover {
+    background-color: #e7e7e7;
+}
+
+td input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+}
+
+img.gridCheckbox {
+    width: 15px;
+    height: 15px;
 }

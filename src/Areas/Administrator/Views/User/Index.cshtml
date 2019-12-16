@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Maple2.AdminLTE.Bel.M_User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeptId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.aspnetuser_Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Is_Active)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created_Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created_By)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated_Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated_By)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmpCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeptId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.aspnetuser_Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserImagePath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Is_Active)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created_By)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Updated_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Updated_By)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

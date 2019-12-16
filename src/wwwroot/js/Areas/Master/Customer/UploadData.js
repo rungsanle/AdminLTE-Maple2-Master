@@ -1,4 +1,6 @@
-﻿$(function() {
+﻿$(function () {
+
+    $('input').attr('autocomplete', 'off');
 
     bs_input_file();
 

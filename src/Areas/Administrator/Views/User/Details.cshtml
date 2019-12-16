@@ -1,0 +1,206 @@
+﻿@model Maple2.AdminLTE.Bel.M_User
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = null;
+}
+
+<script src="~/js/Areas/Administrator/User/Details.js"></script>
+<div id="DetailsData"
+     data-dept-get-url="@Url.Action("GetDepartment", "Department", new { Area = "Master" })">
+</div>
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp; View</h4>
+        </div>
+        <br />
+        <div class="box-body pad">
+
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label asp-for="UserCode" class="control-label input-sm col-md-3"></label>
+                        <div class="col-md-4">
+                            <input asp-for="UserCode" class="form-control input-sm text-code" readonly="readonly" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EmpCode, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.EmpCode, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.EmpCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+                            @Html.LabelFor(model => model.DeptName, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-5">
+                                @Html.DropDownListFor(model => model.DeptId, new SelectList(ViewBag.DepartmentList, "Value", "Text", Model.DeptId), htmlAttributes: new {  @class = "form-control input-sm", @id = "DeptId", @disabled = "disabled" })
+                                @Html.ValidationMessageFor(model => model.DeptId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
+                    @Html.HiddenFor(model => model.DeptId)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DeptName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.DeptName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @style = "width: 200px;" } })
+                            @Html.ValidationMessageFor(model => model.DeptId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Position, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CompanyCode, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.CompanyCode, new { htmlAttributes = new { @class = "form-control input-sm text-bold", style = "width: 160px;", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.CompanyCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.aspnetuser_Id, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-5">
+                            @Html.EditorFor(model => model.aspnetuser_Id, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.aspnetuser_Id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3">USER IMAGE</label>
+                        <div class="col-md-5">
+                            <div style="width:100px;">
+                                <img id="imageUser" src="~/Content/img/users/@Model.UserImagePath" onerror="this.src='@Url.Content("~/Content/adminlte/img/")empty-img-user.jpg'" alt="User Image" style="max-width:100%;" accept="image/gif, image/jpeg, image/png" />
+                                @Html.HiddenFor(model => model.UserImagePath)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Is_Active, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.Is_Active)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><span class="fa  fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+<h2>Details</h2>
+
+<div>
+    <h4>M_User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EmpCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EmpCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DeptId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DeptId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Position)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Position)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.aspnetuser_Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.aspnetuser_Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserImagePath)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserImagePath)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Is_Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Is_Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Created_By)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Created_By)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated_By)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Updated_By)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

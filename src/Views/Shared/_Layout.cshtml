@@ -40,47 +40,48 @@
 
 
 </head>
-<body class="hold-transition skin-blue sidebar-mini fixed">
-    <!-- Site wrapper -->
-    <div class="wrapper">
-        @await Html.PartialAsync("_Header")
-        <!-- =============================================== -->
-        <!-- Left side column. contains the sidebar -->
-        @await Html.PartialAsync("_NavBar")
-        <!-- =============================================== -->
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            @Html.Partial("_StatusMessage", TempData["StatusMessage"])
-            @RenderBody()
+@*<body class="hold-transition skin-blue sidebar-mini fixed">*@
+<body class="hold-transition skin-black-light sidebar-mini fixed">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+            @await Html.PartialAsync("_Header")
+            <!-- =============================================== -->
+            <!-- Left side column. contains the sidebar -->
+            @await Html.PartialAsync("_NavBar")
+            <!-- =============================================== -->
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                @Html.Partial("_StatusMessage", TempData["StatusMessage"])
+                @RenderBody()
+            </div>
+            <!-- /.content-wrapper -->
+            <!-- =============================================== -->
+            <!-- Page footer. -->
+            @*@await Html.PartialAsync("_Footer")*@
+            <!-- =============================================== -->
+            <!-- Control Sidebar -->
+            @await Html.PartialAsync("_SideBar")
         </div>
-        <!-- /.content-wrapper -->
-        <!-- =============================================== -->
-        <!-- Page footer. -->
-        @*@await Html.PartialAsync("_Footer")*@
-        <!-- =============================================== -->
-        <!-- Control Sidebar -->
-        @await Html.PartialAsync("_SideBar")
-    </div>
-    <!-- ./wrapper -->
-    <!-- jQuery 3 -->
-    <script src="~/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="~/bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    @RenderSection("Scripts", required: false)
-    <!-- SlimScroll -->
-    <script src="~/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="~/bower_components/fastclick/lib/fastclick.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="~/js/demo.js"></script>
-    <!-- ASP.NET site scrpt -->
-    <script src="~/js/global.js"></script>
-    <!-- ASP.NET site scrpt -->
-    <script src="~/js/site.js"></script>
-    <script>
+        <!-- ./wrapper -->
+        <!-- jQuery 3 -->
+        <script src="~/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="~/bower_components/jquery-ui/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        @RenderSection("Scripts", required: false)
+        <!-- SlimScroll -->
+        <script src="~/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="~/bower_components/fastclick/lib/fastclick.js"></script>
+        <!-- AdminLTE App -->
+        <script src="~/js/adminlte.min.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="~/js/demo.js"></script>
+        <!-- ASP.NET site scrpt -->
+        <script src="~/js/global.js"></script>
+        <!-- ASP.NET site scrpt -->
+        <script src="~/js/site.js"></script>
+        <script>
         var ROOT = '@Url.Content("~/")';
 
         global.applyDraggable();
@@ -88,7 +89,7 @@
         $(document).ready(function () {
             $('.sidebar-menu').tree()
         })
-    </script>
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-</body>
+        </script>
+        @await Html.PartialAsync("_ValidationScriptsPartial")
+    </body>
 </html>

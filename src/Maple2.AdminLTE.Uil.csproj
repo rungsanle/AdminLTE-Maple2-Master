@@ -38,6 +38,8 @@
     <ProjectReference Include="..\Maple2.AdminLTE.Dal\Maple2.AdminLTE.Dal.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Administrator\Data\" />
+    <Folder Include="Areas\Administrator\Models\" />
     <Folder Include="Areas\Master\Data\" />
     <Folder Include="Areas\Master\Models\" />
     <Folder Include="wwwroot\img\compLogo\" />

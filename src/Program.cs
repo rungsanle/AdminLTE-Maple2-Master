@@ -25,7 +25,7 @@ namespace Maple2.AdminLTE.Uil
                 .UseKestrel()
                 .UseConfiguration(config)
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseUrls("https://172.30.33.170:8080", "https://localhost:8081", "https://*:8080")
+                .UseUrls("https://localhost:5100", "https://localhost:5101", "https://*:5102")
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

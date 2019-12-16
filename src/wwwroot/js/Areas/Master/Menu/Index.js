@@ -101,10 +101,10 @@ $(function () {
                 //    //$('input.chkIs_Active', row).prop('checked', data.Is_Active == 1);
                 //},
                 columnDefs: [
-                    { "width": "12%", "targets": 0 },
-                    { "width": "12%", "targets": 1 },
+                    { "width": "11%", "targets": 0 },
+                    { "width": "11%", "targets": 1 },
                     { "width": "8%", "targets": 2 },
-                    { "width": "10%", "targets": 3 },
+                    { "width": "18%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4 },
                     { "className": "dt-center", "width": "8%", "targets": 5 },
                     { "width": "0%", "targets": 6, "visible": false },
@@ -112,7 +112,7 @@ $(function () {
                     { "width": "10%", "targets": 8 },
                     { "className": "dt-center", "width": "6%", "targets": 9 },
                     { "className": "dt-center", "width": "6%", "targets": 10, "orderable": false },
-                    { "width": "10%", "targets": 11, "orderable": false }
+                    { "width": "15%", "targets": 11, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

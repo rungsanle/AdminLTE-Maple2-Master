@@ -1,5 +1,5 @@
 ﻿$(function () {
-
+    
     //Begin----check clear require---//
     $("#MaterialCode").on("focusout", function () {
         if ($("#MaterialCode").val() != '') {

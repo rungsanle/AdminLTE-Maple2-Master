@@ -1,5 +1,7 @@
 ﻿$(function () {
 
+    $('input').attr('autocomplete', 'off');
+
     //Begin----check clear require---//
     $("#CustomerCode").on("focusout", function () {
         if ($("#CustomerCode").val() != '') {

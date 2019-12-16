@@ -44,16 +44,16 @@
     overflow-y: auto;
 }
 
-.inputpicker-wrapped-list .table {
-    /*margin-bottom: 0px;
+    .inputpicker-wrapped-list .table {
+        /*margin-bottom: 0px;
 border:1px solid #cccccc;*/
-    margin-bottom: 1px;
-    border: 2px solid #66afe9;
-    border-color: #66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-}
+        margin-bottom: 1px;
+        border: 2px solid #c4c4c4;
+        border-color: #c4c4c4;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    }
 
 .inputpicker-wrapped-list .table > tbody > tr > td, .inputpicker-wrapped-list .table > tbody > tr > th, .inputpicker-wrapped-list .table > tfoot > tr > td, .inputpicker-wrapped-list .table > tfoot > tr > th, .inputpicker-wrapped-list .table > thead > tr > td, .inputpicker-wrapped-list .table > thead > tr > th {
     padding: 5px;
@@ -69,13 +69,13 @@ border:1px solid #cccccc;*/
     border-bottom: 1px solid lightgray;
     /*background-color: #F5F5F5;*/
     /*color: gray;*/
-        
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#feffff+0,d2ebf9+100;Blue+3D+%2312 */
-    background: rgb(254,255,255); /* Old browsers */
-    background: -moz-linear-gradient(top, rgba(254,255,255,1) 0%, rgba(210,235,249,1) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(254,255,255,1) 0%,rgba(210,235,249,1) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(254,255,255,1) 0%,rgba(210,235,249,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#d2ebf9',GradientType=0 ); /* IE6-9 */
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,eeeeee+100;Grey+Flat */
+    background: #eeeeee; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+
 }
 
 .inputpicker-wrapped-list .table > tbody > tr {
@@ -86,18 +86,18 @@ border:1px solid #cccccc;*/
     background-color: #F8F8F8;
 }
 
-.inputpicker-wrapped-list .inputpicker-selected{
-    background-color: #d9edf7;
+.inputpicker-wrapped-list .inputpicker-selected {
+    background-color: #FAFCD1;
 }
 
     .inputpicker-wrapped-list .inputpicker-active {
         /*background-color: #248cb5 !important;*/
         /*background-color: whitesmoke !important;*/
-        background-color: #E0F8F7 !important;
+        background-color: #FAFCD1 !important;
     }
 
-.inputpicker-wrapped-list .inputpicker-highlight-active{
-    background-color: #bddef9
+.inputpicker-wrapped-list .inputpicker-highlight-active {
+    background-color: #FAFCD1
 }
 
 

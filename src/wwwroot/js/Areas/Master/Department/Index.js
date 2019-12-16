@@ -63,12 +63,12 @@
                     }
                 ],
                 columnDefs: [
-                    { "width": "13%", "targets": 0 },
+                    { "width": "12%", "targets": 0 },
                     { "width": "25%", "targets": 1 },
                     { "width": "30%", "targets": 2 },
                     { "width": "14%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "10%", "targets": 5, "orderable": false }
+                    { "width": "11%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

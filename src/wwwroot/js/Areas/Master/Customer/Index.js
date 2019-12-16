@@ -62,15 +62,15 @@
                     }
                 ],
                 columnDefs: [
-                    { "width": "13%", "targets": 0 },
+                    { "width": "12%", "targets": 0 },
                     { "width": "18%", "targets": 1 },
                     { "width": "13%", "targets": 2 },
-                    { "width": "13%", "targets": 3 },
+                    { "width": "12%", "targets": 3 },
                     { "width": "10%", "targets": 4 },
                     { "width": "9%", "targets": 5 },
                     { "width": "8%", "targets": 6 },
                     { "className": "dt-center", "width": "6%", "targets": 7, "orderable": false },
-                    { "width": "10%", "targets": 8, "orderable": false }
+                    { "width": "12%", "targets": 8, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
