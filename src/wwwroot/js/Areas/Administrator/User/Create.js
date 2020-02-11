@@ -206,14 +206,15 @@ function SaveCrate(event) {
                 $("#tblUser").DataTable().ajax.reload(null, false);
                 $("#tblUser").DataTable().page('last').draw('page');
 
-                global.successAlert(response.message);
+                //global.successAlert(response.message);
+                toastr.success(response.message, 'Create User');
             }
             else {
 
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Department', { timeOut: 10000 });
                 }
             }
 
