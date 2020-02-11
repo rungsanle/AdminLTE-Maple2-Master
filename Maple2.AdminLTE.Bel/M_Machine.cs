@@ -10,31 +10,31 @@ namespace Maple2.AdminLTE.Bel
     public class M_Machine : Base_Related_Field
     {
 
-        [Display(Name = "MACHINE CODE")]
-        [Required(ErrorMessage = "MachineCode|MACHINE CODE IS REQUIRED!!")]
+        [Display(Name = "Machine Code")]
+        [Required(ErrorMessage = "MachineCode|Machine Code Is Required!!")]
         [MaxLength(30)]
         public string MachineCode { get; set; }
 
-        [Display(Name = "MACHINE NAME")]
-        [Required(ErrorMessage = "MachineName|MACHINE NAME IS REQUIRED!!")]
+        [Display(Name = "Machine Name")]
+        [Required(ErrorMessage = "MachineName|Machine Name Is Required!!")]
         public string MachineName { get; set; }
 
-        [Display(Name = "MACHINE PROD TYPE")]
-        [Required(ErrorMessage = "MachineProdType|MACHINE PROD. TYPE IS REQUIRED!!")]
+        [Display(Name = "Machine Prod. Type")]
+        [Required(ErrorMessage = "MachineProdType|Machine Prod. Type Is Required!!")]
         public int MachineProdType { get; set; }
 
         [NotMapped]
-        [Display(Name = "PROD. TYPE")]
+        [Display(Name = "Prod. Type")]
         public string MachineProdTypeName { get; set; }
 
-        [Display(Name = "MACHINE SIZE")]
+        [Display(Name = "Machine Size")]
         public string MachineSize { get; set; }
 
-        [Display(Name = "MACHINE REMARK")]
+        [Display(Name = "Machine Remark")]
         [DataType(DataType.MultilineText)]
         public string MachineRemark { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

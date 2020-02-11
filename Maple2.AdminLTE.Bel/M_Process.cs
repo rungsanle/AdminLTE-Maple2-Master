@@ -9,23 +9,23 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_process")]
     public class M_Process : Base_Related_Field
     {
-        [Required(ErrorMessage = "ProcessCode|PROCESS CODE IS REQUIRED!!")]
-        [Display(Name = "PROCESS CODE")]
+        [Required(ErrorMessage = "ProcessCode|Process Code Is Required!!")]
+        [Display(Name = "Process Code")]
         [MaxLength(30)]
         public string ProcessCode { get; set; }
 
-        [Required(ErrorMessage = "ProcessName|PROCESS NAME IS REQUIRED!!")]
-        [Display(Name = "PROCESS NAME")]
+        [Required(ErrorMessage = "ProcessName|Process Name Is Required!!")]
+        [Display(Name = "Process Name")]
         public string ProcessName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string ProcessDesc { get; set; }
 
-        [Display(Name = "SEQ")]
+        [Display(Name = "Seq")]
         public int? ProcessSeq { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

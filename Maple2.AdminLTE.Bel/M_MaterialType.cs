@@ -10,20 +10,20 @@ namespace Maple2.AdminLTE.Bel
     public class M_MaterialType : Base_Related_Field
     {
 
-        [Required(ErrorMessage = "MatTypeCode|MAT. TYPE CODE IS REQUIRED!!")]
-        [Display(Name = "MAT. TYPE CODE")]
+        [Required(ErrorMessage = "MatTypeCode|MAT. Type Code Is Required!!")]
+        [Display(Name = "MAT. Type Code")]
         [MaxLength(30)]
         public string MatTypeCode { get; set; }
 
-        [Required(ErrorMessage = "MatTypeName|MAT. TYPE NAME IS REQUIRED!!")]
-        [Display(Name = "MAT. TYPE NAME")]
+        [Required(ErrorMessage = "MatTypeName|MAT. Type Name Is Required!!")]
+        [Display(Name = "MAT. Type Name")]
         public string MatTypeName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string MatTypeDesc { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

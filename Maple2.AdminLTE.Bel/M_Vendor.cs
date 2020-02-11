@@ -11,54 +11,54 @@ namespace Maple2.AdminLTE.Bel
     public class M_Vendor : Base_Related_Field
     {
 
-        [Display(Name = "VENDOR CODE")]
-        [Required(ErrorMessage = "VendorCode|VENDOR CODE IS REQUIRED!!")]
+        [Display(Name = "Vendor Code")]
+        [Required(ErrorMessage = "VendorCode|Vendor Code Is Required!!")]
         [MaxLength(30)]
         public string VendorCode { get; set; }
 
-        [Display(Name = "VENDOR NAME")]
-        [Required(ErrorMessage = "VendorName|VENDOR NAME IS REQUIRED!!")]
+        [Display(Name = "Vendor Name")]
+        [Required(ErrorMessage = "VendorName|Vendor Name Is Required!!")]
         public string VendorName { get; set; }
 
-        [Display(Name = "ADDRESS LINE 1")]
+        [Display(Name = "Address Line 1")]
         public string AddressL1 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 2")]
+        [Display(Name = "Address Line 2")]
         public string AddressL2 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 3")]
+        [Display(Name = "Address Line 3")]
         public string AddressL3 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 4")]
+        [Display(Name = "Address Line 4")]
         public string AddressL4 { get; set; }
 
-        [Display(Name = "TELEPHONE")]
+        [Display(Name = "Tel.")]
         public string Telephone { get; set; }
 
-        [Display(Name = "FAX")]
+        [Display(Name = "Fax")]
         public string Fax { get; set; }
 
-        [Display(Name = "EMAIL")]
+        [Display(Name = "Email")]
         public string VendorEmail { get; set; }
 
-        [Display(Name = "CONTACT")]
+        [Display(Name = "Contact")]
         public string VendorContact { get; set; }
 
-        [Display(Name = "CREDIT TERM")]
+        [Display(Name = "Credit Term")]
         [DefaultValue(0)]
         public int? CreditTerm { get; set; }
 
-        [Display(Name = "PRICE LEVEL")]
+        [Display(Name = "Price Level")]
         [DefaultValue(0)]
         public int? PriceLevel { get; set; }
 
-        [Display(Name = "TAX ID")]
+        [Display(Name = "Tax Id")]
         public string VendorTaxId { get; set; }
 
-        [Display(Name = "REMARK")]
+        [Display(Name = "Remark")]
         public string Remark { get; set; }
 
-        [Display(Name = "COMPANY")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 

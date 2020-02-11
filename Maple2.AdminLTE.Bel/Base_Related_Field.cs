@@ -12,19 +12,19 @@ namespace Maple2.AdminLTE.Bel
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Display(Name = "ACTIVE")]
+        [Display(Name = "Active")]
         public bool Is_Active { get; set; }
 
-        [Display(Name = "CREATED DATE")]
+        [Display(Name = "Created Date")]
         public DateTime? Created_Date { get; set; }
 
-        [Display(Name = "CREATED BY")]
+        [Display(Name = "Created By")]
         public int? Created_By { get; set; }
 
-        [Display(Name = "UPDATED DATE")]
+        [Display(Name = "Updated Date")]
         public DateTime? Updated_Date { get; set; }
 
-        [Display(Name = "UPDATED BY")]
+        [Display(Name = "Updated By")]
         public int? Updated_By { get; set; }
     }
 }

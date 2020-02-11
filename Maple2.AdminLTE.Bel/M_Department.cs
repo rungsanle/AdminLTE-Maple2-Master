@@ -11,20 +11,20 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_department")]
     public class M_Department : Base_Related_Field
     {
-        [Display(Name = "DEPT. CODE")]
-        [Required(ErrorMessage = "DeptCode|DEPT. CODE IS REQUIRED!!")]
+        [Display(Name = "Dept. Code")]
+        [Required(ErrorMessage = "DeptCode|Dept. Code Is Required!!")]
         [MaxLength(30)]
         public string DeptCode { get; set; }
 
-        [Display(Name = "DEPT. NAME")]
-        [Required(ErrorMessage = "DeptName|DEPT. NAME IS REQUIRED!!")]
+        [Display(Name = "Dept. Name")]
+        [Required(ErrorMessage = "DeptName|Dept. Name Is Required!!")]
         public string DeptName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string DeptDesc { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

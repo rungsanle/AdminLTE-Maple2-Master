@@ -9,41 +9,41 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_product")]
     public class M_Product : Base_Related_Field
     {
-        [Required(ErrorMessage = "ProductCode|PRODUCT CODE IS REQUIRED!!")]
-        [Display(Name = "PRODUCT CODE")]
+        [Required(ErrorMessage = "ProductCode|Product Code Is Required!!")]
+        [Display(Name = "Product Code")]
         [MaxLength(30)]
         public string ProductCode { get; set; }
 
-        [Required(ErrorMessage = "ProductName|PRODUCT NAME IS REQUIRED!!")]
-        [Display(Name = "PRODUCT NAME")]
+        [Required(ErrorMessage = "ProductName|Product Name Is Required!!")]
+        [Display(Name = "Product Name")]
         public string ProductName { get; set; }
 
-        [Display(Name = "NAME REF")]
+        [Display(Name = "Name Ref.")]
         public string ProductNameRef { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string ProductDesc { get; set; }
 
-        [Display(Name = "MATERIAL TYPE")]
+        [Display(Name = "Material Type")]
         public int? MaterialTypeId { get; set; }
 
         [NotMapped]
-        [Display(Name = "MAT. TYPE")]
+        [Display(Name = "MAT. Type")]
         public string MaterialType { get; set; }
 
-        [Display(Name = "PRODUCTION TYPE")]
+        [Display(Name = "Production Type")]
         public int? ProductionTypeId { get; set; }
 
         [NotMapped]
         [Display(Name = "PROD. TYPE")]
         public string ProductionType { get; set; }
 
-        [Display(Name = "MACHINE")]
+        [Display(Name = "Machine")]
         public int? MachineId { get; set; }
 
         [NotMapped]
-        [Display(Name = "MACHINE")]
+        [Display(Name = "Machine")]
         public string Machine { get; set; }
 
         [Display(Name = "UNIT")]
@@ -53,33 +53,39 @@ namespace Maple2.AdminLTE.Bel
         [Display(Name = "UNIT")]
         public string Unit { get; set; }
 
-        [Display(Name = "PACKAGE")]
+        [Display(Name = "Package")]
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         public decimal? PackageStdQty { get; set; }
 
-        [Display(Name = "SALES PRICE 1")]
+        [Display(Name = "Sales Price 1")]
+        [DisplayFormat(DataFormatString = "{0:0.0000}", ApplyFormatInEditMode = true)]
         public decimal? SalesPrice1 { get; set; }
 
-        [Display(Name = "SALES PRICE 2")]
+        [Display(Name = "Sales Price 2")]
+        [DisplayFormat(DataFormatString = "{0:0.0000}", ApplyFormatInEditMode = true)]
         public decimal? SalesPrice2 { get; set; }
 
-        [Display(Name = "SALES PRICE 3")]
+        [Display(Name = "Sales Price 3")]
+        [DisplayFormat(DataFormatString = "{0:0.0000}", ApplyFormatInEditMode = true)]
         public decimal? SalesPrice3 { get; set; }
 
-        [Display(Name = "SALES PRICE 4")]
+        [Display(Name = "Sales Price 4")]
+        [DisplayFormat(DataFormatString = "{0:0.0000}", ApplyFormatInEditMode = true)]
         public decimal? SalesPrice4 { get; set; }
 
-        [Display(Name = "SALES PRICE 5")]
+        [Display(Name = "Sales Price 5")]
+        [DisplayFormat(DataFormatString = "{0:0.0000}", ApplyFormatInEditMode = true)]
         public decimal? SalesPrice5 { get; set; }
 
-        [Required(ErrorMessage = "GLSalesAccount|G/L Sales Account IS REQUIRED!!")]
+        [Required(ErrorMessage = "GLSalesAccount|G/L Sales Account Is Required!!")]
         [Display(Name = "G/L Sales Account")]
         public string GLSalesAccount { get; set; }
 
         [Display(Name = "G/L Inventory Account")]
         public string GLInventAccount { get; set; }
 
-        [Required(ErrorMessage = "GLCogsAccount|G/L COGS/Salary Acct IS REQUIRED!!")]
-        [Display(Name = "G/L COGS/Salary Acct")]
+        [Required(ErrorMessage = "GLCogsAccount|G/L COGS/Salary Acct Is Required!!")]
+        [Display(Name = "G/L COGS/Salary Account")]
         public string GLCogsAccount { get; set; }
 
         [Display(Name = "Revision Number")]
@@ -92,18 +98,18 @@ namespace Maple2.AdminLTE.Bel
         [Display(Name = "W/H")]
         public string Warehouse { get; set; }
 
-        [Display(Name = "LOCATION")]
+        [Display(Name = "Location")]
         public int? LocationId { get; set; }
 
         [NotMapped]
-        [Display(Name = "LOCATION")]
+        [Display(Name = "Location")]
         public string Location { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 
-        [Display(Name = "PRODUCT IMAGE")]
+        [Display(Name = "Product Image")]
         public string ProductImagePath { get; set; }
 
         [NotMapped]

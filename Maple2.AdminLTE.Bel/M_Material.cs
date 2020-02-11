@@ -10,37 +10,37 @@ namespace Maple2.AdminLTE.Bel
     public class M_Material : Base_Related_Field
     {
 
-        [Required(ErrorMessage = "MaterialCode|MATERIAL CODE IS REQUIRED!!")]
-        [Display(Name = "MATERIAL CODE")]
+        [Required(ErrorMessage = "MaterialCode|Material Code Is Required!!")]
+        [Display(Name = "Material Code")]
         [MaxLength(30)]
         public string MaterialCode { get; set; }
 
-        [Required(ErrorMessage = "MaterialName|MATERIAL NAME IS REQUIRED!!")]
-        [Display(Name = "MATERIAL NAME")]
+        [Required(ErrorMessage = "MaterialName|Material Name Is Required!!")]
+        [Display(Name = "Material Name")]
         public string MaterialName { get; set; }
 
-        [Display(Name = "DESCRIPTION 1")]
+        [Display(Name = "Description 1")]
         public string MaterialDesc1 { get; set; }
 
-        [Display(Name = "DESCRIPTION 2")]
+        [Display(Name = "Description 2")]
         public string MaterialDesc2 { get; set; }
 
-        [Display(Name = "RAW MAT. TYPE")]
+        [Display(Name = "Raw MAT. Type")]
         public int? RawMatTypeId { get; set; }
 
         [NotMapped]
-        [Display(Name = "RAW MAT. TYPE")]
+        [Display(Name = "Raw MAT. Type")]
         public string RawMatType { get; set; }
 
-        [Display(Name = "UNIT")]
+        [Display(Name = "Unit")]
         public int? UnitId { get; set; }
 
         [NotMapped]
-        [Display(Name = "UNIT")]
+        [Display(Name = "Unit")]
         public string Unit { get; set; }
 
 
-        [Display(Name = "PACKAGE")]
+        [Display(Name = "Package")]
         [DisplayFormat(DataFormatString = "{0:#,##0.00}", ApplyFormatInEditMode = true)]
         public decimal? PackageStdQty { get; set; }
 
@@ -51,19 +51,19 @@ namespace Maple2.AdminLTE.Bel
         [Display(Name = "W/H")]
         public string Warehouse { get; set; }
 
-        [Display(Name = "LOCATION")]
+        [Display(Name = "Location")]
         public int? LocationId { get; set; }
 
         [NotMapped]
-        [Display(Name = "LOCATION")]
+        [Display(Name = "Location")]
         public string Location { get; set; }
 
 
-        [Display(Name = "COMPANY")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 
-        [Display(Name = "MATERIAL IMAGE")]
+        [Display(Name = "Material Image")]
         public string MaterialImagePath { get; set; }
     }
 }

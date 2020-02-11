@@ -9,35 +9,35 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_menu")]
     public class M_Menu : Base_Related_Field
     {
-        [Display(Name = "MENU NAME")]
+        [Display(Name = "Menu Name")]
         public string nameOption { get; set; }
 
-        [Display(Name = "CONTROLLER")]
+        [Display(Name = "Controller")]
         public string controller { get; set; }
 
-        [Display(Name = "ACTION")]
+        [Display(Name = "Action")]
         public string action { get; set; }
 
-        [Display(Name = "MENU IMAGE")]
+        [Display(Name = "Menu Image")]
         public string imageClass { get; set; }
 
-        [Display(Name = "STATUS")]
+        [Display(Name = "Status")]
         public bool status { get; set; }
 
-        [Display(Name = "PARENT")]
+        [Display(Name = "Parent")]
         public bool isParent { get; set; }
 
         [Display(Name = "parentId")]
         public int? parentId { get; set; }
 
         [NotMapped]
-        [Display(Name = "PARENT NAME")]
+        [Display(Name = "Parent Name")]
         public string parentName { get; set; }
 
-        [Display(Name = "AREA")]
+        [Display(Name = "Area")]
         public string area { get; set; }
 
-        [Display(Name = "SEQ")]
+        [Display(Name = "Seq")]
         public int menuseq { get; set; }
 
     }

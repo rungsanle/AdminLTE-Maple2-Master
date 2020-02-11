@@ -9,20 +9,20 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_warehouse")]
     public class M_Warehouse : Base_Related_Field
     {
-        [Required(ErrorMessage = "WarehouseCode|W/H CODE IS REQUIRED!!")]
-        [Display(Name = "W/H CODE")]
+        [Required(ErrorMessage = "WarehouseCode|W/H Code Is Required!!")]
+        [Display(Name = "W/H Code")]
         [MaxLength(30)]
         public string WarehouseCode { get; set; }
 
-        [Required(ErrorMessage = "WarehouseName|W/H NAME IS REQUIRED!!")]
-        [Display(Name = "W/H NAME")]
+        [Required(ErrorMessage = "WarehouseName|W/H Name Is Required!!")]
+        [Display(Name = "W/H Name")]
         public string WarehouseName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string WarehouseDesc { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

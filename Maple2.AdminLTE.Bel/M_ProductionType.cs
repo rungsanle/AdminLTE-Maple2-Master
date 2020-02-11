@@ -9,23 +9,23 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_productiontype")]
     public class M_ProductionType : Base_Related_Field
     {
-        [Required(ErrorMessage = "ProdTypeCode|PROD. TYPE CODE IS REQUIRED!!")]
-        [Display(Name = "PROD. TYPE CODE")]
+        [Required(ErrorMessage = "ProdTypeCode|Prod. Type Code Is Required!!")]
+        [Display(Name = "Prod. Type Code")]
         [MaxLength(30)]
         public string ProdTypeCode { get; set; }
 
-        [Required(ErrorMessage = "ProdTypeName|PROD. TYPE NAME IS REQUIRED!!")]
-        [Display(Name = "PROD. TYPE NAME")]
+        [Required(ErrorMessage = "ProdTypeName|Prod. Type Name Is Required!!")]
+        [Display(Name = "Prod. Type Name")]
         public string ProdTypeName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string ProdTypeDesc { get; set; }
 
-        [Display(Name = "SEQ")]
+        [Display(Name = "Seq")]
         public int? ProdTypeSeq { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 

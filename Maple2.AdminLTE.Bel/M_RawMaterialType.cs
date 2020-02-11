@@ -9,20 +9,20 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_rawmaterialtype")]
     public class M_RawMaterialType : Base_Related_Field
     {
-        [Required(ErrorMessage = "RawMatTypeCode|RAW MAT. TYPE CODE IS REQUIRED!!")]
-        [Display(Name = "RAW MAT. TYPE CODE")]
+        [Required(ErrorMessage = "RawMatTypeCode|Raw MAT. Type Code Is Required!!")]
+        [Display(Name = "Raw MAT. Type Code")]
         [MaxLength(30)]
         public string RawMatTypeCode { get; set; }
 
-        [Required(ErrorMessage = "RawMatTypeName|RAW MAT. TYPE NAME IS REQUIRED!!")]
-        [Display(Name = "RAW MAT. TYPE NAME")]
+        [Required(ErrorMessage = "RawMatTypeName|Raw MAT. Type Name Is Required!!")]
+        [Display(Name = "Raw MAT. Type Name")]
         public string RawMatTypeName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string RawMatTypeDesc { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 

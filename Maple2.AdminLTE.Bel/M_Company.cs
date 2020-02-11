@@ -9,37 +9,37 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_company")]
     public class M_Company : Base_Related_Field
     {
-        [Display(Name = "COMPANY CODE")]
-        [Required(ErrorMessage = "CompanyCode|COMPANY CODE IS REQUIRED!!")]
+        [Display(Name = "Company Code")]
+        [Required(ErrorMessage = "CompanyCode|Company Code Is Required!!")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 
-        [Display(Name = "COMPANY NAME")]
-        [Required(ErrorMessage = "CompanyName|COMPANY NAME IS REQUIRED!!")]
+        [Display(Name = "Company Name")]
+        [Required(ErrorMessage = "CompanyName|Company Name Is Required!!")]
         public string CompanyName { get; set; }
 
-        [Display(Name = "LOGO FILE")]
+        [Display(Name = "Logo File")]
         public string CompanyLogoPath { get; set; }
 
-        [Display(Name = "ADDRESS LINE 1")]
+        [Display(Name = "Address Line 1")]
         public string AddressL1 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 2")]
+        [Display(Name = "Address Line 2")]
         public string AddressL2 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 3")]
+        [Display(Name = "Address Line 3")]
         public string AddressL3 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 4")]
+        [Display(Name = "Address Line 4")]
         public string AddressL4 { get; set; }
 
-        [Display(Name = "TELEPHONE")]
+        [Display(Name = "Tel.")]
         public string Telephone { get; set; }
 
-        [Display(Name = "FAX")]
+        [Display(Name = "Fax")]
         public string Fax { get; set; }
 
-        [Display(Name = "TAX ID")]
+        [Display(Name = "Tax Id")]
         public string CompanyTaxId { get; set; }
 
     }

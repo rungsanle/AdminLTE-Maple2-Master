@@ -10,20 +10,20 @@ namespace Maple2.AdminLTE.Bel
     public class M_ArrivalType : Base_Related_Field
     {
 
-        [Display(Name = "ARR. TYPE CODE")]
-        [Required(ErrorMessage = "ArrivalTypeCode|ARRIVAL TYPE CODE IS REQUIRED!!")]
+        [Display(Name = "Arr. Type Code")]
+        [Required(ErrorMessage = "ArrivalTypeCode|Arrival Type Code Is Required!!")]
         [MaxLength(30)]
         public string ArrivalTypeCode { get; set; }
 
-        [Display(Name = "ARR. TYPE NAME")]
-        [Required(ErrorMessage = "ArrivalTypeName|ARRIVAL TYPE NAME IS REQUIRED!!")]
+        [Display(Name = "Arr. Type Name")]
+        [Required(ErrorMessage = "ArrivalTypeName|Arrival Type Name Is Required!!")]
         public string ArrivalTypeName { get; set; }
 
-        [Display(Name = "DESCRIPTION")]
+        [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string ArrivalTypeDesc { get; set; }
 
-        [Display(Name = "COMPANY CODE")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
     }

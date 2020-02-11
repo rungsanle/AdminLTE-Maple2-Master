@@ -12,15 +12,15 @@ namespace Maple2.AdminLTE.Bel
         public int ProductId { get; set; }
         public int ProcessId { get; set; }
 
-        [Display(Name = "SEQ")]
+        [Display(Name = "Seq")]
         public int? ProcessSeq { get; set; }
 
         [NotMapped]
-        [Display(Name = "PROCESS CODE")]
+        [Display(Name = "Process Code")]
         public string ProcessCode { get; set; }
 
         [NotMapped]
-        [Display(Name = "PROCESS NAME")]
+        [Display(Name = "Process Name")]
         public string ProcessName { get; set; }
     }
 }

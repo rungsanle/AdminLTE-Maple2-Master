@@ -10,54 +10,54 @@ namespace Maple2.AdminLTE.Bel
     [Table("m_customer")]
     public class M_Customer : Base_Related_Field
     {
-        [Display(Name = "CODE")]
-        [Required(ErrorMessage = "CustomerCode|CUSTOMER CODE IS REQUIRED!!")]
+        [Display(Name = "Code")]
+        [Required(ErrorMessage = "CustomerCode|Customer Code Is Required!!")]
         [MaxLength(30)]
         public string CustomerCode { get; set; }
 
-        [Display(Name = "CUSTOMER NAME")]
-        [Required(ErrorMessage = "CustomerName|CUSTOMER NAME IS REQUIRED!!")]
+        [Display(Name = "Customer Name")]
+        [Required(ErrorMessage = "CustomerName|Customer Name Is Required!!")]
         public string CustomerName { get; set; }
 
-        [Display(Name = "ADDRESS LINE 1")]
+        [Display(Name = "Address Line 1")]
         public string AddressL1 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 2")]
+        [Display(Name = "Address Line 2")]
         public string AddressL2 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 3")]
+        [Display(Name = "Address Line 3")]
         public string AddressL3 { get; set; }
 
-        [Display(Name = "ADDRESS LINE 4")]
+        [Display(Name = "Address Line 4")]
         public string AddressL4 { get; set; }
 
-        [Display(Name = "TELEPHONE")]
+        [Display(Name = "Tel.")]
         public string Telephone { get; set; }
 
-        [Display(Name = "FAX")]
+        [Display(Name = "Fax")]
         public string Fax { get; set; }
 
-        [Display(Name = "EMAIL")]
+        [Display(Name = "Email")]
         public string CustomerEmail { get; set; }
 
-        [Display(Name = "CONTACT")]
+        [Display(Name = "Contact")]
         public string CustomerContact { get; set; }
 
-        [Display(Name = "CREDIT TERM")]
+        [Display(Name = "Credit Term")]
         [DefaultValue(0)]
         public int? CreditTerm { get; set; }
 
-        [Display(Name = "PRICE LEVEL")]
+        [Display(Name = "Price Level")]
         [DefaultValue(0)]
         public int? PriceLevel { get; set; }
 
-        [Display(Name = "TAX ID")]
+        [Display(Name = "Tax Id")]
         public string CustomerTaxId { get; set; }
 
-        [Display(Name = "REMARK")]
+        [Display(Name = "Remark")]
         public string Remark { get; set; }
 
-        [Display(Name = "COMPANY")]
+        [Display(Name = "Company")]
         [MaxLength(30)]
         public string CompanyCode { get; set; }
 
