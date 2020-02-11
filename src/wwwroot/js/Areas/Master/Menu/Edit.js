@@ -60,19 +60,19 @@ function SaveEdit(event) {
 
                 $("#tblMenu").DataTable().ajax.reload(null, false);
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Edit Menu');
             }
             else {
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Menu', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Menu', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

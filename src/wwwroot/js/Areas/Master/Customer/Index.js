@@ -54,6 +54,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, cust, meta) {
                             return '<a id="viewCust" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Customer/Details/' + cust.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editCust" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Customer/Edit/' + cust.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -63,14 +64,14 @@
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
-                    { "width": "18%", "targets": 1 },
+                    { "width": "20%", "targets": 1 },
                     { "width": "13%", "targets": 2 },
-                    { "width": "12%", "targets": 3 },
+                    { "width": "13%", "targets": 3 },
                     { "width": "10%", "targets": 4 },
                     { "width": "9%", "targets": 5 },
                     { "width": "8%", "targets": 6 },
                     { "className": "dt-center", "width": "6%", "targets": 7, "orderable": false },
-                    { "width": "12%", "targets": 8, "orderable": false }
+                    { "width": "9%", "targets": 8, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -118,10 +119,9 @@
                 } else {
                     global.authenExpire();
                 }
-
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -180,9 +180,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -210,9 +210,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -251,15 +251,14 @@
 
                         custVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Customer');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

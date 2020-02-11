@@ -83,16 +83,15 @@
                         $("#btnUploadData").prop('disabled', false);
                     }
                     else {
-
-                        alert('Format is incorrect!!');
+                        toastr.error('Format is incorrect!!', 'Upload Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
 
 
                 }
 
             },
-            error: function (xhr, status, error) {
-                alert(status);
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Upload Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -205,21 +204,19 @@
                     $("#tblCust").DataTable().ajax.reload(null, false);
                     $("#tblCust").DataTable().page('last').draw('page');
 
-                    global.successAlert(response.message);
+                    toastr.success(response.message, 'Upload Customer');
                 }
                 else {
 
                     if (response.errors != null) {
                         global.displayValidationErrors(response.errors);
                     } else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Upload Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 }
-
             },
-            error: function (xhr) {
-                //console.log(xhr.responseText);
-                global.dangerAlert("error", 5000);
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Upload Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
 
         });

@@ -66,21 +66,20 @@ function SaveEdit(event) {
 
                 $("#tblProcess").DataTable().ajax.reload(null, false);
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Edit Process');
 
             }
             else {
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            //alert("error");
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

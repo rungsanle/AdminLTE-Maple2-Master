@@ -78,21 +78,19 @@ function SaveEdit(event) {
 
                 $("#tblComp").DataTable().ajax.reload(null, false);
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Edit Company');
 
             }
             else {
                 if (response.errors != null) {
                     displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
-
         },
-        error: function () {
-            //alert("error");
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 
@@ -120,8 +118,8 @@ function UploadCompanyLogo(strName) {
                 //file name = response.data
             }
         },
-        error: function (xhr, status, error) {
-            alert(status);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 }

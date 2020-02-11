@@ -51,6 +51,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, rawmatType, meta) {
                             return '<a id="viewRawMatType" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="RawMaterialType/Details/' + rawmatType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editRawMatType" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="RawMaterialType/Edit/' + rawmatType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -59,12 +60,12 @@
                     }
                 ],
                 columnDefs: [
-                    { "width": "12%", "targets": 0 },
-                    { "width": "22%", "targets": 1 },
-                    { "width": "28%", "targets": 2 },
-                    { "width": "10%", "targets": 3 },
+                    { "width": "16%", "targets": 0 },
+                    { "width": "25%", "targets": 1 },
+                    { "width": "30%", "targets": 2 },
+                    { "width": "12%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "10%", "targets": 5, "orderable": false }
+                    { "width": "9%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -109,9 +110,9 @@
                     global.authenExpire();
                 }
 
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -142,9 +143,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -179,9 +180,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -214,15 +215,14 @@
 
                         rawmatTypeVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Raw MAT. Type');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

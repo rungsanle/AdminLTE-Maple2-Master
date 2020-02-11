@@ -51,6 +51,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, arrType, meta) {
                             return '<a id="viewArrivalType" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="ArrivalType/Details/' + arrType.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editArrivalType" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="ArrivalType/Edit/' + arrType.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -59,12 +60,12 @@
                     }
                 ],
                 columnDefs: [
-                    { "width": "10%", "targets": 0 },
-                    { "width": "24%", "targets": 1 },
-                    { "width": "28%", "targets": 2 },
-                    { "width": "10%", "targets": 3 },
+                    { "width": "15%", "targets": 0 },
+                    { "width": "26%", "targets": 1 },
+                    { "width": "29%", "targets": 2 },
+                    { "width": "13%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "10%", "targets": 5, "orderable": false }
+                    { "width": "9%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -89,6 +90,9 @@
     // initialize the datatables
     arrTypeVM.init();
 
+    //set width of input search.
+    //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
+
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
@@ -112,19 +116,11 @@
                 } else {
                     global.authenExpire();
                 }
-
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
-
-        //$.get(api, function (data) {
-        //    $('#newMenuContainer').html(data);
-
-        //    $('#newMenuModal').modal('show');
-        //});
-
     });
 
     $("#newArrivalTypeModal").on("shown.bs.modal", function () {
@@ -155,9 +151,9 @@
                     global.authenExpire();
                 }
 
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -186,10 +182,9 @@
                 } else {
                     global.authenExpire();
                 }
-
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -223,15 +218,14 @@
 
                         arrTypeVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Arrival Type');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

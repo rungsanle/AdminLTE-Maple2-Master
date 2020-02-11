@@ -86,19 +86,19 @@ function SaveEdit(event) {
 
                 $("#tblMachine").DataTable().ajax.reload(null, false);
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Edit Machine');
             }
             else {
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

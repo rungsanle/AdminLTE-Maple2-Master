@@ -11,8 +11,8 @@
         init: function () {
             dtDept = $('#tblDept').DataTable({
                 dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
                     {
                         extend: 'excelHtml5',
@@ -55,6 +55,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, dept, meta) {
                             return '<a id="viewDept" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Department/Details/' + dept.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                    '<a id="editDept" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Department/Edit/' + dept.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -64,11 +65,11 @@
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
-                    { "width": "25%", "targets": 1 },
+                    { "width": "27%", "targets": 1 },
                     { "width": "30%", "targets": 2 },
                     { "width": "14%", "targets": 3 },
                     { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "11%", "targets": 5, "orderable": false }
+                    { "width": "9%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -94,7 +95,7 @@
     deptVM.init();
 
     //set width of input search.
-    $('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
+    //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -119,10 +120,9 @@
                 } else {
                     global.authenExpire();
                 }
-
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -159,9 +159,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -190,9 +190,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -234,15 +234,14 @@
 
                         deptVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Department');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

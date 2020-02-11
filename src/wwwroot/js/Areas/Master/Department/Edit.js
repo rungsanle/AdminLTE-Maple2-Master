@@ -1,5 +1,6 @@
 ﻿$(function () {
 
+    //toastr.options.newestOnTop = false;
     //Begin----check clear require---//
     $("#DeptCode").on("focusout", function () {
         if ($("#DeptCode").val() != '') {
@@ -56,7 +57,6 @@ function SaveEdit(event) {
     global.resetValidationErrors();
 
     //var info = $('#tblMenu').DataTable().page.info();
-
     $.ajax({
         async: true,
         type: "POST",
@@ -68,7 +68,7 @@ function SaveEdit(event) {
             CompanyCode: $("#CompanyCode").val(),
             Is_Active: $('#Is_Active').is(':checked')
         }),
-        success: function (response) {
+        success: function (response, textStatus, jqXHR) {
 
             if (response.success) {
 
@@ -77,21 +77,20 @@ function SaveEdit(event) {
 
                 $("#tblDept").DataTable().ajax.reload(null, false);
 
-                global.successAlert(response.message);
-
+                toastr.success(response.message, 'Edit Department');
             }
             else {
+
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            //alert("error");
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

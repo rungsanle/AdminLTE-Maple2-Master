@@ -55,6 +55,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, comp, meta) {
                             return '<a id="viewComp" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Company/Details/' + comp.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editComp" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Company/Edit/' + comp.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -64,14 +65,14 @@
                 ],
                 columnDefs: [
                     { "width": "11%", "targets": 0 },
-                    { "width": "20%", "targets": 1 },
+                    { "width": "23%", "targets": 1 },
                     { "width": "12%", "targets": 2 },
                     { "width": "13%", "targets": 3 },
                     { "width": "8%", "targets": 4 },
                     { "width": "8%", "targets": 5 },
                     { "width": "8%", "targets": 6 },
                     { "className": "dt-center", "width": "8%", "targets": 7, "orderable": false },
-                    { "width": "12%", "targets": 8, "orderable": false }
+                    { "width": "9%", "targets": 8, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -96,6 +97,9 @@
     // initialize the datatables
     compVM.init();
 
+    //set width of input search.
+    //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
+
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
@@ -119,11 +123,9 @@
                 } else {
                     global.authenExpire();
                 }
-
             },
-            error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -156,9 +158,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -193,9 +195,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -231,15 +233,14 @@
 
                         compVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Company');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

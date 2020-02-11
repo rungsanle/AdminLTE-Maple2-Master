@@ -52,20 +52,20 @@ function SaveCrate(event) {
                 $("#tblUnit").DataTable().ajax.reload(null, false);
                 $("#tblUnit").DataTable().page('last').draw('page');
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Create Unit');
             }
             else {
 
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Create Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Create Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

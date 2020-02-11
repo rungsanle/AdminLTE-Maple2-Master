@@ -52,6 +52,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, process, meta) {
                             return '<a id="viewProcess" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Process/Details/' + process.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editProcess" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Process/Edit/' + process.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -61,12 +62,12 @@
                 ],
                 columnDefs: [
                     { "width": "12%", "targets": 0 },
-                    { "width": "22%", "targets": 1 },
+                    { "width": "25%", "targets": 1 },
                     { "width": "24%", "targets": 2 },
                     { "className": "dt-center", "width": "10%", "targets": 3 },
                     { "width": "12%", "targets": 4 },
                     { "className": "dt-center", "width": "8%", "targets": 5, "orderable": false },
-                    { "width": "12%", "targets": 6, "orderable": false }
+                    { "width": "9%", "targets": 6, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -115,9 +116,9 @@
                     global.authenExpire();
                 }
 
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -149,9 +150,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -179,9 +180,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
     });
@@ -213,15 +214,14 @@
 
                         processVM.refresh();
 
-                        global.successAlert(response.message);
+                        toastr.success(response.message, 'Delete Process');
                     }
                     else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Delete Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
-
+                error: function (xhr, txtStatus, errThrown) {
+                    toastr.error('Error: ' + xhr.statusText, 'Delete Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             });
         }

@@ -64,20 +64,20 @@ function SaveCrate(event) {
                 $("#tblProcess").DataTable().ajax.reload(null, false);
                 $("#tblProcess").DataTable().page('last').draw('page');
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Create Process');
             }
             else {
 
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Create Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Create Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 

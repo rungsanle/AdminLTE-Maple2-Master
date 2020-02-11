@@ -65,20 +65,20 @@ function SaveCrate(event) {
                 $("#tblRawMatType").DataTable().ajax.reload(null, false);
                 $("#tblRawMatType").DataTable().page('last').draw('page');
 
-                global.successAlert(response.message);
+                toastr.success(response.message, 'Create Raw MAT. Type');
             }
             else {
 
                 if (response.errors != null) {
                     global.displayValidationErrors(response.errors);
                 } else {
-                    global.dangerAlert(response.message, 5000);
+                    toastr.error(response.message, 'Create Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                 }
             }
 
         },
-        error: function () {
-            global.dangerAlert("error", 5000);
+        error: function (xhr, txtStatus, errThrown) {
+            toastr.error('Error: ' + xhr.statusText, 'Create Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
         }
     });
 
