@@ -1,5 +1,23 @@
 ﻿var global = {};
 
+global.applyToastrOption = function () {
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "positionClass": "toast-bottom-right",
+        "newestOnTop": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+}
+
 global.applyIcheckStyle = function () {
 
     //$('input[type="checkbox"], input[type="radio"]').iCheck({
