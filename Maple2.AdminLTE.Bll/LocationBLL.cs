@@ -68,7 +68,7 @@ namespace Maple2.AdminLTE.Bll
                                              new MySqlParameter("strId", id)
                     };
 
-                    var objList = await context.Location.FromSql("call sp_location_get(?)", parameters: sqlParams).ToListAsync();
+                    var objList = await context.Query<M_LocationObj>().FromSql("call sp_location_get(?)", parameters: sqlParams).ToListAsync();
 
                     return objList.ConvertAll(loc => new M_Location
                     {
