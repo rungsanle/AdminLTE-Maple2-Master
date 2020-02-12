@@ -241,35 +241,51 @@
         var rowSelect = $(this).parents('tr')[0];
         var materialData = (dtMat.row(rowSelect).data());
         var materialId = materialData["Id"];
-
         var materialName = materialData["MaterialName"];
-        var con = confirm("Are you sure you want to delete this " + materialName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: materialId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + materialName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: materialId }),
+                            success: function (response) {
 
-                        productVM.refresh();
+                                if (response.success) {
 
-                        global.successAlert(response.message);
-                    }
-                    else {
-                        global.dangerAlert(response.message, 5000);
+                                    productVM.refresh();
+
+                                    global.successAlert(response.message);
+                                }
+                                else {
+                                    global.dangerAlert(response.message, 5000);
+                                }
+                            },
+                            error: function (xhr) {
+                                global.dangerAlert("error", 5000);
+                            }
+                        });
+
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //MaterialVM.refresh();
-        }
+            }
+        });
+
     });
 
 

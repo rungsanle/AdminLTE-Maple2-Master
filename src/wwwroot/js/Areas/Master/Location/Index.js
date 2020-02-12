@@ -214,32 +214,48 @@
         var locationData = (dtLoc.row(row).data());
         var locationId = locationData["Id"];
         var locationName = locationData["LocationName"];
-        var con = confirm("Are you sure you want to delete this " + locationName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: locationId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + locationName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: locationId }),
+                            success: function (response) {
 
-                        locationVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Location');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    locationVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Location');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+
     });
 });

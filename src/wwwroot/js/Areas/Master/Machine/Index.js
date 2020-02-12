@@ -209,33 +209,50 @@
         var mcData = (dtMc.row(row).data());
         var mcId = mcData["Id"];
         var mcName = mcData["MachineName"];
-        var con = confirm("Are you sure you want to delete this " + mcName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: mcId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + mcName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: mcId }),
+                            success: function (response) {
 
-                        machineVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Machine');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    machineVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Machine');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
+
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //machineVM.refresh();
-        }
+            }
+        });
+
     });
 
 

@@ -220,33 +220,50 @@
         var deptData = (dtDept.row(rowSel).data());
         var deptId = deptData["Id"];
         var deptName = deptData["DeptName"];
-        var con = confirm("Are you sure you want to delete this " + deptName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                async: true,
-                data: addRequestVerificationToken({ id: deptId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + deptName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            async: true,
+                            data: addRequestVerificationToken({ id: deptId }),
+                            success: function (response) {
 
-                        deptVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Department');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    deptVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Department');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                        //nothing
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+
     });
 });

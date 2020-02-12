@@ -219,33 +219,51 @@
         var compData = (dt.row(row).data());
         var compId = compData["Id"];
         var compName = compData["CompanyName"];
-        var con = confirm("Are you sure you want to delete this " + compName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                async: true,
-                data: addRequestVerificationToken({ id: compId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + compName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            async: true,
+                            data: addRequestVerificationToken({ id: compId }),
+                            success: function (response) {
 
-                        compVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Company');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    compVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Company');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
+
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Company', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //compVM.refresh();
-        }
+            }
+        });
+
+        
     });
 });

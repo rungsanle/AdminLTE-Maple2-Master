@@ -202,33 +202,49 @@
         var rawmatTypeData = (dtRawMatType.row(row).data());
         var rawmatTypeId = rawmatTypeData["Id"];
         var rawmatTypeName = rawmatTypeData["RawMatTypeName"];
-        var con = confirm("Are you sure you want to delete this " + rawmatTypeName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: rawmatTypeId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + rawmatTypeName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: rawmatTypeId }),
+                            success: function (response) {
 
-                        rawmatTypeVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Raw MAT. Type');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    rawmatTypeVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Raw MAT. Type');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //rawmatTypeVM.refresh();
-        }
+            }
+        });
+
     });
 
 

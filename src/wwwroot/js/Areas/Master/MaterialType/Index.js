@@ -236,33 +236,50 @@
         var matTypeData = (dtMatType.row(row).data());
         var matTypeId = matTypeData["Id"];
         var matTypeName = matTypeData["MatTypeName"];
-        var con = confirm("Are you sure you want to delete this " + matTypeName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: matTypeId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + matTypeName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: matTypeId }),
+                            success: function (response) {
 
-                        matTypeVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Material Type');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    matTypeVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Material Type');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
+
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+
     });
 
 

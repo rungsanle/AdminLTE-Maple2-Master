@@ -238,33 +238,50 @@
         var custData = (dtCust.row(row).data());
         var custId = custData["Id"];
         var custName = custData["CustomerName"];
-        var con = confirm("Are you sure you want to delete this " + custName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: custId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + custName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: custId }),
+                            success: function (response) {
 
-                        custVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Customer');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    custVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Customer');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
+
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+
     });
 
 

@@ -209,33 +209,49 @@
         var prodTypeData = (dtProdType.row(row).data());
         var prodTypeId = prodTypeData["Id"];
         var prodTypeName = prodTypeData["ProdTypeName"];
-        var con = confirm("Are you sure you want to delete this " + prodTypeName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: prodTypeId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + prodTypeName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                    if (response.success) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: prodTypeId }),
+                            success: function (response) {
 
-                        prodTypeVM.refresh();
+                                if (response.success) {
 
-                        toastr.success(response.message, 'Delete Production Type');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Production Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    prodTypeVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Production Type');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Production Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Production Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Production Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+
     });
 
 

@@ -204,34 +204,85 @@
         var arrTypeData = (dtArrivalType.row(row).data());
         var arrTypeId = arrTypeData["Id"];
         var arrTypeName = arrTypeData["ArrivalTypeName"];
-        var con = confirm("Are you sure you want to delete this " + arrTypeName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                async: true,
-                data: addRequestVerificationToken({ id: arrTypeId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + arrTypeName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: api,
+                                async: true,
+                                data: addRequestVerificationToken({ id: arrTypeId }),
+                                success: function (response) {
 
-                    if (response.success) {
+                                    if (response.success) {
 
-                        arrTypeVM.refresh();
+                                        arrTypeVM.refresh();
 
-                        toastr.success(response.message, 'Delete Arrival Type');
-                    }
-                    else {
-                        toastr.error(response.message, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                        toastr.success(response.message, 'Delete Arrival Type');
+                                    }
+                                    else {
+                                        toastr.error(response.message, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    }
+                                },
+                                error: function (xhr, txtStatus, errThrown) {
+                                    toastr.error('Error: ' + xhr.statusText, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            });
                     }
                 },
-                error: function (xhr, txtStatus, errThrown) {
-                    toastr.error('Error: ' + xhr.statusText, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //deptVM.refresh();
-        }
+            }
+        });
+        
+
+
+
+        //var con = confirm("Are you sure you want to delete this " + arrTypeName)
+        //if (con) {
+
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: api,
+        //        async: true,
+        //        data: addRequestVerificationToken({ id: arrTypeId }),
+        //        success: function (response) {
+
+        //            if (response.success) {
+
+        //                arrTypeVM.refresh();
+
+        //                toastr.success(response.message, 'Delete Arrival Type');
+        //            }
+        //            else {
+        //                toastr.error(response.message, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+        //            }
+        //        },
+        //        error: function (xhr, txtStatus, errThrown) {
+        //            toastr.error('Error: ' + xhr.statusText, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+        //        }
+        //    });
+        //}
+        //else {
+        //    //deptVM.refresh();
+        //}
+
+
+
+
+
     });
 
 
