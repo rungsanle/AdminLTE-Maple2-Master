@@ -90,15 +90,15 @@
                     }
                     else {
 
-                        alert('Format is incorrect!!');
+                        toastr.error('Format is incorrect!!', 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
 
 
                 }
 
             },
-            error: function (xhr, status, error) {
-                alert(status);
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -217,20 +217,20 @@
                     $("#tblProduct").DataTable().ajax.reload(null, false);
                     $("#tblProduct").DataTable().page('last').draw('page');
 
-                    global.successAlert(response.message);
+                    toastr.success(response.message, 'Upload Product');
                 }
                 else {
 
                     if (response.errors != null) {
                         displayValidationErrors(response.errors);
                     } else {
-                        global.dangerAlert(response.message, 5000);
+                        toastr.error(response.message, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
                     }
                 }
 
             },
-            error: function () {
-                global.dangerAlert("error", 5000);
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
 
         });

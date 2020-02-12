@@ -128,8 +128,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
+            },
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Create Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -189,9 +190,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
-
+            }, 
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'View Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -220,9 +221,9 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
-
+            }, 
+            error: function (xhr, txtStatus, errThrown) {
+                toastr.error('Error: ' + xhr.statusText, 'Edit Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 
@@ -247,35 +248,51 @@
         var rowSelect = $(this).parents('tr')[0];
         var productData = (dtProd.row(rowSelect).data());
         var productId = productData["Id"];
-
         var productName = productData["ProductName"];
-        var con = confirm("Are you sure you want to delete this " + productName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: productId }),
-                success: function (response) {
 
-                    if (response.success) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this ' + productName,
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-                        productVM.refresh();
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            data: addRequestVerificationToken({ id: productId }),
+                            success: function (response) {
 
-                        global.successAlert(response.message);
-                    }
-                    else {
-                        global.dangerAlert(response.message, 5000);
+                                if (response.success) {
+
+                                    productVM.refresh();
+
+                                    toastr.success(response.message, 'Delete Product');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+                                toastr.error('Error: ' + xhr.statusText, 'Delete Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                            }
+                        });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //productVM.refresh();
-        }
+            }
+        });
+
     });
 
 
