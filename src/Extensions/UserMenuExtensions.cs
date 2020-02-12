@@ -17,7 +17,23 @@ namespace Microsoft.AspNetCore.Mvc
         {
             var viewContext = htmlHelper.ViewContext;
             var currentPageUrl = viewContext.ViewData["ActiveMenu"] as string ?? viewContext.HttpContext.Request.Path;
-            return currentPageUrl.StartsWith(menuItemUrl, StringComparison.OrdinalIgnoreCase);
+
+
+            var menuItems = menuItemUrl.Split('/');
+
+            var curItems = currentPageUrl.Split('/');
+
+            if (menuItems.Length == 2)
+            {
+                return (menuItems[1] == curItems[1]);
+            }
+            else
+            {
+                return (currentPageUrl == menuItemUrl);
+            }
+
+            
+            //return currentPageUrl.StartsWith(menuItemUrl, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
