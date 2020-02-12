@@ -59,6 +59,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, prod, meta) {
                             return '<a id="viewProduct" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Product/Details/' + prod.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editProduct" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Product/Edit/' + prod.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -68,9 +69,9 @@
                 ],
                 columnDefs: [
                     { "width": "14%", "targets": 0 },
-                    { "width": "20%", "targets": 1 },
+                    { "width": "22%", "targets": 1 },
                     { "width": "0%", "targets": 2, "visible": false },
-                    { "width": "14%", "targets": 3 },
+                    { "width": "15%", "targets": 3 },
                     { "width": "0%", "targets": 4, "visible": false },
                     { "width": "6%", "targets": 5 },
                     { "width": "0%", "targets": 6, "visible": false },
@@ -80,7 +81,7 @@
                     { "width": "5%", "targets": 10 },
                     { "width": "8%", "targets": 11 },
                     { "className": "dt-center", "width": "6%", "targets": 12, "orderable": false },
-                    { "width": "12%", "targets": 13, "orderable": false }
+                    { "width": "9%", "targets": 13, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
