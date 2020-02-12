@@ -44,16 +44,15 @@
     overflow-y: auto;
 }
 
-    .inputpicker-wrapped-list .table {
-        /*margin-bottom: 0px;
-border:1px solid #cccccc;*/
-        margin-bottom: 1px;
-        border: 2px solid #c4c4c4;
-        border-color: #c4c4c4;
-        outline: 0;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-    }
+.inputpicker-wrapped-list .table {
+    /*margin-bottom: 0px; border:1px solid #cccccc;*/
+    margin-bottom: 1px;
+    border: 2px solid #c4c4c4;
+    border-color: #c4c4c4;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
 
 .inputpicker-wrapped-list .table > tbody > tr > td, .inputpicker-wrapped-list .table > tbody > tr > th, .inputpicker-wrapped-list .table > tfoot > tr > td, .inputpicker-wrapped-list .table > tfoot > tr > th, .inputpicker-wrapped-list .table > thead > tr > td, .inputpicker-wrapped-list .table > thead > tr > th {
     padding: 5px;
@@ -65,17 +64,19 @@ border:1px solid #cccccc;*/
 }
 
 .inputpicker-wrapped-list .table > thead > tr > th {
+    height: 32px !important;
     text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
     border-bottom: 1px solid lightgray;
     /*background-color: #F5F5F5;*/
     /*color: gray;*/
     /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,eeeeee+100;Grey+Flat */
-    background: #eeeeee; /* Old browsers */
-    background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
-
+    background: #f4f4f4; /* Old browsers */
+    background: -moz-linear-gradient(top, #f4f4f4 0%, #f4f4f4 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #f4f4f4 0%,#f4f4f4 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #f4f4f4 0%,#f4f4f4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f4f4', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
 }
 
 .inputpicker-wrapped-list .table > tbody > tr {
