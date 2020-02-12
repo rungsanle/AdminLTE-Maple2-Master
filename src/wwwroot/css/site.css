@@ -30,6 +30,11 @@ table.dataTable {
     clear: both;
     border-collapse: collapse;
     word-wrap: break-word;
+    /*test by jack*/
+    margin-bottom: 1px;
+    border: 0.08em solid #dfdfdf;
+    border-color: #dfdfdf;
+    outline: 0;
 }
 
 /* Setting about input search on top of datatable.net */
@@ -42,13 +47,18 @@ div.dataTables_wrapper div.dataTables_filter input[type="search"] {
 
 
 table.dataTable th {
-    background-color: #F8F9F9;
+    /*background-color: #F8F9F9;*/
     /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,e5e5e5+100;White+3D */
     /* background: rgb(255,255,255);  /*Old browsers */
     /* background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%);  /*FF3.6-15 */
     /* background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
     /* background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     /* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F7F7F7', endColorstr='#F7F7F7',GradientType=0 ); /* IE6-9 */
+    background: #f4f4f4; /* Old browsers */
+    background: -moz-linear-gradient(top, #f4f4f4 0%, #f4f4f4 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #f4f4f4 0%,#f4f4f4 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #f4f4f4 0%,#f4f4f4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f4f4', endColorstr='#f4f4f4',GradientType=0 ); /* IE6-9 */
 }
 
 /*table.dataTable tbody tr:nth-child(even):hover td {
@@ -58,6 +68,20 @@ table.dataTable th {
 table.dataTable tbody tr:nth-child(odd):hover td {
     background-color: blue !important;
 }*/
+
+table.dataTable thead > tr > th {
+    height: 26px;
+    white-space: nowrap;
+    padding-top: 10px;
+    text-align: center;
+    vertical-align: middle;
+    /*background-color: lightskyblue;*/
+    font-size: 13px;
+    font-family: sans-serif;
+    /*border: 0.01em solid #dddddd !important;*/
+    border: 0.05em solid #dfdfdf !important;
+    border-color: #dfdfdf;
+}
 
 table.dataTable tbody tr:hover td {
     background-color: #FAFCD1 !important;
@@ -81,20 +105,12 @@ word-break: break-all;*/
     overflow: hidden;
     white-space: nowrap;
     font-size: small;
-    border: 0.01em solid #dddddd !important;
+    /*border: 0.01em solid #dddddd !important;*/
+    border: 0.05em solid #dfdfdf !important;
+    border-color: #dfdfdf;
 }
 
-table.dataTable thead > tr > th {
-    height: 26px;
-    white-space: nowrap;
-    padding-top: 10px;
-    text-align: center;
-    vertical-align: middle;
-    /*background-color: lightskyblue;*/
-    font-size: 13px;
-    font-family: sans-serif;
-    border: 0.01em solid #dddddd !important;
-}
+
 
 th.dt-header-center {
     text-align: center;
@@ -136,20 +152,42 @@ td.boldColumn {
     background-color: #ffffff;
 }
 
-/*For modal Fade*/
+
+/*.modal {
+    position: absolute;
+}*/
+
+.modal-dialog {
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .modal.fade {
-    background: none !important;
+    background: none;
 }
 
 .modal-header {
+    /*
     border-radius: 8px 8px 0px 0px;
     color: black;
-    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,cccccc+100;Gren+3D */
-    background: #eeeeee; /* Old browsers */
-    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eeeeee+0,cccccc+100;Gren+3D
+    background: #eeeeee; /* Old browsers
+    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%); /* FF3.6-15
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6
+    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 
+    */
+    /*@Test by Jack*/
+    border-radius: 8px 8px 0px 0px;
+    background: #d2d2d2; /* Old browsers */
+    background: -moz-linear-gradient(top, #d2d2d2 0%, #d2d2d2 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #d2d2d2 0%,#d2d2d2 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #d2d2d2 0%,#d2d2d2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2d2d2', endColorstr='#d2d2d2',GradientType=0 ); /* IE6-9 */
 }
 
 .modal-footer {
@@ -262,6 +300,18 @@ td.boldColumn {
 .btn-save:hover,
 .btn-save:active,
 .btn-save.hover {
+    background-color: #e7e7e7;
+}
+
+.btn-confirm {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.btn-confirm:hover,
+.btn-confirm:active,
+.btn-confirm.hover {
     background-color: #e7e7e7;
 }
 
