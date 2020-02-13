@@ -352,6 +352,11 @@ global.resetValidationErrors = function() {
     };
 }
 
-global.appSettings = function (options) {
-    this.appSettings = options;
-}
+global.setAppSettings = function (strKey, objJson) {
+    localStorage.setItem(strKey, objJson);
+};
+
+global.getAppSettings = function (strKey) {
+    var appSettings = JSON.parse(localStorage.getItem(strKey));
+    return appSettings;
+};
