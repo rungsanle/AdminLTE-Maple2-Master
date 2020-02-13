@@ -351,3 +351,7 @@ global.resetValidationErrors = function() {
             listItems[i].remove();
     };
 }
+
+global.appSettings = function (options) {
+    this.appSettings = options;
+}

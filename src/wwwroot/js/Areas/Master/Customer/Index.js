@@ -76,7 +76,9 @@
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: 10,
-                stateSave: true
+                scroller: true,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -96,6 +98,13 @@
 
     // initialize the datatables
     custVM.init();
+
+    //set default first page
+    setTimeout(function () {
+        if (dtCust.page.info().page != 0) {
+            dtCust.page('first').draw('page');
+        }
+    }, 80);
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();

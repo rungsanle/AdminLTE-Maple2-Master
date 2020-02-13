@@ -113,6 +113,7 @@ namespace Maple2.AdminLTE.Uil
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+
             // Add Session services. 
             services.AddSession(options =>
             {

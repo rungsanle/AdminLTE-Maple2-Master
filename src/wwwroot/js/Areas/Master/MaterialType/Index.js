@@ -70,7 +70,9 @@
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: 10,
-                stateSave: true
+                scroller: true,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
