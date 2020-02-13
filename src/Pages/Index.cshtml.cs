@@ -19,6 +19,7 @@ namespace Maple2.AdminLTE.Uil.Pages
         public void OnGet()
         {
             ViewData["DefaultFirstPage"] = _configuration["AppSettings:DefaultFirstPage"];
+            ViewData["TableDisplayLength"] = _configuration["AppSettings:TableDisplayLength"];
         }
     }
 }

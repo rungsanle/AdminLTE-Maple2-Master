@@ -6,17 +6,18 @@
 @section Scripts {
     <script src="~/js/global.js"></script>
     <script>
-        var ROOT = '@Url.Content("~/")';
 
-        //global.appSettings().defaultFirstPage =
+        //clear
+        localStorage.clear();
+
+        var appSettings = {
+            defaultFirstPage: '@ViewData["DefaultFirstPage"]',
+            tableDisplayLength: @ViewData["TableDisplayLength"]
+        };
+
+        global.setAppSettings('AppSettings', JSON.stringify(appSettings));
 
 
-
-
-        global.appSettings({ defaultFirstPage: @ViewData["DefaultFirstPage"]});
-        alert('OK');
-
-        alert(global.appSettings.defaultFirstPage);
 
     </script>
 }
