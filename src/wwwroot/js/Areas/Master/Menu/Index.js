@@ -117,7 +117,8 @@ $(function () {
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: 10,
+                stateSave: true
             });
 
             //dt.on('draw', function () {
@@ -265,14 +266,14 @@ $(function () {
 
         event.preventDefault();
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var menuData = (dtMenu.row(row).data());
+        var rowSelect = $(this).parents('tr')[0];
+        var menuData = (dtMenu.row(rowSelect).data());
         var menuId = menuData["Id"];
         var menuName = menuData["nameOption"];
 
         $.confirm({
             title: 'Please Confirm!',
-            content: 'Are you sure you want to delete this ' + menuName,
+            content: 'Are you sure you want to delete this \"' + menuName + '\"',
             buttons: {
                 confirm: {
                     text: 'Confirm',
@@ -288,7 +289,8 @@ $(function () {
 
                                 if (response.success) {
 
-                                    menuVM.refresh();
+                                    //menuVM.refresh();
+                                    dtMenu.row(rowSelect).remove().draw(false);
 
                                     toastr.success(response.message, 'Delete Menu');
                                 }

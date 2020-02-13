@@ -75,7 +75,8 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: 10,
+                stateSave: true
             });
 
             //dt.on('draw', function () {
@@ -205,14 +206,14 @@
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var mcData = (dtMc.row(row).data());
+        var rowSelect = $(this).parents('tr')[0];
+        var mcData = (dtMc.row(rowSelect).data());
         var mcId = mcData["Id"];
         var mcName = mcData["MachineName"];
 
         $.confirm({
             title: 'Please Confirm!',
-            content: 'Are you sure you want to delete this ' + mcName,
+            content: 'Are you sure you want to delete this \"' + mcName + '\"',
             buttons: {
                 confirm: {
                     text: 'Confirm',
@@ -228,7 +229,8 @@
 
                                 if (response.success) {
 
-                                    machineVM.refresh();
+                                    //machineVM.refresh();
+                                    dtMc.row(rowSelect).remove().draw(false);
 
                                     toastr.success(response.message, 'Delete Machine');
                                 }

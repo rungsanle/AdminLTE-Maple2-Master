@@ -75,7 +75,8 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: 10,
+                stateSave: true
             });
 
             //dt.on('draw', function () {
@@ -234,14 +235,14 @@
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var vendData = (dtVend.row(row).data());
+        var rowSelect = $(this).parents('tr')[0];
+        var vendData = (dtVend.row(rowSelect).data());
         var vendId = vendData["Id"];
         var vendName = vendData["VendorName"];
 
         $.confirm({
             title: 'Please Confirm!',
-            content: 'Are you sure you want to delete this ' + vendName,
+            content: 'Are you sure you want to delete this \"' + vendName + '\"',
             buttons: {
                 confirm: {
                     text: 'Confirm',
@@ -257,7 +258,8 @@
 
                                 if (response.success) {
 
-                                    vendVM.refresh();
+                                    //vendVM.refresh();
+                                    dtVend.row(rowSelect).remove().draw(false);
 
                                     toastr.success(response.message, 'Delete Vendor');
                                 }

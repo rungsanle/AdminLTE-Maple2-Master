@@ -73,7 +73,8 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: 10,
+                stateSave: true
             });
 
             //dt.on('draw', function () {
@@ -216,14 +217,14 @@
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var rowSel = $(this).parents('tr')[0];
-        var deptData = (dtDept.row(rowSel).data());
+        var rowSelect = $(this).parents('tr')[0];
+        var deptData = (dtDept.row(rowSelect).data());
         var deptId = deptData["Id"];
         var deptName = deptData["DeptName"];
 
         $.confirm({
             title: 'Please Confirm!',
-            content: 'Are you sure you want to delete this ' + deptName,
+            content: 'Are you sure you want to delete this \"' + deptName + '\"',
             buttons: {
                 confirm: {
                     text: 'Confirm',
@@ -240,7 +241,8 @@
 
                                 if (response.success) {
 
-                                    deptVM.refresh();
+                                    //deptVM.refresh();
+                                    dtDept.row(rowSelect).remove().draw(false);
 
                                     toastr.success(response.message, 'Delete Department');
                                 }

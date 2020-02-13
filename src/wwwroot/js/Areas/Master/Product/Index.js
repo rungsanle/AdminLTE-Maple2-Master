@@ -85,7 +85,8 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: 10,
+                stateSave: true
             });
 
             //dt.on('draw', function () {
@@ -254,7 +255,7 @@
 
         $.confirm({
             title: 'Please Confirm!',
-            content: 'Are you sure you want to delete this ' + productName,
+            content: 'Are you sure you want to delete this \"' + productName + '\"',
             buttons: {
                 confirm: {
                     text: 'Confirm',
@@ -270,7 +271,8 @@
 
                                 if (response.success) {
 
-                                    productVM.refresh();
+                                    //productVM.refresh();
+                                    dtProd.row(rowSelect).remove().draw(false);
 
                                     toastr.success(response.message, 'Delete Product');
                                 }
