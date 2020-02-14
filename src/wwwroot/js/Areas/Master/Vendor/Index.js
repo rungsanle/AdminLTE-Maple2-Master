@@ -23,6 +23,12 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Vendor Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
@@ -102,7 +108,7 @@
     vendVM.init();
 
     //set default first page
-    if (appSetting.defaultFirstPage == 'True') {
+    if (appSetting.defaultFirstPage == 1) {
         setTimeout(function () {
             if (dtVend.page.info().page != 0) {
                 dtVend.page('first').draw('page');

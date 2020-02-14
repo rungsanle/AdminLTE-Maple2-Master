@@ -157,31 +157,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CompanyCode,CompanyName,CompanyLogoPath,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CompanyTaxId,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Company m_Company)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_Company.Created_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var compBll = new CompanyBLL())
+                    m_Company.Created_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await compBll.InsertCompany(m_Company);
+                        using (var compBll = new CompanyBLL())
+                        {
+                            resultObj = await compBll.InsertCompany(m_Company);
 
-                        _cache.Remove("CACHE_MASTER_COMPANY");
+                            _cache.Remove("CACHE_MASTER_COMPANY");
+                        }
+
+                        return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Created." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_Company, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Created." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_Company, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_Company, message = "Created Faield" });
             }
-
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Company, message = "Created Faield" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         //public async Task<IActionResult> UploadCompanyLogo(List<IFormFile> files)
@@ -300,31 +307,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("CompanyCode,CompanyName,CompanyLogoPath,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CompanyTaxId,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Company m_Company)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_Company.Updated_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var compBll = new CompanyBLL())
+                    m_Company.Updated_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await compBll.UpdateCompany(m_Company);
+                        using (var compBll = new CompanyBLL())
+                        {
+                            resultObj = await compBll.UpdateCompany(m_Company);
 
-                        _cache.Remove("CACHE_MASTER_COMPANY");
+                            _cache.Remove("CACHE_MASTER_COMPANY");
+                        }
+
+                        return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Update." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_Company, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_Company)resultObj.ObjectValue, message = "Company Update." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_Company, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_Company, message = "Update Failed" });
             }
-
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Company, message = "Update Failed" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         // POST: Master/Company/Delete/5
@@ -384,7 +398,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
     }

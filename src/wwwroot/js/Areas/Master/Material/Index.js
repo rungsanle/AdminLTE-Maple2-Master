@@ -21,6 +21,12 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Material Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
@@ -82,7 +88,8 @@
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: 10,
-                stateSave: true
+                stateSave: true,
+                stateDuration: -1
             });
 
             //dt.on('draw', function () {
@@ -220,7 +227,8 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                var reponseText = JSON.parse(xhr.responseText);
+                toastr.error('Error: ' + reponseText.Message, 'Edit Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
             }
         });
 

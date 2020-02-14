@@ -128,32 +128,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CustomerCode,CustomerName,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CustomerEmail,CustomerContact,CreditTerm,PriceLevel,CustomerTaxId,Remark,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Customer m_Customer)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_Customer.Created_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var custBll = new CustomerBLL())
+                    m_Customer.Created_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await custBll.InsertCustomer(m_Customer);
+                        using (var custBll = new CustomerBLL())
+                        {
+                            resultObj = await custBll.InsertCustomer(m_Customer);
 
-                        _cache.Remove("CACHE_MASTER_CUSTOMER");
+                            _cache.Remove("CACHE_MASTER_CUSTOMER");
+                        }
+
+                        return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Created." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_Customer, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Created." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_Customer, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_Customer, message = "Created Faield" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Customer, message = "Created Faield" });
-            
         }
 
         // GET: Master/Customer/Edit/5
@@ -209,32 +216,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("CustomerCode,CustomerName,AddressL1,AddressL2,AddressL3,AddressL4,Telephone,Fax,CustomerEmail,CustomerContact,CreditTerm,PriceLevel,CustomerTaxId,Remark,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_Customer m_Customer)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_Customer.Updated_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var custBll = new CustomerBLL())
+                    m_Customer.Updated_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await custBll.UpdateCustomer(m_Customer);
+                        using (var custBll = new CustomerBLL())
+                        {
+                            resultObj = await custBll.UpdateCustomer(m_Customer);
 
-                        _cache.Remove("CACHE_MASTER_CUSTOMER");
+                            _cache.Remove("CACHE_MASTER_CUSTOMER");
+                        }
+
+                        return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Update." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_Customer, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_Customer)resultObj.ObjectValue, message = "Customer Update." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_Customer, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_Customer, message = "Update Failed" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_Customer, message = "Update Failed" });
-            
         }
 
         // POST: Master/Customer/Delete/5

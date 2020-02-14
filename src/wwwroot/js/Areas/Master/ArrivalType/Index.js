@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     $("#message-alert").hide();
     //Grid Table Config
     arrTypeVM = {
@@ -21,10 +24,16 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Arrival Type Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
-                autoWidth: false,
+                autoWidth: true,
                 ajax: {
                     "url": $('#IndexData').data('arrtype-get-url'),    //"/Customer/GetCustomers",
                     "type": "GET",
@@ -69,8 +78,9 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
-                stateSave: true
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -109,7 +119,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: false,
+            async: true,
             success: function (data) {
                 if (data) {
                     $('#newArrivalTypeContainer').html(data);
@@ -119,7 +129,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseText = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseText.Message, 'Create Arrival Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -154,7 +167,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Arrival Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -185,7 +201,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Arrival Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -227,14 +246,17 @@
                                         //arrTypeVM.refresh();
                                         dtArrivalType.row(rowSelect).remove().draw(false);
 
-                                        toastr.success(response.message, 'Delete Arrival Type');
+                                        toastr.success(response.message, 'Delete Arrival Type', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout});
                                     }
                                     else {
-                                        toastr.error(response.message, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                        toastr.error(response.message, 'Delete Arrival Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                     }
                                 },
                                 error: function (xhr, txtStatus, errThrown) {
-                                    toastr.error('Error: ' + xhr.statusText, 'Delete Arrival Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                    var reponseErr = JSON.parse(xhr.responseText);
+                                    
+                                    toastr.error('Error: ' + reponseErr.message, 'Delete Arrival Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             });
                     }

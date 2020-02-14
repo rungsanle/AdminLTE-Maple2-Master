@@ -5,4 +5,5 @@
     var num = Math.random();
     var imgSrc = $('#imageLogo').attr("src") + "?v=" + num;
     $('#imageLogo').attr("src", imgSrc);
+
 });

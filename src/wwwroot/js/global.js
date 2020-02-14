@@ -2,7 +2,7 @@
 
 global.applyToastrOption = function () {
     toastr.options = {
-        "closeButton": false,
+        "closeButton": true,
         "debug": false,
         "positionClass": "toast-bottom-right",
         "newestOnTop": true,
@@ -360,3 +360,5 @@ global.getAppSettings = function (strKey) {
     var appSettings = JSON.parse(localStorage.getItem(strKey));
     return appSettings;
 };
+
+

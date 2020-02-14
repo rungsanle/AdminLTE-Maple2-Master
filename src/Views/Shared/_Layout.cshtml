@@ -88,6 +88,7 @@
     <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
 
     <script>
+        
         var ROOT = '@Url.Content("~/")';
 
         global.applyDraggable();
@@ -95,12 +96,13 @@
         global.applyToastrOption();
 
         //toastr.options.positionClass = 'toast-bottom-right';
-
+        
 
         $(document).ready(function () {
 
             $('.sidebar-menu').tree()
         })
+
     </script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
 </body>

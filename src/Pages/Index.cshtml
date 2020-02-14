@@ -7,17 +7,22 @@
     <script src="~/js/global.js"></script>
     <script>
 
+        const aaa_aaa = "TEst Value";
+
         //clear
         localStorage.clear();
 
-        var appSettings = {
-            defaultFirstPage: '@ViewData["DefaultFirstPage"]',
-            tableDisplayLength: @ViewData["TableDisplayLength"]
+        var _appSettings = {
+            defaultFirstPage: @ViewData["DefaultFirstPage"],
+            tableDisplayLength: @ViewData["TableDisplayLength"],
+            toastrSuccessTimeout: @ViewData["ToastrSuccessTimeout"],
+            toastrErrorTimeout: @ViewData["ToastrErrorTimeout"],
+            toastrExtenTimeout: @ViewData["ToastrExtenTimeout"],
         };
 
-        global.setAppSettings('AppSettings', JSON.stringify(appSettings));
+        global.setAppSettings('AppSettings', JSON.stringify(_appSettings));
 
-
+        
 
     </script>
 }

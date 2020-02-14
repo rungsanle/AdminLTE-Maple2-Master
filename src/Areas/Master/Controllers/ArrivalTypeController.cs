@@ -119,31 +119,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ArrivalTypeCode,ArrivalTypeName,ArrivalTypeDesc,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_ArrivalType m_ArrivalType)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_ArrivalType.Created_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var arrTypeBll = new ArrivalTypeBLL())
+                    m_ArrivalType.Created_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await arrTypeBll.InsertArrivalType(m_ArrivalType);
+                        using (var arrTypeBll = new ArrivalTypeBLL())
+                        {
+                            resultObj = await arrTypeBll.InsertArrivalType(m_ArrivalType);
 
-                        _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
+                            _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
+                        }
+
+                        return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Created." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_ArrivalType, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Created." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_ArrivalType, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_ArrivalType, message = "Created Faield" });
             }
-
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_ArrivalType, message = "Created Faield" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         // GET: Master/ArrivalType/Edit/5
@@ -199,32 +206,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("ArrivalTypeCode,ArrivalTypeName,ArrivalTypeDesc,CompanyCode,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_ArrivalType m_ArrivalType)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_ArrivalType.Updated_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var arrTypeBll = new ArrivalTypeBLL())
+                    m_ArrivalType.Updated_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await arrTypeBll.UpdateArrivalType(m_ArrivalType);
+                        using (var arrTypeBll = new ArrivalTypeBLL())
+                        {
+                            resultObj = await arrTypeBll.UpdateArrivalType(m_ArrivalType);
 
-                        _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
+                            _cache.Remove("CACHE_MASTER_ARRIVALTYPE");
+                        }
+
+                        return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Update." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_ArrivalType, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_ArrivalType)resultObj.ObjectValue, message = "Arrival Type Update." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_ArrivalType, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_ArrivalType, message = "Update Failed" });
             }
-
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_ArrivalType, message = "Update Failed" });
-
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
         
         // POST: Master/ArrivalType/Delete/5
@@ -284,7 +297,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message });
             }
             
         }
