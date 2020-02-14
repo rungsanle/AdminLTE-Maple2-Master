@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 
         public async Task<IActionResult> GetUser()
         {
-            if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
+            try
             {
-                return Json(new { data = c_lstUser });
+                if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
+                {
+                    return Json(new { data = c_lstUser });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var userBll = new UserBLL())
+                {
+                    var lstUser = await userBll.GetUser(null);
+
+                    _cache.Set("CACHE_ADMINISTRATOR_USER", lstUser, options);
+
+                    return Json(new { data = lstUser });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var userBll = new UserBLL())
-            {
-                var lstUser = await userBll.GetUser(null);
-
-                _cache.Set("CACHE_ADMINISTRATOR_USER", lstUser, options);
-
-                return Json(new { data = lstUser });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -64,29 +71,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
+            try
             {
-                var m_User = c_lstUser.Find(m => m.Id == id);
 
-                if (m_User == null)
+                if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
                 {
-                    return NotFound();
+                    var m_User = c_lstUser.Find(m => m.Id == id);
+
+                    if (m_User == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_User);
                 }
 
-                return PartialView(m_User);
+                using (var userBll = new UserBLL())
+                {
+                    var lstUser = await userBll.GetUser(id);
+                    var m_User = lstUser.First();
+
+                    if (m_User == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_User);
+                }
             }
-
-            using (var userBll = new UserBLL())
+            catch (Exception ex)
             {
-                var lstUser = await userBll.GetUser(id);
-                var m_User = lstUser.First();
-
-                if (m_User == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_User);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -141,29 +156,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
+            try
             {
-                var m_User = c_lstUser.Find(m => m.Id == id);
 
-                if (m_User == null)
+                if (_cache.TryGetValue("CACHE_ADMINISTRATOR_USER", out List<M_User> c_lstUser))
                 {
-                    return NotFound();
+                    var m_User = c_lstUser.Find(m => m.Id == id);
+
+                    if (m_User == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_User);
                 }
 
-                return PartialView(m_User);
+                using (var userBll = new UserBLL())
+                {
+                    var lstUser = await userBll.GetUser(id);
+                    var m_User = lstUser.First();
+
+                    if (m_User == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_User);
+                }
             }
-
-            using (var userBll = new UserBLL())
+            catch (Exception ex)
             {
-                var lstUser = await userBll.GetUser(id);
-                var m_User = lstUser.First();
-
-                if (m_User == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_User);
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
         }
