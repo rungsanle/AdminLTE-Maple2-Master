@@ -38,25 +38,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMaterialType()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            try
             {
-                return Json(new { data = c_lstMatType });
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+                {
+                    return Json(new { data = c_lstMatType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var matTypeBll = new MaterialTypeBLL())
+                {
+                    var lstMatType = await matTypeBll.GetMaterialType(null);
+
+                    _cache.Set("CACHE_MASTER_MATERIALTYPE", lstMatType, options);
+
+                    return Json(new { data = lstMatType });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var matTypeBll = new MaterialTypeBLL())
-            {
-                var lstMatType = await matTypeBll.GetMaterialType(null);
-
-                _cache.Set("CACHE_MASTER_MATERIALTYPE", lstMatType, options);
-
-                return Json(new { data = lstMatType });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var matTypeBll = new MaterialTypeBLL())
@@ -73,31 +80,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            try
             {
-                var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
 
-                if (m_MaterialType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
                 {
-                    return NotFound();
+                    var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
+
+                    if (m_MaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_MaterialType);
                 }
 
-                return PartialView(m_MaterialType);
-            }
-
-            using (var matTypeBll = new MaterialTypeBLL())
-            {
-                var lstMatType = await matTypeBll.GetMaterialType(id);
-                var m_MaterialType = lstMatType.First();
-
-                if (m_MaterialType == null)
+                using (var matTypeBll = new MaterialTypeBLL())
                 {
-                    return NotFound();
-                }
+                    var lstMatType = await matTypeBll.GetMaterialType(id);
+                    var m_MaterialType = lstMatType.First();
 
-                return PartialView(m_MaterialType);
+                    if (m_MaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_MaterialType);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // GET: Master/MaterialType/Create
@@ -152,32 +167,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
+            try
             {
-                var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
 
-                if (m_MaterialType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIALTYPE", out List<M_MaterialType> c_lstMatType))
                 {
-                    return NotFound();
+                    var m_MaterialType = c_lstMatType.Find(m => m.Id == id);
+
+                    if (m_MaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_MaterialType);
                 }
 
-                return PartialView(m_MaterialType);
-            }
-
-            using (var matTypeBll = new MaterialTypeBLL())
-            {
-                var lstMatType = await matTypeBll.GetMaterialType(id);
-
-                var m_MaterialType = lstMatType.First();
-
-                if (m_MaterialType == null)
+                using (var matTypeBll = new MaterialTypeBLL())
                 {
-                    return NotFound();
-                }
+                    var lstMatType = await matTypeBll.GetMaterialType(id);
 
-                return PartialView(m_MaterialType);
+                    var m_MaterialType = lstMatType.First();
+
+                    if (m_MaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_MaterialType);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // POST: Master/MaterialType/Edit/5
@@ -287,32 +310,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             string jsonData = string.Empty;
             string filePath = string.Empty;
-            string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\MaterialType\\";
 
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\MaterialType\\";
 
-            foreach (var file in files)
-            {
-                filePath = Path.Combine(path, file.FileName);
-
-                if (file.Length <= 0)
+                if (!Directory.Exists(path))
                 {
-                    continue;
+                    Directory.CreateDirectory(path);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    await file.CopyToAsync(stream);
+                    filePath = Path.Combine(path, file.FileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+
+                    jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
                 }
 
-
-                jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
+                return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]

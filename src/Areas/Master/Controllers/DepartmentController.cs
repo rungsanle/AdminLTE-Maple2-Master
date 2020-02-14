@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetDepartment()
         {
-            if(_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            try
             {
-                return Json(new { data = c_lstDept });
+                if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+                {
+                    return Json(new { data = c_lstDept });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var deptBll = new DepartmentBLL())
+                {
+                    var lstDept = await deptBll.GetDepartment(null);
+
+                    _cache.Set("CACHE_MASTER_DEPARTMENT", lstDept, options);
+
+                    return Json(new { data = lstDept });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var deptBll = new DepartmentBLL())
-            {
-                var lstDept = await deptBll.GetDepartment(null);
-
-                _cache.Set("CACHE_MASTER_DEPARTMENT", lstDept, options);
-
-                return Json(new { data = lstDept });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
 
@@ -70,29 +77,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            try
             {
-                var m_Department = c_lstDept.Find(d => d.Id == id);
 
-                if (m_Department == null)
+                if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
                 {
-                    return NotFound();
+                    var m_Department = c_lstDept.Find(d => d.Id == id);
+
+                    if (m_Department == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Department);
                 }
 
-                return PartialView(m_Department);
+                using (var deptBll = new DepartmentBLL())
+                {
+                    var lstDept = await deptBll.GetDepartment(id);
+                    var m_Department = lstDept.First();
+
+                    if (m_Department == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Department);
+                }
             }
-
-            using (var deptBll = new DepartmentBLL())
+            catch (Exception ex)
             {
-                var lstDept = await deptBll.GetDepartment(id);
-                var m_Department = lstDept.First();
-
-                if (m_Department == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Department);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -174,30 +189,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
+            try
             {
-                var m_Department = c_lstDept.Find(d => d.Id == id);
 
-                if (m_Department == null)
+                if (_cache.TryGetValue("CACHE_MASTER_DEPARTMENT", out List<M_Department> c_lstDept))
                 {
-                    return NotFound();
+                    var m_Department = c_lstDept.Find(d => d.Id == id);
+
+                    if (m_Department == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Department);
                 }
 
-                return PartialView(m_Department);
+                using (var deptBll = new DepartmentBLL())
+                {
+                    var lstDept = await deptBll.GetDepartment(id);
+
+                    var m_Department = lstDept.First();
+
+                    if (m_Department == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Department);
+                }
             }
-
-            using (var deptBll = new DepartmentBLL())
+            catch (Exception ex)
             {
-                var lstDept = await deptBll.GetDepartment(id);
-
-                var m_Department = lstDept.First();
-
-                if (m_Department == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Department);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

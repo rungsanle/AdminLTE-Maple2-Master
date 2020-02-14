@@ -34,30 +34,33 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetArrivalType()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            try
             {
-                return Json(new { data = c_lstArrType });
+                if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+                {
+                    return Json(new { data = c_lstArrType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var arrTypeBll = new ArrivalTypeBLL())
+                {
+                    var lstArrType = await arrTypeBll.GetArrivalType(null);
+
+                    _cache.Set("CACHE_MASTER_ARRIVALTYPE", lstArrType, options);
+
+                    return Json(new { data = lstArrType });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var arrTypeBll = new ArrivalTypeBLL())
-            {
-                var lstArrType = await arrTypeBll.GetArrivalType(null);
-
-                _cache.Set("CACHE_MASTER_ARRIVALTYPE", lstArrType, options);
-
-                return Json(new { data = lstArrType });
+                return BadRequest(new { success = false, message = ex.Message });
             }
-            //using (var arrTypeBll = new ArrivalTypeBLL())
-            //{
-            //    return Json(new { data = await arrTypeBll.GetArrivalType(null) });
-            //}
         }
 
         // GET: Master/ArrivalType/Details/5
@@ -68,29 +71,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            try
             {
-                var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
 
-                if (m_ArrivalType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
                 {
-                    return NotFound();
+                    var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
+
+                    if (m_ArrivalType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ArrivalType);
                 }
 
-                return PartialView(m_ArrivalType);
+                using (var arrTypeBll = new ArrivalTypeBLL())
+                {
+                    var lstArrType = await arrTypeBll.GetArrivalType(id);
+                    var m_ArrivalType = lstArrType.First();
+
+                    if (m_ArrivalType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ArrivalType);
+                }
             }
-
-            using (var arrTypeBll = new ArrivalTypeBLL())
+            catch (Exception ex)
             {
-                var lstArrType = await arrTypeBll.GetArrivalType(id);
-                var m_ArrivalType = lstArrType.First();
-
-                if (m_ArrivalType == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_ArrivalType);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -145,32 +156,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+            try
             {
-                var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
 
-                if (m_ArrivalType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
                 {
-                    return NotFound();
+                    var m_ArrivalType = c_lstArrType.Find(at => at.Id == id);
+
+                    if (m_ArrivalType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ArrivalType);
                 }
 
-                return PartialView(m_ArrivalType);
-            }
-
-            using (var arrTypeBll = new ArrivalTypeBLL())
-            {
-                var lstArrType = await arrTypeBll.GetArrivalType(id);
-
-                var m_ArrivalType = lstArrType.First();
-
-                if (m_ArrivalType == null)
+                using (var arrTypeBll = new ArrivalTypeBLL())
                 {
-                    return NotFound();
-                }
+                    var lstArrType = await arrTypeBll.GetArrivalType(id);
 
-                return PartialView(m_ArrivalType);
+                    var m_ArrivalType = lstArrType.First();
+
+                    if (m_ArrivalType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ArrivalType);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // POST: Master/ArrivalType/Edit/5

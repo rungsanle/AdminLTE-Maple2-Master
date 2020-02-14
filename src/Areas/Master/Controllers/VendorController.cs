@@ -39,25 +39,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Vendor
         public async Task<IActionResult> GetVendor()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+            try
             {
-                return Json(new { data = c_lstVend });
+                if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+                {
+                    return Json(new { data = c_lstVend });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var vendBll = new VendorBLL())
+                {
+                    var lstVend = await vendBll.GetVendor(null);
+
+                    _cache.Set("CACHE_MASTER_VENDOR", lstVend, options);
+
+                    return Json(new { data = lstVend });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var vendBll = new VendorBLL())
-            {
-                var lstVend = await vendBll.GetVendor(null);
-
-                _cache.Set("CACHE_MASTER_VENDOR", lstVend, options);
-
-                return Json(new { data = lstVend });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var vendBll = new VendorBLL())
@@ -74,29 +81,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+            try
             {
-                var m_Vendor = c_lstVend.Find(v => v.Id == id);
 
-                if (m_Vendor == null)
+                if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
                 {
-                    return NotFound();
+                    var m_Vendor = c_lstVend.Find(v => v.Id == id);
+
+                    if (m_Vendor == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Vendor);
                 }
 
-                return PartialView(m_Vendor);
+                using (var vendBll = new VendorBLL())
+                {
+                    var lstVend = await vendBll.GetVendor(id);
+                    var m_Vendor = lstVend.First();
+
+                    if (m_Vendor == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Vendor);
+                }
             }
-
-            using (var vendBll = new VendorBLL())
+            catch (Exception ex)
             {
-                var lstVend = await vendBll.GetVendor(id);
-                var m_Vendor = lstVend.First();
-
-                if (m_Vendor == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Vendor);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -152,29 +167,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
+            try
             {
-                var m_Vendor = c_lstVend.Find(v => v.Id == id);
 
-                if (m_Vendor == null)
+                if (_cache.TryGetValue("CACHE_MASTER_VENDOR", out List<M_Vendor> c_lstVend))
                 {
-                    return NotFound();
+                    var m_Vendor = c_lstVend.Find(v => v.Id == id);
+
+                    if (m_Vendor == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Vendor);
                 }
 
-                return PartialView(m_Vendor);
+                using (var vendBll = new VendorBLL())
+                {
+                    var lstVend = await vendBll.GetVendor(id);
+                    var m_Vendor = lstVend.First();
+
+                    if (m_Vendor == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Vendor);
+                }
             }
-
-            using (var vendBll = new VendorBLL())
+            catch (Exception ex)
             {
-                var lstVend = await vendBll.GetVendor(id);
-                var m_Vendor = lstVend.First();
-
-                if (m_Vendor == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Vendor);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -284,32 +307,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             string jsonData = string.Empty;
             string filePath = string.Empty;
-            string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Vendors\\";
 
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Vendors\\";
 
-            foreach (var file in files)
-            {
-                filePath = Path.Combine(path, file.FileName);
-
-                if (file.Length <= 0)
+                if (!Directory.Exists(path))
                 {
-                    continue;
+                    Directory.CreateDirectory(path);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    await file.CopyToAsync(stream);
+                    filePath = Path.Combine(path, file.FileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+
+                    jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
                 }
 
-
-                jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
+                return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]

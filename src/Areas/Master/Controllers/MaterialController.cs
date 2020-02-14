@@ -41,25 +41,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Material
         public async Task<IActionResult> GetMaterial()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+            try
             {
-                return Json(new { data = c_lstMat });
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+                {
+                    return Json(new { data = c_lstMat });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var matBll = new MaterialBLL())
+                {
+                    var lstMat = await matBll.GetMaterial(null);
+
+                    _cache.Set("CACHE_MASTER_MATERIAL", lstMat, options);
+
+                    return Json(new { data = lstMat });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var matBll = new MaterialBLL())
-            {
-                var lstMat = await matBll.GetMaterial(null);
-
-                _cache.Set("CACHE_MASTER_MATERIAL", lstMat, options);
-
-                return Json(new { data = lstMat });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -71,30 +78,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+            try
             {
-                var m_Material = c_lstMat.Find(m => m.Id == id);
-
-                if (m_Material == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
                 {
-                    return NotFound();
+                    var m_Material = c_lstMat.Find(m => m.Id == id);
+
+                    if (m_Material == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Material);
                 }
 
-                return PartialView(m_Material);
+
+                using (var matBll = new MaterialBLL())
+                {
+                    var lstMat = await matBll.GetMaterial(id);
+                    var m_Material = lstMat.First();
+
+                    if (m_Material == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Material);
+                }
             }
-
-
-            using (var matBll = new MaterialBLL())
+            catch (Exception ex)
             {
-                var lstMat = await matBll.GetMaterial(id);
-                var m_Material = lstMat.First();
-
-                if (m_Material == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Material);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -143,57 +157,63 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         public IActionResult UploadMaterialImage(List<IFormFile> files)
         {
             //string fileName = string.Empty;
-
-            string fileName = Request.Form["fileName"];
-
-            var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\materials\\";
-
-            if (!Directory.Exists(filesPath))
+            try
             {
-                Directory.CreateDirectory(filesPath);
-            }
+                string fileName = Request.Form["fileName"];
 
-            foreach (var file in files)
-            {
-                var fullFilePath = Path.Combine(filesPath, fileName);
+                var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\materials\\";
 
-                if (file.Length <= 0)
+                if (!Directory.Exists(filesPath))
                 {
-                    continue;
+                    Directory.CreateDirectory(filesPath);
                 }
 
-                using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                foreach (var file in files)
                 {
-                    int newWidth, newHeight;
+                    var fullFilePath = Path.Combine(filesPath, fileName);
 
-                    if (image.Width > 100 || image.Height > 100)
+                    if (file.Length <= 0)
                     {
-                        newWidth = (int)(image.Width * 0.5);
-                        newHeight = (int)(image.Height * 0.5);
-                    }
-                    else
-                    {
-                        newWidth = image.Width;
-                        newHeight = image.Height;
+                        continue;
                     }
 
-                    var thumbnailImg = new Bitmap(newWidth, newHeight);
-                    var thumbGraph = Graphics.FromImage(thumbnailImg);
-                    thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
-                    thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
-                    thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                    thumbGraph.DrawImage(image, imageRectangle);
-                    thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                    {
+                        int newWidth, newHeight;
+
+                        if (image.Width > 100 || image.Height > 100)
+                        {
+                            newWidth = (int)(image.Width * 0.5);
+                            newHeight = (int)(image.Height * 0.5);
+                        }
+                        else
+                        {
+                            newWidth = image.Width;
+                            newHeight = image.Height;
+                        }
+
+                        var thumbnailImg = new Bitmap(newWidth, newHeight);
+                        var thumbGraph = Graphics.FromImage(thumbnailImg);
+                        thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                        thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                        thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                        thumbGraph.DrawImage(image, imageRectangle);
+                        thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    }
+
+                    //using (var stream = new FileStream(fullFilePath, FileMode.Create))
+                    //{
+                    //    await file.CopyToAsync(stream);
+                    //}
                 }
 
-                //using (var stream = new FileStream(fullFilePath, FileMode.Create))
-                //{
-                //    await file.CopyToAsync(stream);
-                //}
+                return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
             //return this.Ok();
         }
 
@@ -207,29 +227,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
+            try
             {
-                var m_Material = c_lstMat.Find(m => m.Id == id);
 
-                if (m_Material == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MATERIAL", out List<M_Material> c_lstMat))
                 {
-                    return NotFound();
+                    var m_Material = c_lstMat.Find(m => m.Id == id);
+
+                    if (m_Material == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Material);
                 }
 
-                return PartialView(m_Material);
+                using (var matBll = new MaterialBLL())
+                {
+                    var lstMat = await matBll.GetMaterial(id);
+                    var m_Material = lstMat.First();
+
+                    if (m_Material == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Material);
+                }
             }
-
-            using (var matBll = new MaterialBLL())
+            catch (Exception ex)
             {
-                var lstMat = await matBll.GetMaterial(id);
-                var m_Material = lstMat.First();
-
-                if (m_Material == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Material);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -339,32 +367,41 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             string jsonData = string.Empty;
             string filePath = string.Empty;
-            string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Materials\\";
 
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
 
-            foreach (var file in files)
-            {
-                filePath = Path.Combine(path, file.FileName);
+                string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Materials\\";
 
-                if (file.Length <= 0)
+                if (!Directory.Exists(path))
                 {
-                    continue;
+                    Directory.CreateDirectory(path);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    await file.CopyToAsync(stream);
+                    filePath = Path.Combine(path, file.FileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+
+                    jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
                 }
 
-
-                jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
+                return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]

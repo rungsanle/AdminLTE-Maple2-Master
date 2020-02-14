@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetProcess()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            try
             {
-                return Json(new { data = c_lstProc });
+                if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+                {
+                    return Json(new { data = c_lstProc });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var processBll = new ProcessBLL())
+                {
+                    var lstProc = await processBll.GetProcess(null);
+
+                    _cache.Set("CACHE_MASTER_PROCESS", lstProc, options);
+
+                    return Json(new { data = lstProc });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var processBll = new ProcessBLL())
-            {
-                var lstProc = await processBll.GetProcess(null);
-
-                _cache.Set("CACHE_MASTER_PROCESS", lstProc, options);
-
-                return Json(new { data = lstProc });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var processBll = new ProcessBLL())
@@ -69,29 +76,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            try
             {
-                var m_Process = c_lstProc.Find(p => p.Id == id);
 
-                if (m_Process == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
                 {
-                    return NotFound();
+                    var m_Process = c_lstProc.Find(p => p.Id == id);
+
+                    if (m_Process == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Process);
                 }
 
-                return PartialView(m_Process);
+                using (var processBll = new ProcessBLL())
+                {
+                    var lstProcess = await processBll.GetProcess(id);
+                    var m_Process = lstProcess.First();
+
+                    if (m_Process == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Process);
+                }
             }
-
-            using (var processBll = new ProcessBLL())
+            catch (Exception ex)
             {
-                var lstProcess = await processBll.GetProcess(id);
-                var m_Process = lstProcess.First();
-
-                if (m_Process == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Process);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -146,32 +161,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
+            try
             {
-                var m_Process = c_lstProc.Find(p => p.Id == id);
 
-                if (m_Process == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PROCESS", out List<M_Process> c_lstProc))
                 {
-                    return NotFound();
+                    var m_Process = c_lstProc.Find(p => p.Id == id);
+
+                    if (m_Process == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Process);
                 }
 
-                return PartialView(m_Process);
-            }
-
-            using (var processBll = new ProcessBLL())
-            {
-                var lstProcess = await processBll.GetProcess(id);
-
-                var m_Process = lstProcess.First();
-
-                if (m_Process == null)
+                using (var processBll = new ProcessBLL())
                 {
-                    return NotFound();
-                }
+                    var lstProcess = await processBll.GetProcess(id);
 
-                return PartialView(m_Process);
+                    var m_Process = lstProcess.First();
+
+                    if (m_Process == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Process);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // POST: Master/Process/Edit/5

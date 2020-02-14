@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMenu()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            try
             {
-                return Json(new { data = c_lstMenu });
+                if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+                {
+                    return Json(new { data = c_lstMenu });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var menuBll = new MenuBLL())
+                {
+                    var lstMenu = await menuBll.GetMenu(null);
+
+                    _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
+
+                    return Json(new { data = lstMenu });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var menuBll = new MenuBLL())
-            {
-                var lstMenu = await menuBll.GetMenu(null);
-
-                _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
-
-                return Json(new { data = lstMenu });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var menuBll = new MenuBLL())
@@ -63,47 +70,54 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetParrentMenu()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            try
             {
-                var parrentList = c_lstMenu
-                                  .OrderBy(pm => pm.Id)
-                                  .Where(pm => pm.isParent == true)
-                                  .Select(pm => new M_Menu
-                                  {
-                                      Id = pm.Id,
-                                      nameOption = pm.nameOption
-                                  }).ToList();
+                if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+                {
+                    var parrentList = c_lstMenu
+                                      .OrderBy(pm => pm.Id)
+                                      .Where(pm => pm.isParent == true)
+                                      .Select(pm => new M_Menu
+                                      {
+                                          Id = pm.Id,
+                                          nameOption = pm.nameOption
+                                      }).ToList();
 
-                parrentList.Insert(0, new M_Menu { Id = 0, nameOption = "Home" });
+                    parrentList.Insert(0, new M_Menu { Id = 0, nameOption = "Home" });
 
-                return Json(new { data = parrentList });
+                    return Json(new { data = parrentList });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var menuBll = new MenuBLL())
+                {
+                    var lstMenu = await menuBll.GetMenu(null);
+
+                    _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
+
+                    var parrentList = lstMenu
+                                      .OrderBy(pm => pm.Id)
+                                      .Where(pm => pm.isParent == true)
+                                      .Select(pm => new M_Menu
+                                      {
+                                          Id = pm.Id,
+                                          nameOption = pm.nameOption
+                                      }).ToList();
+
+                    parrentList.Insert(0, new M_Menu { Id = 0, nameOption = "Home" });
+
+                    return Json(new { data = parrentList });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var menuBll = new MenuBLL())
-            {
-                var lstMenu = await menuBll.GetMenu(null);
-
-                _cache.Set("CACHE_MASTER_MENU", lstMenu, options);
-
-                var parrentList = lstMenu
-                                  .OrderBy(pm => pm.Id)
-                                  .Where(pm => pm.isParent == true)
-                                  .Select(pm => new M_Menu
-                                  {
-                                      Id = pm.Id,
-                                      nameOption = pm.nameOption
-                                  }).ToList();
-
-                parrentList.Insert(0, new M_Menu { Id = 0, nameOption = "Home" });
-
-                return Json(new { data = parrentList });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -115,29 +129,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            try
             {
-                var m_Menu = c_lstMenu.Find(m => m.Id == id);
 
-                if (m_Menu == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
                 {
-                    return NotFound();
+                    var m_Menu = c_lstMenu.Find(m => m.Id == id);
+
+                    if (m_Menu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Menu);
                 }
 
-                return PartialView(m_Menu);
+                using (var menuBll = new MenuBLL())
+                {
+                    var lstMenu = await menuBll.GetMenu(id);
+                    var m_Menu = lstMenu.First();
+
+                    if (m_Menu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Menu);
+                }
             }
-
-            using (var menuBll = new MenuBLL())
+            catch (Exception ex)
             {
-                var lstMenu = await menuBll.GetMenu(id);
-                var m_Menu = lstMenu.First();
-
-                if (m_Menu == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Menu);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -191,30 +213,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
+            try
             {
-                var m_Menu = c_lstMenu.Find(m => m.Id == id);
 
-                if (m_Menu == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MENU", out List<M_Menu> c_lstMenu))
                 {
-                    return NotFound();
+                    var m_Menu = c_lstMenu.Find(m => m.Id == id);
+
+                    if (m_Menu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Menu);
                 }
 
-                return PartialView(m_Menu);
+                using (var menuBll = new MenuBLL())
+                {
+                    var lstMenu = await menuBll.GetMenu(id);
+
+                    var m_Menu = lstMenu.First();
+
+                    if (m_Menu == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Menu);
+                }
             }
-
-            using (var menuBll = new MenuBLL())
+            catch (Exception ex)
             {
-                var lstMenu = await menuBll.GetMenu(id);
-
-                var m_Menu = lstMenu.First();
-
-                if (m_Menu == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Menu);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

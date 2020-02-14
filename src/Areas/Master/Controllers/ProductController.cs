@@ -41,36 +41,50 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Product
         public async Task<IActionResult> GetProduct()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
+            try
             {
-                return Json(new { data = c_lstProd });
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
+                {
+                    return Json(new { data = c_lstProd });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var prodBll = new ProductBLL())
+                {
+                    var lstProd = await prodBll.GetProduct(null);
+
+                    _cache.Set("CACHE_MASTER_PRODUCT", lstProd, options);
+
+                    return Json(new { data = lstProd });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var prodBll = new ProductBLL())
-            {
-                var lstProd = await prodBll.GetProduct(null);
-
-                _cache.Set("CACHE_MASTER_PRODUCT", lstProd, options);
-
-                return Json(new { data = lstProd });
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
         // GET: Master/Product Process
         public async Task<IActionResult> GetProductProcess(int id)
         {
-            using (var prodBll = new ProductBLL())
+            try
             {
-                var lstProdProcess = await prodBll.GetProductProcess(id);
+                using (var prodBll = new ProductBLL())
+                {
+                    var lstProdProcess = await prodBll.GetProductProcess(id);
 
-                return Json(new { data = lstProdProcess });
+                    return Json(new { data = lstProdProcess });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -82,29 +96,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
+            try
             {
-                var m_Product = c_lstProd.Find(p => p.Id == id);
 
-                if (m_Product == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
                 {
-                    return NotFound();
+                    var m_Product = c_lstProd.Find(p => p.Id == id);
+
+                    if (m_Product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Product);
                 }
 
-                return PartialView(m_Product);
+                using (var prodBll = new ProductBLL())
+                {
+                    var lstProd = await prodBll.GetProduct(id);
+                    var m_Product = lstProd.First();
+
+                    if (m_Product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Product);
+                }
             }
-
-            using (var prodBll = new ProductBLL())
+            catch (Exception ex)
             {
-                var lstProd = await prodBll.GetProduct(id);
-                var m_Product = lstProd.First();
-
-                if (m_Product == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Product);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -152,51 +174,58 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [HttpPost]
         public IActionResult UploadProductImage(List<IFormFile> files)
         {
-            string fileName = Request.Form["fileName"];
-
-            var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\products\\";
-
-            if (!Directory.Exists(filesPath))
+            try
             {
-                Directory.CreateDirectory(filesPath);
-            }
+                string fileName = Request.Form["fileName"];
 
-            foreach (var file in files)
-            {
-                var fullFilePath = Path.Combine(filesPath, fileName);
+                var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\products\\";
 
-                if (file.Length <= 0)
+                if (!Directory.Exists(filesPath))
                 {
-                    continue;
+                    Directory.CreateDirectory(filesPath);
                 }
 
-                using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                foreach (var file in files)
                 {
-                    int newWidth, newHeight;
+                    var fullFilePath = Path.Combine(filesPath, fileName);
 
-                    if (image.Width > 100 || image.Height > 100)
+                    if (file.Length <= 0)
                     {
-                        newWidth = (int)(image.Width * 0.5);
-                        newHeight = (int)(image.Height * 0.5);
-                    }
-                    else
-                    {
-                        newWidth = image.Width;
-                        newHeight = image.Height;
+                        continue;
                     }
 
-                    var thumbnailImg = new Bitmap(newWidth, newHeight);
-                    var thumbGraph = Graphics.FromImage(thumbnailImg);
-                    thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
-                    thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
-                    thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                    thumbGraph.DrawImage(image, imageRectangle);
-                    thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                    {
+                        int newWidth, newHeight;
+
+                        if (image.Width > 100 || image.Height > 100)
+                        {
+                            newWidth = (int)(image.Width * 0.5);
+                            newHeight = (int)(image.Height * 0.5);
+                        }
+                        else
+                        {
+                            newWidth = image.Width;
+                            newHeight = image.Height;
+                        }
+
+                        var thumbnailImg = new Bitmap(newWidth, newHeight);
+                        var thumbGraph = Graphics.FromImage(thumbnailImg);
+                        thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                        thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                        thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                        thumbGraph.DrawImage(image, imageRectangle);
+                        thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    }
                 }
-            }
 
-            return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
+                return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         // GET: Master/Product/Edit/5
@@ -209,29 +238,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
+            try
             {
-                var m_Product = c_lstProd.Find(p => p.Id == id);
 
-                if (m_Product == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCT", out List<M_Product> c_lstProd))
                 {
-                    return NotFound();
+                    var m_Product = c_lstProd.Find(p => p.Id == id);
+
+                    if (m_Product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Product);
                 }
 
-                return PartialView(m_Product);
+                using (var prodBll = new ProductBLL())
+                {
+                    var lstProd = await prodBll.GetProduct(id);
+                    var m_Product = lstProd.First();
+
+                    if (m_Product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Product);
+                }
             }
-
-            using (var prodBll = new ProductBLL())
+            catch (Exception ex)
             {
-                var lstProd = await prodBll.GetProduct(id);
-                var m_Product = lstProd.First();
-
-                if (m_Product == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Product);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -340,32 +377,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             string jsonData = string.Empty;
             string filePath = string.Empty;
-            string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Products\\";
 
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Products\\";
 
-            foreach (var file in files)
-            {
-                filePath = Path.Combine(path, file.FileName);
-
-                if (file.Length <= 0)
+                if (!Directory.Exists(path))
                 {
-                    continue;
+                    Directory.CreateDirectory(path);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    await file.CopyToAsync(stream);
+                    filePath = Path.Combine(path, file.FileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+
+                    jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
                 }
 
-
-                jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
+                return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]

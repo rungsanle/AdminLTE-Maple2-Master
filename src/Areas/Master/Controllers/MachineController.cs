@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMachine()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+            try
             {
-                return Json(new { data = c_lstMac });
+                if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+                {
+                    return Json(new { data = c_lstMac });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var mcBll = new MachineBLL())
+                {
+                    var lstMac = await mcBll.GetMachine(null);
+
+                    _cache.Set("CACHE_MASTER_MACHINE", lstMac, options);
+
+                    return Json(new { data = lstMac });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var mcBll = new MachineBLL())
-            {
-                var lstMac = await mcBll.GetMachine(null);
-
-                _cache.Set("CACHE_MASTER_MACHINE", lstMac, options);
-
-                return Json(new { data = lstMac });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var mcBll = new MachineBLL())
@@ -63,9 +70,16 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetMachineByProdType(int? id)
         {
-            using (var mcBll = new MachineBLL())
+            try
             {
-                return Json(new { data = await mcBll.GetMachineByProdType(id) });
+                using (var mcBll = new MachineBLL())
+                {
+                    return Json(new { data = await mcBll.GetMachineByProdType(id) });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -77,29 +91,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+            try
             {
-                var m_Machine = c_lstMac.Find(m => m.Id == id);
 
-                if (m_Machine == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
                 {
-                    return NotFound();
+                    var m_Machine = c_lstMac.Find(m => m.Id == id);
+
+                    if (m_Machine == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Machine);
                 }
 
-                return PartialView(m_Machine);
+                using (var mcBll = new MachineBLL())
+                {
+                    var lstMc = await mcBll.GetMachine(id);
+                    var m_Machine = lstMc.First();
+
+                    if (m_Machine == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Machine);
+                }
             }
-
-            using (var mcBll = new MachineBLL())
+            catch (Exception ex)
             {
-                var lstMc = await mcBll.GetMachine(id);
-                var m_Machine = lstMc.First();
-
-                if (m_Machine == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Machine);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -155,32 +177,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
+            try
             {
-                var m_Machine = c_lstMac.Find(m => m.Id == id);
 
-                if (m_Machine == null)
+                if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
                 {
-                    return NotFound();
+                    var m_Machine = c_lstMac.Find(m => m.Id == id);
+
+                    if (m_Machine == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Machine);
                 }
 
-                return PartialView(m_Machine);
-            }
-
-            using (var mcBll = new MachineBLL())
-            {
-                var lstMc = await mcBll.GetMachine(id);
-
-                var m_Machine = lstMc.First();
-
-                if (m_Machine == null)
+                using (var mcBll = new MachineBLL())
                 {
-                    return NotFound();
-                }
+                    var lstMc = await mcBll.GetMachine(id);
 
-                return PartialView(m_Machine);
+                    var m_Machine = lstMc.First();
+
+                    if (m_Machine == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Machine);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // POST: Master/Machine/Edit/5

@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetProductionType()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            try
             {
-                return Json(new { data = c_lstProdType });
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+                {
+                    return Json(new { data = c_lstProdType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var prodTypeBll = new ProductionTypeBLL())
+                {
+                    var lstProdType = await prodTypeBll.GetProductionType(null);
+
+                    _cache.Set("CACHE_MASTER_PRODUCTIONTYPE", lstProdType, options);
+
+                    return Json(new { data = lstProdType });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var prodTypeBll = new ProductionTypeBLL())
-            {
-                var lstProdType = await prodTypeBll.GetProductionType(null);
-
-                _cache.Set("CACHE_MASTER_PRODUCTIONTYPE", lstProdType, options);
-
-                return Json(new { data = lstProdType });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var prodTypeBll = new ProductionTypeBLL())
@@ -69,29 +76,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            try
             {
-                var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
 
-                if (m_ProductionType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
                 {
-                    return NotFound();
+                    var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
+
+                    if (m_ProductionType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ProductionType);
                 }
 
-                return PartialView(m_ProductionType);
+                using (var prodTypeBll = new ProductionTypeBLL())
+                {
+                    var lstProdType = await prodTypeBll.GetProductionType(id);
+                    var m_ProductionType = lstProdType.First();
+
+                    if (m_ProductionType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ProductionType);
+                }
             }
-
-            using (var prodTypeBll = new ProductionTypeBLL())
+            catch (Exception ex)
             {
-                var lstProdType = await prodTypeBll.GetProductionType(id);
-                var m_ProductionType = lstProdType.First();
-
-                if (m_ProductionType == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_ProductionType);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -147,29 +162,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
+            try
             {
-                var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
 
-                if (m_ProductionType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_PRODUCTIONTYPE", out List<M_ProductionType> c_lstProdType))
                 {
-                    return NotFound();
+                    var m_ProductionType = c_lstProdType.Find(p => p.Id == id);
+
+                    if (m_ProductionType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ProductionType);
                 }
 
-                return PartialView(m_ProductionType);
+                using (var prodTypeBll = new ProductionTypeBLL())
+                {
+                    var lstProdType = await prodTypeBll.GetProductionType(id);
+                    var m_ProductionType = lstProdType.First();
+
+                    if (m_ProductionType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_ProductionType);
+                }
             }
-
-            using (var prodTypeBll = new ProductionTypeBLL())
+            catch (Exception ex)
             {
-                var lstProdType = await prodTypeBll.GetProductionType(id);
-                var m_ProductionType = lstProdType.First();
-
-                if (m_ProductionType == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_ProductionType);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

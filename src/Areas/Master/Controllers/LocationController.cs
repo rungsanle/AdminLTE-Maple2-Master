@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetLocation()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+            try
             {
-                return Json(new { data = c_lstLoc });
+                if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+                {
+                    return Json(new { data = c_lstLoc });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var locationBll = new LocationBLL())
+                {
+                    var lstLoc = await locationBll.GetLocation(null);
+
+                    _cache.Set("CACHE_MASTER_LOCATION", lstLoc, options);
+
+                    return Json(new { data = lstLoc });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var locationBll = new LocationBLL())
-            {
-                var lstLoc = await locationBll.GetLocation(null);
-
-                _cache.Set("CACHE_MASTER_LOCATION", lstLoc, options);
-
-                return Json(new { data = lstLoc });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var locationBll = new LocationBLL())
@@ -69,29 +76,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+            try
             {
-                var m_Location = c_lstLoc.Find(l => l.Id == id);
 
-                if (m_Location == null)
+                if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
                 {
-                    return NotFound();
+                    var m_Location = c_lstLoc.Find(l => l.Id == id);
+
+                    if (m_Location == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Location);
                 }
 
-                return PartialView(m_Location);
+                using (var locationBll = new LocationBLL())
+                {
+                    var lstLoc = await locationBll.GetLocation(id);
+                    var m_Location = lstLoc.First();
+
+                    if (m_Location == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Location);
+                }
             }
-
-            using (var locationBll = new LocationBLL())
+            catch (Exception ex)
             {
-                var lstLoc = await locationBll.GetLocation(id);
-                var m_Location = lstLoc.First();
-
-                if (m_Location == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Location);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -146,30 +161,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
+            try
             {
-                var m_Location = c_lstLoc.Find(l => l.Id == id);
 
-                if (m_Location == null)
+                if (_cache.TryGetValue("CACHE_MASTER_LOCATION", out List<M_Location> c_lstLoc))
                 {
-                    return NotFound();
+                    var m_Location = c_lstLoc.Find(l => l.Id == id);
+
+                    if (m_Location == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Location);
                 }
 
-                return PartialView(m_Location);
+                using (var locationBll = new LocationBLL())
+                {
+                    var lstLoc = await locationBll.GetLocation(id);
+
+                    var m_Location = lstLoc.First();
+
+                    if (m_Location == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Location);
+                }
             }
-
-            using (var locationBll = new LocationBLL())
+            catch (Exception ex)
             {
-                var lstLoc = await locationBll.GetLocation(id);
-
-                var m_Location = lstLoc.First();
-
-                if (m_Location == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Location);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

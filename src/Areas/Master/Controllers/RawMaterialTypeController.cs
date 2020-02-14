@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetRawMaterialType()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            try
             {
-                return Json(new { data = c_lstRawMatType });
+                if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+                {
+                    return Json(new { data = c_lstRawMatType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var rawMatTypeBll = new RawMaterialTypeBLL())
+                {
+                    var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(null);
+
+                    _cache.Set("CACHE_MASTER_RAWMATTYPE", lstRawMatType, options);
+
+                    return Json(new { data = lstRawMatType });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var rawMatTypeBll = new RawMaterialTypeBLL())
-            {
-                var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(null);
-
-                _cache.Set("CACHE_MASTER_RAWMATTYPE", lstRawMatType, options);
-
-                return Json(new { data = lstRawMatType });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //RawMaterial Type DbContext
@@ -70,29 +77,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            try
             {
-                var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
 
-                if (m_RawMaterialType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
                 {
-                    return NotFound();
+                    var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
+
+                    if (m_RawMaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_RawMaterialType);
                 }
 
-                return PartialView(m_RawMaterialType);
+                using (var rawMatTypeBll = new RawMaterialTypeBLL())
+                {
+                    var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
+                    var m_RawMaterialType = lstRawMatType.First();
+
+                    if (m_RawMaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_RawMaterialType);
+                }
             }
-
-            using (var rawMatTypeBll = new RawMaterialTypeBLL())
+            catch (Exception ex)
             {
-                var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
-                var m_RawMaterialType = lstRawMatType.First();
-
-                if (m_RawMaterialType == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_RawMaterialType);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -148,29 +163,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+            try
             {
-                var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
 
-                if (m_RawMaterialType == null)
+                if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
                 {
-                    return NotFound();
+                    var m_RawMaterialType = c_lstRawMatType.Find(r => r.Id == id);
+
+                    if (m_RawMaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_RawMaterialType);
                 }
 
-                return PartialView(m_RawMaterialType);
+                using (var rawMatTypeBll = new RawMaterialTypeBLL())
+                {
+                    var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
+                    var m_RawMaterialType = lstRawMatType.First();
+
+                    if (m_RawMaterialType == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_RawMaterialType);
+                }
             }
-
-            using (var rawMatTypeBll = new RawMaterialTypeBLL())
+            catch (Exception ex)
             {
-                var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(id);
-                var m_RawMaterialType = lstRawMatType.First();
-
-                if (m_RawMaterialType == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_RawMaterialType);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

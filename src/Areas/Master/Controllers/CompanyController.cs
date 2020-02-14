@@ -40,25 +40,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetCompany()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            try
             {
-                return Json(new { data = c_lstComp });
+                if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+                {
+                    return Json(new { data = c_lstComp });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var compBll = new CompanyBLL())
+                {
+                    var lstComp = await compBll.GetCompany(null);
+
+                    _cache.Set("CACHE_MASTER_COMPANY", lstComp, options);
+
+                    return Json(new { data = lstComp });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var compBll = new CompanyBLL())
-            {
-                var lstComp = await compBll.GetCompany(null);
-
-                _cache.Set("CACHE_MASTER_COMPANY", lstComp, options);
-
-                return Json(new { data = lstComp });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var compBll = new CompanyBLL())
@@ -75,31 +82,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            try
             {
-                var m_Company = c_lstComp.Find(c => c.Id == id);
 
-                if (m_Company == null)
+                if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
                 {
-                    return NotFound();
+                    var m_Company = c_lstComp.Find(c => c.Id == id);
+
+                    if (m_Company == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Company);
                 }
 
-                return PartialView(m_Company);
+
+                using (var compBll = new CompanyBLL())
+                {
+                    var lstCompany = await compBll.GetCompany(id);
+                    var m_Company = lstCompany.First();
+
+                    if (m_Company == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Company);
+                }
             }
-
-
-            using (var compBll = new CompanyBLL())
+            catch (Exception ex)
             {
-                var lstCompany = await compBll.GetCompany(id);
-                var m_Company = lstCompany.First();
-
-                if (m_Company == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Company);
-            }            
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         // GET: Master/Company/Create
@@ -175,58 +190,65 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         public IActionResult UploadCompanyLogo(List<IFormFile> files)
         {
             //string fileName = string.Empty;
-
-            string fileName = Request.Form["fileName"];
-
-            var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\compLogo\\";
-
-            if (!Directory.Exists(filesPath))
+            try
             {
-                Directory.CreateDirectory(filesPath);
-            }
 
-            foreach (var file in files)
-            {
-                var fullFilePath = Path.Combine(filesPath, fileName);
+                string fileName = Request.Form["fileName"];
 
-                if (file.Length <= 0)
+                var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\compLogo\\";
+
+                if (!Directory.Exists(filesPath))
                 {
-                    continue;
+                    Directory.CreateDirectory(filesPath);
                 }
 
-                using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                foreach (var file in files)
                 {
-                    int newWidth, newHeight;
+                    var fullFilePath = Path.Combine(filesPath, fileName);
 
-                    if(image.Width > 100 || image.Height > 100)
+                    if (file.Length <= 0)
                     {
-                        newWidth = (int)(image.Width * 0.5);
-                        newHeight = (int)(image.Height * 0.5);
-                    }
-                    else
-                    {
-                        newWidth = image.Width;
-                        newHeight = image.Height;
+                        continue;
                     }
 
-                    var thumbnailImg = new Bitmap(newWidth, newHeight);
-                    var thumbGraph = Graphics.FromImage(thumbnailImg);
-                    thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
-                    thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
-                    thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                    thumbGraph.DrawImage(image, imageRectangle);
-                    thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    using (var image = Image.FromStream(file.OpenReadStream(), true, true))
+                    {
+                        int newWidth, newHeight;
+
+                        if (image.Width > 100 || image.Height > 100)
+                        {
+                            newWidth = (int)(image.Width * 0.5);
+                            newHeight = (int)(image.Height * 0.5);
+                        }
+                        else
+                        {
+                            newWidth = image.Width;
+                            newHeight = image.Height;
+                        }
+
+                        var thumbnailImg = new Bitmap(newWidth, newHeight);
+                        var thumbGraph = Graphics.FromImage(thumbnailImg);
+                        thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                        thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                        thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                        thumbGraph.DrawImage(image, imageRectangle);
+                        thumbnailImg.Save(fullFilePath, image.RawFormat);
+                    }
+
+                    //using (var stream = new FileStream(fullFilePath, FileMode.Create))
+                    //{
+                    //    await file.CopyToAsync(stream);
+                    //}
                 }
 
-                //using (var stream = new FileStream(fullFilePath, FileMode.Create))
-                //{
-                //    await file.CopyToAsync(stream);
-                //}
+                return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
+                //return this.Ok();
             }
-
-            return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
-            //return this.Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
         
         // GET: Master/Company/Edit/5
@@ -237,29 +259,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
+            try
             {
-                var m_Company = c_lstComp.Find(c => c.Id == id);
 
-                if (m_Company == null)
+                if (_cache.TryGetValue("CACHE_MASTER_COMPANY", out List<M_Company> c_lstComp))
                 {
-                    return NotFound();
+                    var m_Company = c_lstComp.Find(c => c.Id == id);
+
+                    if (m_Company == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Company);
                 }
 
-                return PartialView(m_Company);
+                using (var compBll = new CompanyBLL())
+                {
+                    var lstCompany = await compBll.GetCompany(id);
+                    var m_Company = lstCompany.First();
+
+                    if (m_Company == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Company);
+                }
             }
-
-            using (var compBll = new CompanyBLL())
+            catch (Exception ex)
             {
-                var lstCompany = await compBll.GetCompany(id);
-                var m_Company = lstCompany.First();
-
-                if (m_Company == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Company);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

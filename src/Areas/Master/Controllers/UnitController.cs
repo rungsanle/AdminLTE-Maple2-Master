@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetUnit()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            try
             {
-                return Json(new { data = c_lstUnit });
+                if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+                {
+                    return Json(new { data = c_lstUnit });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var unitBll = new UnitBLL())
+                {
+                    var lstUnit = await unitBll.GetUnit(null);
+
+                    _cache.Set("CACHE_MASTER_UNIT", lstUnit, options);
+
+                    return Json(new { data = lstUnit });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var unitBll = new UnitBLL())
-            {
-                var lstUnit = await unitBll.GetUnit(null);
-
-                _cache.Set("CACHE_MASTER_UNIT", lstUnit, options);
-
-                return Json(new { data = lstUnit });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //using (var unitBll = new UnitBLL())
@@ -69,31 +76,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            try
             {
-                var m_Unit = c_lstUnit.Find(u => u.Id == id);
 
-                if (m_Unit == null)
+                if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
                 {
-                    return NotFound();
+                    var m_Unit = c_lstUnit.Find(u => u.Id == id);
+
+                    if (m_Unit == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Unit);
                 }
 
-                return PartialView(m_Unit);
-            }
-
-            using (var unitBll = new UnitBLL())
-            {
-                var lstUnit = await unitBll.GetUnit(id);
-                var m_Unit = lstUnit.First();
-
-                if (m_Unit == null)
+                using (var unitBll = new UnitBLL())
                 {
-                    return NotFound();
-                }
+                    var lstUnit = await unitBll.GetUnit(id);
+                    var m_Unit = lstUnit.First();
 
-                return PartialView(m_Unit);
+                    if (m_Unit == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Unit);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // GET: Master/Unit/Create
@@ -146,31 +161,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
+            try
             {
-                var m_Unit = c_lstUnit.Find(u => u.Id == id);
 
-                if (m_Unit == null)
+                if (_cache.TryGetValue("CACHE_MASTER_UNIT", out List<M_Unit> c_lstUnit))
                 {
-                    return NotFound();
+                    var m_Unit = c_lstUnit.Find(u => u.Id == id);
+
+                    if (m_Unit == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Unit);
                 }
 
-                return PartialView(m_Unit);
+                using (var unitBll = new UnitBLL())
+                {
+                    var lstUnit = await unitBll.GetUnit(id);
+                    var m_Unit = lstUnit.First();
+
+                    if (m_Unit == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Unit);
+                }
+
             }
-
-            ViewBag.CompCode = "ALL*";
-
-            using (var unitBll = new UnitBLL())
+            catch (Exception ex)
             {
-                var lstUnit = await unitBll.GetUnit(id);
-                var m_Unit = lstUnit.First();
-
-                if (m_Unit == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Unit);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 

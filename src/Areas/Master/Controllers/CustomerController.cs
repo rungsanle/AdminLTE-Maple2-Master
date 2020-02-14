@@ -39,27 +39,33 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Customer
         public async Task<IActionResult> GetCustomer()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            try
             {
-                return Json(new { data = c_lstCust });
+                if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+                {
+                    return Json(new { data = c_lstCust });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var custBll = new CustomerBLL())
+                {
+                    var lstCust = await custBll.GetCustomer(null);
+
+                    _cache.Set("CACHE_MASTER_CUSTOMER", lstCust, options);
+
+                    return Json(new { data = lstCust });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var custBll = new CustomerBLL())
+            catch (Exception ex)
             {
-                var lstCust = await custBll.GetCustomer(null);
-
-                _cache.Set("CACHE_MASTER_CUSTOMER", lstCust, options);
-
-                return Json(new { data = lstCust });
+                return BadRequest(new { success = false, message = ex.Message });
             }
-
-
             //using (var custBll = new CustomerBLL())
             //{
             //    return Json(new { data = await custBll.GetCustomer(null) });
@@ -74,29 +80,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            try
             {
-                var m_Customer = c_lstCust.Find(c => c.Id == id);
 
-                if (m_Customer == null)
+                if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
                 {
-                    return NotFound();
+                    var m_Customer = c_lstCust.Find(c => c.Id == id);
+
+                    if (m_Customer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Customer);
                 }
 
-                return PartialView(m_Customer);
+                using (var custBll = new CustomerBLL())
+                {
+                    var lstCust = await custBll.GetCustomer(id);
+                    var m_Customer = lstCust.First();
+
+                    if (m_Customer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Customer);
+                }
             }
-
-            using (var custBll = new CustomerBLL())
+            catch (Exception ex)
             {
-                var lstCust = await custBll.GetCustomer(id);
-                var m_Customer = lstCust.First();
-
-                if (m_Customer == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Customer);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -152,31 +166,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
+            try
             {
-                var m_Customer = c_lstCust.Find(c => c.Id == id);
 
-                if (m_Customer == null)
+                if (_cache.TryGetValue("CACHE_MASTER_CUSTOMER", out List<M_Customer> c_lstCust))
                 {
-                    return NotFound();
+                    var m_Customer = c_lstCust.Find(c => c.Id == id);
+
+                    if (m_Customer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Customer);
                 }
 
-                return PartialView(m_Customer);
+                using (var custBll = new CustomerBLL())
+                {
+                    var lstCust = await custBll.GetCustomer(id);
+                    var m_Customer = lstCust.First();
+
+                    if (m_Customer == null)
+                    {
+                        return NotFound();
+                    }
+
+
+
+                    return PartialView(m_Customer);
+                }
             }
-
-            using (var custBll = new CustomerBLL())
+            catch (Exception ex)
             {
-                var lstCust = await custBll.GetCustomer(id);
-                var m_Customer = lstCust.First();
-
-                if (m_Customer == null)
-                {
-                    return NotFound();
-                }
-
-                
-
-                return PartialView(m_Customer);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -286,32 +308,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             string jsonData = string.Empty;
             string filePath = string.Empty;
-            string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Customer\\";
 
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                string path = $"{this._hostingEnvironment.WebRootPath}\\uploads\\Customer\\";
 
-            foreach (var file in files)
-            {
-                filePath = Path.Combine(path, file.FileName);
-
-                if (file.Length <= 0)
+                if (!Directory.Exists(path))
                 {
-                    continue;
+                    Directory.CreateDirectory(path);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                foreach (var file in files)
                 {
-                    await file.CopyToAsync(stream);
+                    filePath = Path.Combine(path, file.FileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+
+                    jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
                 }
 
-
-                jsonData = GlobalFunction.ConvertCsvFileToJsonObject(filePath);
+                return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
             }
-
-            return Json(new { success = true, data = jsonData, message = files.Count + "Files Uploaded!" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpPost]

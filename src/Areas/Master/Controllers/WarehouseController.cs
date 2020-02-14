@@ -34,25 +34,32 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> GetWarehouse()
         {
-            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            try
             {
-                return Json(new { data = c_lstWh });
+                if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+                {
+                    return Json(new { data = c_lstWh });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+                using (var whBll = new WarehouseBLL())
+                {
+                    var lstWh = await whBll.GetWarehouse(null);
+
+                    _cache.Set("CACHE_MASTER_WAREHOUSE", lstWh, options);
+
+                    return Json(new { data = lstWh });
+                }
             }
-
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                SlidingExpiration = TimeSpan.FromSeconds(60),
-                Priority = CacheItemPriority.NeverRemove
-            };
-
-            using (var whBll = new WarehouseBLL())
-            {
-                var lstWh = await whBll.GetWarehouse(null);
-
-                _cache.Set("CACHE_MASTER_WAREHOUSE", lstWh, options);
-
-                return Json(new { data = lstWh });
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
             //Warehouse DbContext
@@ -70,29 +77,36 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            try
             {
-                var m_Warehouse = c_lstWh.Find(w => w.Id == id);
-
-                if (m_Warehouse == null)
+                if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
                 {
-                    return NotFound();
+                    var m_Warehouse = c_lstWh.Find(w => w.Id == id);
+
+                    if (m_Warehouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Warehouse);
                 }
 
-                return PartialView(m_Warehouse);
+                using (var whBll = new WarehouseBLL())
+                {
+                    var lstWh = await whBll.GetWarehouse(id);
+                    var m_Warehouse = lstWh.First();
+
+                    if (m_Warehouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Warehouse);
+                }
             }
-
-            using (var whBll = new WarehouseBLL())
+            catch (Exception ex)
             {
-                var lstWh = await whBll.GetWarehouse(id);
-                var m_Warehouse = lstWh.First();
-
-                if (m_Warehouse == null)
-                {
-                    return NotFound();
-                }
-
-                return PartialView(m_Warehouse);
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
@@ -148,32 +162,40 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
             ViewBag.CompCode = "ALL*";
 
-            if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
+            try
             {
-                var m_Warehouse = c_lstWh.Find(w => w.Id == id);
 
-                if (m_Warehouse == null)
+                if (_cache.TryGetValue("CACHE_MASTER_WAREHOUSE", out List<M_Warehouse> c_lstWh))
                 {
-                    return NotFound();
+                    var m_Warehouse = c_lstWh.Find(w => w.Id == id);
+
+                    if (m_Warehouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Warehouse);
                 }
 
-                return PartialView(m_Warehouse);
-            }
-
-            using (var whBll = new WarehouseBLL())
-            {
-                var lstWh = await whBll.GetWarehouse(id);
-
-                var m_Warehouse = lstWh.First();
-
-                if (m_Warehouse == null)
+                using (var whBll = new WarehouseBLL())
                 {
-                    return NotFound();
-                }
+                    var lstWh = await whBll.GetWarehouse(id);
 
-                return PartialView(m_Warehouse);
+                    var m_Warehouse = lstWh.First();
+
+                    if (m_Warehouse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return PartialView(m_Warehouse);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
         }
 
         // POST: Master/Warehouse/Edit/5
