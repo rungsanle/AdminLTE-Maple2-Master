@@ -1,4 +1,6 @@
-﻿$(function() {
+﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     bs_input_file();
 
@@ -74,29 +76,31 @@
                     if (colsExist) {
 
                         tblUpload = $('#tblUpload').DataTable({
-                            "destroy": true,
-                            "processing": true,
-                            "data": jsonData,
-                            "columns": columns,
-                            "scrollX": true,
-                            "order": [],
-                            "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                            "iDisplayLength": 10
+                            destroy: true,
+                            processing: true,
+                            data: jsonData,
+                            columns: columns,
+                            scrollX: true,
+                            order: [],
+                            lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                            scroller: true,
+                            iDisplayLength: 10
                         });
 
                         $("#btnUploadData").prop('disabled', false);
                     }
                     else {
 
-                        toastr.error('Format is incorrect!!', 'Upload Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error('Format is incorrect!!', 'Upload Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
-
-
                 }
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -204,20 +208,23 @@
                     $("#tblMaterial").DataTable().ajax.reload(null, false);
                     $("#tblMaterial").DataTable().page('last').draw('page');
 
-                    toastr.success(response.message, 'Upload Material');
+                    toastr.success(response.message, 'Upload Material', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                 }
                 else {
 
                     if (response.errors != null) {
                         global.displayValidationErrors(response.errors);
                     } else {
-                        toastr.error(response.message, 'Upload Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error(response.message, 'Upload Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
                 }
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
 
         });

@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $("#message-alert").hide();
     //Grid Table Config
@@ -21,14 +23,21 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Material Type Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('mattype-get-url'),    //"/Customer/GetCustomers",
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('mattype-get-url'),    //"/Customer/GetCustomers",
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "MatTypeCode", "className": "boldColumn", "autoWidth": false },
@@ -69,7 +78,7 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
+                iDisplayLength: appSetting.tableDisplayLength,
                 scroller: true,
                 stateSave: true,
                 stateDuration: -1 //force the use of Session Storage
@@ -92,6 +101,14 @@
 
     // initialize the datatables
     matTypeVM.init();
+
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtMatType.page.info().page != 0) {
+                dtMatType.page('first').draw('page');
+            }
+        }, 200);
+    }
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -119,7 +136,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -187,7 +207,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -219,7 +242,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -251,6 +277,7 @@
                     action: function () {
 
                         $.ajax({
+                            async: true,
                             type: 'POST',
                             url: api,
                             data: addRequestVerificationToken({ id: matTypeId }),
@@ -261,14 +288,17 @@
                                     //matTypeVM.refresh();
                                     dtMatType.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Material Type');
+                                    toastr.success(response.message, 'Delete Material Type', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
 

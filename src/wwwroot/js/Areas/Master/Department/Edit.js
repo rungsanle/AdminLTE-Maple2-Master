@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     //toastr.options.newestOnTop = false;
     //Begin----check clear require---//
     $("#DeptCode").on("focusout", function () {
@@ -35,6 +38,60 @@
 
     $("#btnSaveEdit").on("click", SaveEdit);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        //var info = $('#tblMenu').DataTable().page.info();
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('dept-edit-url'),
+            data: addRequestVerificationToken({
+                DeptCode: $("#DeptCode").val().toUpperCase(),
+                DeptName: $("#DeptName").val(),
+                DeptDesc: $("#DeptDesc").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response, textStatus, jqXHR) {
+
+                if (response.success) {
+
+                    $('#editDeptModal').modal('hide');
+                    $('#editDeptContainer').html("");
+
+                    $("#tblDept").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Department', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
 //$(document).on("click", "#btnSaveEdit", function () {
@@ -44,54 +101,4 @@
 //    alert('Hello, World');
 //});
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
 
-function SaveEdit(event) {
-
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    //var info = $('#tblMenu').DataTable().page.info();
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('dept-edit-url'),
-        data: addRequestVerificationToken({
-            DeptCode: $("#DeptCode").val().toUpperCase(),
-            DeptName: $("#DeptName").val(),
-            DeptDesc: $("#DeptDesc").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response, textStatus, jqXHR) {
-
-            if (response.success) {
-
-                $('#editDeptModal').modal('hide');
-                $('#editDeptContainer').html("");
-
-                $("#tblDept").DataTable().ajax.reload(null, false);
-
-                toastr.success(response.message, 'Edit Department');
-            }
-            else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $("#success-alert").hide();
     //Grid Table Config
@@ -21,14 +23,21 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Unit Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('unit-get-url'),
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('unit-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "UnitCode", "className": "boldColumn", "autoWidth": false },
@@ -67,8 +76,9 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
-                stateSave: true
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -89,6 +99,14 @@
     // initialize the datatables
     unitVM.init();
 
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtUnit.page.info().page != 0) {
+                dtUnit.page('first').draw('page');
+            }
+        }, 200);
+    }
+
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
@@ -104,7 +122,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: false,
+            async: true,
             success: function (data) {
                 if (data) {
                     $('#newUnitContainer').html(data);
@@ -115,7 +133,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Unit', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -150,7 +171,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Unit', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -181,7 +205,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Unit', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -216,6 +243,7 @@
 
                         $.ajax({
                             type: 'POST',
+                            async: true,
                             url: api,
                             data: addRequestVerificationToken({ id: unitId }),
                             success: function (response) {
@@ -225,14 +253,17 @@
                                     //unitVM.refresh();
                                     dtUnit.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Unit');
+                                    toastr.success(response.message, 'Delete Unit', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Unit', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Unit', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Unit', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
 

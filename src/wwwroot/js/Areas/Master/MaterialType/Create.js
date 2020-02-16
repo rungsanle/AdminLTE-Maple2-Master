@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     //Begin----check clear require---//
     $("#MatTypeCode").on("focusout", function () {
@@ -32,55 +34,59 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveCrate(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#CreateData').data('mattype-add-url'),
+            data: addRequestVerificationToken({
+                MatTypeCode: $("#MatTypeCode").val().toUpperCase(),
+                MatTypeName: $("#MatTypeName").val(),
+                MatTypeDesc: $("#MatTypeDesc").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#newMatTypeModal').modal('hide');
+                    $('#newMatTypeContainer').html("");
+
+                    $("#tblMatType").DataTable().ajax.reload(null, false);
+                    $("#tblMatType").DataTable().page('last').draw('page');
+
+                    toastr.success(response.message, 'Create Material Type', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Create Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveCrate(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#CreateData').data('mattype-add-url'),
-        data: addRequestVerificationToken({
-            MatTypeCode: $("#MatTypeCode").val().toUpperCase(),
-            MatTypeName: $("#MatTypeName").val(),
-            MatTypeDesc: $("#MatTypeDesc").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#newMatTypeModal').modal('hide');
-                $('#newMatTypeContainer').html("");
-
-                $("#tblMatType").DataTable().ajax.reload(null, false);
-                $("#tblMatType").DataTable().page('last').draw('page');
-
-                toastr.success(response.message, 'Create Material Type');
-            }
-            else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Create Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Create Material Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

@@ -1,9 +1,9 @@
 ﻿$(function () {
 
-    $("#success-alert").hide();
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
-    
-    
+    $("#success-alert").hide();
 
     //Grid Table Config
     deptVM = {
@@ -25,14 +25,20 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Department Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
                     url: $('#IndexData').data('dept-get-url'),  
-                    async: true,
                     type: "GET",
+                    async: true,
                     datatype: "json"
                 },
                 columns: [
@@ -73,8 +79,9 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
-                stateSave: true
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -95,6 +102,14 @@
     // initialize the datatables
     deptVM.init();
 
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtDept.page.info().page != 0) {
+                dtDept.page('first').draw('page');
+            }
+        }, 200);
+    }
+
     //set width of input search.
     //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });
 
@@ -113,7 +128,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: false,
+            async: true,
             success: function (data) {
                 if (data) {
                     $('#newDeptContainer').html(data);
@@ -123,7 +138,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -162,7 +180,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -193,7 +214,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -244,14 +268,17 @@
                                     //deptVM.refresh();
                                     dtDept.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Department');
+                                    toastr.success(response.message, 'Delete Department', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
                     }

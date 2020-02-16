@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     //Begin----check clear require---//
     $("#WarehouseCode").on("focusout", function () {
@@ -31,55 +33,59 @@
     global.applyIsActiveSwitch($('#Is_Active').is(':checked'), false);
 
     $("#btnSaveEdit").on("click", SaveEdit);
+
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        //var info = $('#tblMenu').DataTable().page.info();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('wh-edit-url'),
+            data: addRequestVerificationToken({
+                WarehouseCode: $("#WarehouseCode").val().toUpperCase(),
+                WarehouseName: $("#WarehouseName").val(),
+                WarehouseDesc: $("#WarehouseDesc").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#editWHModal').modal('hide');
+                    $('#editWHContainer').html("");
+
+                    $("#tblWH").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Warehouse', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Warehouse', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Warehouse', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveEdit(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    //var info = $('#tblMenu').DataTable().page.info();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('wh-edit-url'),
-        data: addRequestVerificationToken({
-            WarehouseCode: $("#WarehouseCode").val().toUpperCase(),
-            WarehouseName: $("#WarehouseName").val(),
-            WarehouseDesc: $("#WarehouseDesc").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#editWHModal').modal('hide');
-                $('#editWHContainer').html("");
-
-                $("#tblWH").DataTable().ajax.reload(null, false);
-
-                toastr.success(response.message, 'Edit Warehouse');
-            }
-            else {
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Edit Warehouse', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Edit Warehouse', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

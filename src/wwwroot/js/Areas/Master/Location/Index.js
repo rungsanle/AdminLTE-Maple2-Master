@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $("#message-alert").hide();
     //Grid Table Config
@@ -21,14 +23,20 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Production Type Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
                     url: $('#IndexData').data('loc-get-url'),    //"/Customer/GetCustomers",
-                    async: true,
                     type: "GET",
+                    async: true,
                     datatype: "json"
                 },
                 columns: [
@@ -74,8 +82,9 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
-                stateSave: true
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -96,6 +105,14 @@
     // initialize the datatables
     locationVM.init();
 
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtLoc.page.info().page != 0) {
+                dtLoc.page('first').draw('page');
+            }
+        }, 200);
+    }
+
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
@@ -111,7 +128,7 @@
         $.ajax({
             type: "GET",
             url: api,
-            async: false,
+            async: true,
             success: function (data) {
                 if (data) {
                     $('#newLocationContainer').html(data);
@@ -122,7 +139,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Location', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -157,7 +177,10 @@
 
             }, 
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Location', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -195,7 +218,10 @@
 
             }, 
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Location', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -228,6 +254,7 @@
 
                         $.ajax({
                             type: 'POST',
+                            async: true,
                             url: api,
                             data: addRequestVerificationToken({ id: locationId }),
                             success: function (response) {
@@ -237,14 +264,17 @@
                                     //locationVM.refresh();
                                     dtLoc.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Location');
+                                    toastr.success(response.message, 'Delete Location', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Location', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Location', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Location', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
                     }

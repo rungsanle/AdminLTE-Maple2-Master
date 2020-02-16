@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     //Begin----check clear require---//
     $("#CompanyCode").on("focusout", function () {
         if ($("#CompanyCode").val() != '') {

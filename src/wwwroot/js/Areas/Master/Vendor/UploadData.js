@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     var reqColumns = (['Vendor ID', 'Vendor Name', 'Address-Line One', 'Address-Line Two', 'City', 'Country', 'Telephone 1', 'Fax Number', 'Vendor E-mail', 'Contact', 'Due Days']);
     var tblUpload;
@@ -63,25 +65,29 @@
                     if (colsExist) {
 
                         tblUpload = $('#tblUpload').DataTable({
-                            "destroy": true,
-                            "processing": true,
-                            "data": jsonData,
-                            "columns": columns,
-                            "scrollX": true,
-                            "order": [],
-                            "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                            "iDisplayLength": 10
+                            destroy: true,
+                            processing: true,
+                            data: jsonData,
+                            columns: columns,
+                            scrollX: true,
+                            order: [],
+                            lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                            scroller: true,
+                            iDisplayLength: 10
                         });
 
                         $("#btnUploadData").prop('disabled', false);
                     } else {
-                        toastr.error('Format is incorrect!!', 'Upload Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error('Format is incorrect!!', 'Upload Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
                 }
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -189,20 +195,23 @@
                     $("#tblVend").DataTable().ajax.reload(null, false);
                     $("#tblVend").DataTable().page('last').draw('page');
 
-                    toastr.success(response.message, 'Upload Vendor');
+                    toastr.success(response.message, 'Upload Vendor', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                 }
                 else {
 
                     if (response.errors != null) {
                         displayValidationErrors(response.errors);
                     } else {
-                        toastr.error(response.message, 'Upload Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error(response.message, 'Upload Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
                 }
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
 
         });

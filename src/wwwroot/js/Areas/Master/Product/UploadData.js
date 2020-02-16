@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $('input').attr('autocomplete', 'off');
 
@@ -76,21 +78,22 @@
                     if (colsExist) {
 
                         tblUpload = $('#tblUpload').DataTable({
-                            "destroy": true,
-                            "processing": true,
-                            "data": jsonData,
-                            "columns": columns,
-                            "scrollX": true,
-                            "order": [],
-                            "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                            "iDisplayLength": 10
+                            destroy: true,
+                            processing: true,
+                            data: jsonData,
+                            columns: columns,
+                            scrollX: true,
+                            order: [],
+                            lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                            scroller: true,
+                            iDisplayLength: 10
                         });
 
                         $("#btnUploadData").prop('disabled', false);
                     }
                     else {
 
-                        toastr.error('Format is incorrect!!', 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error('Format is incorrect!!', 'Upload Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
 
 
@@ -98,7 +101,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Product', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -217,20 +223,23 @@
                     $("#tblProduct").DataTable().ajax.reload(null, false);
                     $("#tblProduct").DataTable().page('last').draw('page');
 
-                    toastr.success(response.message, 'Upload Product');
+                    toastr.success(response.message, 'Upload Product', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                 }
                 else {
 
                     if (response.errors != null) {
                         displayValidationErrors(response.errors);
                     } else {
-                        toastr.error(response.message, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                        toastr.error(response.message, 'Upload Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
                 }
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Upload Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Upload Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
 
         });

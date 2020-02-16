@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     $("#success-alert").hide();
     //Grid Table Config
     custVM = {
@@ -21,14 +24,21 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'Customer Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('cust-get-url'),
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('cust-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "CustomerCode", "className": "boldColumn", "autoWidth": false },
@@ -75,7 +85,7 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
+                iDisplayLength: appSetting.tableDisplayLength,
                 scroller: true,
                 stateSave: true,
                 stateDuration: -1 //force the use of Session Storage
@@ -100,11 +110,13 @@
     custVM.init();
 
     //set default first page
-    setTimeout(function () {
-        if (dtCust.page.info().page != 0) {
-            dtCust.page('first').draw('page');
-        }
-    }, 80);
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtCust.page.info().page != 0) {
+                dtCust.page('first').draw('page');
+            }
+        }, 200);
+    }
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -131,7 +143,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -192,7 +207,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -222,7 +240,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -262,6 +283,7 @@
                         $.ajax({
                             type: 'POST',
                             url: api,
+                            async: true,
                             data: addRequestVerificationToken({ id: custId }),
                             success: function (response) {
 
@@ -270,14 +292,17 @@
                                     //custVM.refresh();
                                     dtCust.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Customer');
+                                    toastr.success(response.message, 'Delete Customer', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
 

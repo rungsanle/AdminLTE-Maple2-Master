@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     //Begin----check clear require---//
     $("#DeptCode").on("focusout", function () {
         if ($("#DeptCode").val() != '') {
@@ -34,55 +37,60 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveCrate(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#CreateData').data('dept-add-url'),
+            data: addRequestVerificationToken({
+                DeptCode: $("#DeptCode").val().toUpperCase(),
+                DeptName: $("#DeptName").val(),
+                DeptDesc: $("#DeptDesc").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#newDeptModal').modal('hide');
+                    $('#newDeptContainer').html("");
+
+                    $("#tblDept").DataTable().ajax.reload(null, false);
+                    $("#tblDept").DataTable().page('last').draw('page');
+
+                    toastr.success(response.message, 'Create Department', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+
+                } else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Create Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Department', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
 
-function SaveCrate(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#CreateData').data('dept-add-url'),
-        data: addRequestVerificationToken({
-            DeptCode: $("#DeptCode").val().toUpperCase(),
-            DeptName: $("#DeptName").val(),
-            DeptDesc: $("#DeptDesc").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#newDeptModal').modal('hide');
-                $('#newDeptContainer').html("");
-
-                $("#tblDept").DataTable().ajax.reload(null, false);
-                $("#tblDept").DataTable().page('last').draw('page');
-
-                toastr.success(response.message, 'Create Department');
-
-            } else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Create Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Create Department', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

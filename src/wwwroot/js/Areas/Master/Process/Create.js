@@ -1,4 +1,7 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
 
     //Begin----check clear require---//
     $("#ProcessCode").on("focusout", function () {
@@ -29,56 +32,60 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveCrate(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#CreateData').data('proc-add-url'),
+            data: addRequestVerificationToken({
+                ProcessCode: $("#ProcessCode").val().toUpperCase(),
+                ProcessName: $("#ProcessName").val(),
+                ProcessDesc: $("#ProcessDesc").val(),
+                ProcessSeq: $("#ProcessSeq").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#newProcessModal').modal('hide');
+                    $('#newProcessContainer').html("");
+
+                    $("#tblProcess").DataTable().ajax.reload(null, false);
+                    $("#tblProcess").DataTable().page('last').draw('page');
+
+                    toastr.success(response.message, 'Create Process', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Create Process', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Process', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveCrate(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#CreateData').data('proc-add-url'),
-        data: addRequestVerificationToken({
-            ProcessCode: $("#ProcessCode").val().toUpperCase(),
-            ProcessName: $("#ProcessName").val(),
-            ProcessDesc: $("#ProcessDesc").val(),
-            ProcessSeq: $("#ProcessSeq").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#newProcessModal').modal('hide');
-                $('#newProcessContainer').html("");
-
-                $("#tblProcess").DataTable().ajax.reload(null, false);
-                $("#tblProcess").DataTable().page('last').draw('page');
-
-                toastr.success(response.message, 'Create Process');
-            }
-            else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Create Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Create Process', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

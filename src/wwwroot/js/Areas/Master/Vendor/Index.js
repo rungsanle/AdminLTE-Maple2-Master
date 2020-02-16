@@ -34,9 +34,10 @@
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('vend-get-url'),
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('vend-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "VendorCode", "className": "boldColumn", "autoWidth": false },
@@ -65,8 +66,8 @@
                         "autoWidth": true,
                         "render": function (data, type, vend, meta) {
                             return '<a id="viewVend" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="Vendor/Details/' + vend.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="editVend" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Vendor/Edit/' + vend.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
-                                '<a id="delVend" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Vendor/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
+                                   '<a id="editVend" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="Vendor/Edit/' + vend.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
+                                   '<a id="delVend" class="btn btn-delete btn-sm" data-toggle="tooltip" title="Remove" href="Vendor/Delete/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                     }
                 ],
@@ -113,7 +114,7 @@
             if (dtVend.page.info().page != 0) {
                 dtVend.page('first').draw('page');
             }
-        }, 250);
+        }, 200);
     }
     
 
@@ -143,7 +144,10 @@
 
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     });
@@ -202,7 +206,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -271,6 +278,7 @@
                     action: function () {
 
                         $.ajax({
+                            async: true,
                             type: 'POST',
                             url: api,
                             data: addRequestVerificationToken({ id: vendId }),
@@ -281,14 +289,17 @@
                                     //vendVM.refresh();
                                     dtVend.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Vendor');
+                                    toastr.success(response.message, 'Delete Vendor', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Vendor', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Vendor', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
 

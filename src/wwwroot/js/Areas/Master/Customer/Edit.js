@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     $('input').attr('autocomplete', 'off');
 
     //Begin----check clear require---//
@@ -34,65 +37,69 @@
 
     $("#btnSaveEdit").on("click", SaveEdit);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('cust-edit-url'),
+            data: addRequestVerificationToken({
+                Id: $("#Id").val(),
+                CustomerCode: $("#CustomerCode").val().toUpperCase(),
+                CustomerName: $("#CustomerName").val(),
+                AddressL1: $("#AddressL1").val(),
+                AddressL2: $("#AddressL2").val(),
+                AddressL3: $("#AddressL3").val(),
+                AddressL4: $("#AddressL4").val(),
+                Telephone: $("#Telephone").val(),
+                Fax: $("#Fax").val(),
+                CustomerEmail: $("#CustomerEmail").val(),
+                CustomerContact: $("#CustomerContact").val(),
+                CreditTerm: $("#CreditTerm").val(),
+                PriceLevel: $("#PriceLevel").val(),
+                CustomerTaxId: $("#CustomerTaxId").val(),
+                Remark: $("#Remark").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#editCustModal').modal('hide');
+                    $('#editCustContainer').html("");
+
+                    $("#tblCust").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Customer', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+
+                }
+                else {
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Customer', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveEdit(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('cust-edit-url'),
-        data: addRequestVerificationToken({
-            Id: $("#Id").val(),
-            CustomerCode: $("#CustomerCode").val().toUpperCase(),
-            CustomerName: $("#CustomerName").val(),
-            AddressL1: $("#AddressL1").val(),
-            AddressL2: $("#AddressL2").val(),
-            AddressL3: $("#AddressL3").val(),
-            AddressL4: $("#AddressL4").val(),
-            Telephone: $("#Telephone").val(),
-            Fax: $("#Fax").val(),
-            CustomerEmail: $("#CustomerEmail").val(),
-            CustomerContact: $("#CustomerContact").val(),
-            CreditTerm: $("#CreditTerm").val(),
-            PriceLevel: $("#PriceLevel").val(),
-            CustomerTaxId: $("#CustomerTaxId").val(),
-            Remark: $("#Remark").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#editCustModal').modal('hide');
-                $('#editCustContainer').html("");
-
-                $("#tblCust").DataTable().ajax.reload(null, false);
-
-                toastr.success(response.message, 'Edit Customer');
-
-            }
-            else {
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Edit Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Edit Customer', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

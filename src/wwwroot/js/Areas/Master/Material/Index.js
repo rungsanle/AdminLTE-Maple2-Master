@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $("#message-alert").hide();
     //Grid Table Config
@@ -32,9 +34,10 @@
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('mat-get-url'),
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('mat-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "MaterialCode", "className": "boldColumn", "autoWidth": false },
@@ -87,7 +90,8 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10,
+                iDisplayLength: appSetting.tableDisplayLength,
+                scroller: true,
                 stateSave: true,
                 stateDuration: -1
             });
@@ -109,6 +113,14 @@
 
     // initialize the datatables
     productVM.init();
+
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtMat.page.info().page != 0) {
+                dtMat.page('first').draw('page');
+            }
+        }, 300);
+    }
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -135,7 +147,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Create Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -196,7 +211,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'View Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'View Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -227,8 +245,10 @@
                 }
             },
             error: function (xhr, txtStatus, errThrown) {
-                var reponseText = JSON.parse(xhr.responseText);
-                toastr.error('Error: ' + reponseText.Message, 'Edit Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -266,6 +286,7 @@
 
                         $.ajax({
                             type: 'POST',
+                            async: true,
                             url: api,
                             data: addRequestVerificationToken({ id: materialId }),
                             success: function (response) {
@@ -275,14 +296,17 @@
                                     //productVM.refresh();
                                     dtMat.row(rowSelect).remove().draw(false);
 
-                                    toastr.success(response.message, 'Delete Material');
+                                    toastr.success(response.message, 'Delete Material', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                                 else {
-                                    toastr.error(response.message, 'Delete Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                                    toastr.error(response.message, 'Delete Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                                 }
                             },
                             error: function (xhr, txtStatus, errThrown) {
-                                toastr.error('Error: ' + xhr.statusText, 'Delete Material', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+                                
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Material', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                             }
                         });
 

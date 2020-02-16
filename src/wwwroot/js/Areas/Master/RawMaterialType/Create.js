@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     //Begin----check clear require---//
     $("#RawMatTypeCode").on("focusout", function () {
@@ -31,55 +33,59 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveCrate(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#CreateData').data('rawmattype-add-url'),
+            data: addRequestVerificationToken({
+                RawMatTypeCode: $("#RawMatTypeCode").val().toUpperCase(),
+                RawMatTypeName: $("#RawMatTypeName").val(),
+                RawMatTypeDesc: $("#RawMatTypeDesc").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#newRawMatTypeModal').modal('hide');
+                    $('#newRawMatTypeContainer').html("");
+
+                    $("#tblRawMatType").DataTable().ajax.reload(null, false);
+                    $("#tblRawMatType").DataTable().page('last').draw('page');
+
+                    toastr.success(response.message, 'Create Raw MAT. Type', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Create Raw MAT. Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Raw MAT. Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
+
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveCrate(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#CreateData').data('rawmattype-add-url'),
-        data: addRequestVerificationToken({
-            RawMatTypeCode: $("#RawMatTypeCode").val().toUpperCase(),
-            RawMatTypeName: $("#RawMatTypeName").val(),
-            RawMatTypeDesc: $("#RawMatTypeDesc").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#newRawMatTypeModal').modal('hide');
-                $('#newRawMatTypeContainer').html("");
-
-                $("#tblRawMatType").DataTable().ajax.reload(null, false);
-                $("#tblRawMatType").DataTable().page('last').draw('page');
-
-                toastr.success(response.message, 'Create Raw MAT. Type');
-            }
-            else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Create Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Create Raw MAT. Type', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};

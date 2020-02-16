@@ -35,10 +35,10 @@
                 processing: true, // for show progress bar
                 autoWidth: true,
                 ajax: {
-                    "url": $('#IndexData').data('comp-get-url'),
-                    "type": "GET",
-                    "datatype": "json",
-                    "async": true
+                    url: $('#IndexData').data('comp-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "CompanyCode", "className": "boldColumn", "autoWidth": false },
@@ -107,6 +107,14 @@
 
     // initialize the datatables
     compVM.init();
+
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dt.page.info().page != 0) {
+                dt.page('first').draw('page');
+            }
+        }, 300);
+    }
 
     //set width of input search.
     //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });

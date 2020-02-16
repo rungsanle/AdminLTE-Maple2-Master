@@ -35,9 +35,10 @@
                 processing: true, // for show progress bar
                 autoWidth: true,
                 ajax: {
-                    "url": $('#IndexData').data('arrtype-get-url'),    //"/Customer/GetCustomers",
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('arrtype-get-url'),    //"/Customer/GetCustomers",
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "ArrivalTypeCode", "className": "boldColumn", "autoWidth": false },
@@ -100,6 +101,14 @@
 
     // initialize the datatables
     arrTypeVM.init();
+
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtArrivalType.page.info().page != 0) {
+                dtArrivalType.page('first').draw('page');
+            }
+        }, 250);
+    }
 
     //set width of input search.
     //$('.dataTables_filter input[type="search"]').css({ 'width': '350px' });

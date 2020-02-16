@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     //Begin----check clear require---//
     $("#MachineCode").on("focusout", function () {
         if ($("#MachineCode").val() != '') {
@@ -54,66 +57,70 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
-});
+    function onFocusOut(ctl) {
 
-function onFocusOut(ctl) {
+        if (ctl.val() != '') {
+            document.querySelectorAll('.text-danger li')[0].remove();
+        }
 
-    if (ctl.val() != '') {
-        document.querySelectorAll('.text-danger li')[0].remove();
     }
 
-}
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
+    function SaveCrate(event) {
 
-function SaveCrate(event) {
+        event.preventDefault();
 
-    event.preventDefault();
+        global.resetValidationErrors();
 
-    global.resetValidationErrors();
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#CreateData').data('mc-add-url'),
+            data: addRequestVerificationToken({
+                MachineCode: $("#MachineCode").val().toUpperCase(),
+                MachineName: $("#MachineName").val(),
+                MachineProdType: $("#MachineProdTypeName").val(),
+                MachineSize: $("#MachineSize").val(),
+                MachineSize: $("#MachineSize").val(),
+                MachineRemark: $("#MachineRemark").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
 
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#CreateData').data('mc-add-url'),
-        data: addRequestVerificationToken({
-            MachineCode: $("#MachineCode").val().toUpperCase(),
-            MachineName: $("#MachineName").val(),
-            MachineProdType: $("#MachineProdTypeName").val(),
-            MachineSize: $("#MachineSize").val(),
-            MachineSize: $("#MachineSize").val(),
-            MachineRemark: $("#MachineRemark").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
+                if (response.success) {
 
-            if (response.success) {
+                    $('#newMachineModal').modal('hide');
+                    $('#newMachineContainer').html("");
 
-                $('#newMachineModal').modal('hide');
-                $('#newMachineContainer').html("");
+                    $("#tblMachine").DataTable().ajax.reload(null, false);
+                    $("#tblMachine").DataTable().page('last').draw('page');
 
-                $("#tblMachine").DataTable().ajax.reload(null, false);
-                $("#tblMachine").DataTable().page('last').draw('page');
-
-                toastr.success(response.message, 'Create Machine');
-            }
-            else {
-
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Create Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
+                    toastr.success(response.message, 'Create Machine', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                 }
+                else {
+
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Create Machine', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Create Machine', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
+        });
 
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Create Machine', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
+    };
 
-};
+});
+

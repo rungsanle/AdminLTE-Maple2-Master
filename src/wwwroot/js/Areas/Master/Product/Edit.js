@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     $('input').attr('autocomplete', 'off');
 
     //Begin----check clear require---//
@@ -382,6 +385,208 @@
     /*-- END TABLE PRODUCT PROCESS --*/
     $("#btnSaveEdit").on("click", SaveEdit);
 
+    /*-- BEGIN SEARCH MATERIAL TYPE --*/
+    function selectMatType(id, name) {
+
+        $("#MaterialTypeId").val(id);
+        $("#MaterialType").val(name);
+
+        $('#searchMatTypeIdModal').modal('hide');
+
+    }
+
+    function closeMatTypePopup() {
+        $('#searchMatTypeIdModal').modal('hide');
+    }
+    /*-- END SEARCH MATERIAL TYPE --*/
+
+    /*-- BEGIN SEARCH MACHINE --*/
+    function selectMc(id, code) {
+
+        $("#MachineId").val(id);
+        $("#Machine").val(code);
+
+        $('#searchMcIdModal').modal('hide');
+
+    }
+
+    function closeMcPopup() {
+        $('#searchMcIdModal').modal('hide');
+    }
+    /*-- END SEARCH MACHINE --*/
+
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        var strProductCode = $("#ProductCode").val().toUpperCase();
+        var strCompanyCode = $("#CompanyCode").val();
+        var productFileName = $("#ProductImagePath").val();
+
+        var fileLength = $("#imgProduct").get(0).files.length;
+        if (fileLength > 0) {
+
+            var selFilename = $("#imgProduct").get(0).files[0].name;
+            var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
+
+            productFileName = strCompanyCode + '_' + strProductCode + '.' + extension;
+        }
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('prod-edit-url'),
+            data: addRequestVerificationToken({
+                Id: $("#Id").val(),
+                ProductCode: $("#ProductCode").val().toUpperCase(),
+                ProductName: $("#ProductName").val(),
+                ProductNameRef: $("#ProductNameRef").val(),
+                ProductDesc: $("#ProductDesc").val(),
+                MaterialTypeId: $("#MaterialTypeId").val(),
+                ProductionTypeId: $("#ProductionType").val(),
+                MachineId: $("#MachineId").val(),
+                UnitId: $("#Unit").val(),
+                PackageStdQty: $("#PackageStdQty").val(),
+                SalesPrice1: $("#SalesPrice1").val(),
+                SalesPrice2: $("#SalesPrice2").val(),
+                SalesPrice3: $("#SalesPrice3").val(),
+                SalesPrice4: $("#SalesPrice4").val(),
+                SalesPrice5: $("#SalesPrice5").val(),
+                GLSalesAccount: $("#GLSalesAccount").val(),
+                GLInventAccount: $("#GLInventAccount").val(),
+                GLCogsAccount: $("#GLCogsAccount").val(),
+                RevisionNo: $("#RevisionNo").val(),
+                WarehouseId: $("#Warehouse").val(),
+                LocationId: $("#Location").val(),
+                CompanyCode: $("#CompanyCode").val(),
+                ProductImagePath: productFileName,
+                Is_Active: $("#Is_Active").is(':checked'),
+                ProdProcess: GetProductionProcess()
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    //Update Product Image.
+                    if (fileLength > 0) {
+                        UploadProductImage(productFileName);
+                    }
+
+                    //UpdateProductProcess(event);
+
+                    $('#editProdModal').modal('hide');
+                    $('#editProdContainer').html("");
+
+                    $("#tblProduct").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Product', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+
+                }
+                else {
+                    if (response.errors != null) {
+                        displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+        function GetProductionProcess() {
+
+            var prodpros = new Array();
+            var jsonData = JSON.parse(JSON.stringify($('#tblProdProcess').dataTable().fnGetData()));
+
+            for (var obj in jsonData) {
+                if (jsonData.hasOwnProperty(obj)) {
+
+                    var prodpro = {};
+                    prodpro.ProductId = jsonData[obj]["ProductId"];
+                    prodpro.ProcessId = jsonData[obj]["ProcessId"];
+                    prodpro.Is_Active = jsonData[obj]["Is_Active"];
+
+                    prodpros.push(prodpro);
+                }
+            }
+
+
+            return prodpros;
+        }
+
+        function UploadProductImage(strName) {
+
+            var files = $("#imgProduct").get(0).files;
+            var fileData = new FormData();
+            fileData.append("fileName", strName);
+            for (var i = 0; i < files.length; i++) {
+                fileData.append("files", files[i]);
+            }
+
+            $.ajax({
+                async: true,
+                type: "POST",
+                url: $('#EditData').data('prod-upload-url'),
+                dataType: "json",
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                data: fileData,
+                success: function (response) {
+                    if (response.success) {
+                        //file name = response.data
+                    }
+                },
+                error: function (xhr, txtStatus, errThrown) {
+
+                    var reponseErr = JSON.parse(xhr.responseText);
+                    
+                    toastr.error('Error: ' + reponseErr.message, 'Edit Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+            });
+        }
+    }
+
+    function displayValidationErrors(errors) {
+
+        global.displayValidationErrors(errors);
+
+        if ($("#ProductCode").val() === '' || $("#ProductName").val() === '') {
+            $('.nav-tabs a[href="#tab_1"]').tab('show');
+            return;
+        }
+
+        if ($("#GLSalesAccount").val() === '' || $("#GLCogsAccount").val() === '') {
+            $('.nav-tabs a[href="#tab_2"]').tab('show');
+            return;
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imageProduct')
+                    .attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
 
     //for clear cache image
     var num = Math.random();
@@ -390,202 +595,3 @@
 
 });
 
-/*-- BEGIN SEARCH MATERIAL TYPE --*/
-function selectMatType(id, name) {
-
-    $("#MaterialTypeId").val(id);
-    $("#MaterialType").val(name);
-
-    $('#searchMatTypeIdModal').modal('hide');
-
-}
-
-function closeMatTypePopup() {
-    $('#searchMatTypeIdModal').modal('hide');
-}
-/*-- END SEARCH MATERIAL TYPE --*/
-
-/*-- BEGIN SEARCH MACHINE --*/
-function selectMc(id, code) {
-
-    $("#MachineId").val(id);
-    $("#Machine").val(code);
-
-    $('#searchMcIdModal').modal('hide');
-
-}
-
-function closeMcPopup() {
-    $('#searchMcIdModal').modal('hide');
-}
-/*-- END SEARCH MACHINE --*/
-
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveEdit(event) {
-
-    event.preventDefault();
-
-    global.resetValidationErrors();
-
-    var strProductCode = $("#ProductCode").val().toUpperCase();
-    var strCompanyCode = $("#CompanyCode").val();
-    var productFileName = $("#ProductImagePath").val();
-
-    var fileLength = $("#imgProduct").get(0).files.length;
-    if (fileLength > 0) {
-
-        var selFilename = $("#imgProduct").get(0).files[0].name;
-        var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
-
-        productFileName = strCompanyCode + '_' + strProductCode + '.' + extension;
-    }
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('prod-edit-url'),
-        data: addRequestVerificationToken({
-            Id: $("#Id").val(),
-            ProductCode: $("#ProductCode").val().toUpperCase(),
-            ProductName: $("#ProductName").val(),
-            ProductNameRef: $("#ProductNameRef").val(),
-            ProductDesc: $("#ProductDesc").val(),
-            MaterialTypeId: $("#MaterialTypeId").val(),
-            ProductionTypeId: $("#ProductionType").val(),
-            MachineId: $("#MachineId").val(),
-            UnitId: $("#Unit").val(),
-            PackageStdQty: $("#PackageStdQty").val(),
-            SalesPrice1: $("#SalesPrice1").val(),
-            SalesPrice2: $("#SalesPrice2").val(),
-            SalesPrice3: $("#SalesPrice3").val(),
-            SalesPrice4: $("#SalesPrice4").val(),
-            SalesPrice5: $("#SalesPrice5").val(),
-            GLSalesAccount: $("#GLSalesAccount").val(),
-            GLInventAccount: $("#GLInventAccount").val(),
-            GLCogsAccount: $("#GLCogsAccount").val(),
-            RevisionNo: $("#RevisionNo").val(),
-            WarehouseId: $("#Warehouse").val(),
-            LocationId: $("#Location").val(),
-            CompanyCode: $("#CompanyCode").val(),
-            ProductImagePath: productFileName,
-            Is_Active: $("#Is_Active").is(':checked'),
-            ProdProcess: GetProductionProcess()
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                //Update Product Image.
-                if (fileLength > 0) {
-                    UploadProductImage(productFileName);
-                }
-
-                //UpdateProductProcess(event);
-
-                $('#editProdModal').modal('hide');
-                $('#editProdContainer').html("");
-
-                $("#tblProduct").DataTable().ajax.reload(null, false);
-
-                toastr.success(response.message, 'Edit Product');
-
-            }
-            else {
-                if (response.errors != null) {
-                    displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Edit Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Edit Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-    function GetProductionProcess() {
-
-        
-
-        var prodpros = new Array();
-        var jsonData = JSON.parse(JSON.stringify($('#tblProdProcess').dataTable().fnGetData()));
-
-        
-
-        for (var obj in jsonData) {
-            if (jsonData.hasOwnProperty(obj)) {
-
-                var prodpro = {};
-                prodpro.ProductId = jsonData[obj]["ProductId"];
-                prodpro.ProcessId = jsonData[obj]["ProcessId"];
-                prodpro.Is_Active = jsonData[obj]["Is_Active"];
-
-                prodpros.push(prodpro);
-            }
-        }
-
-
-        return prodpros;
-    }
-
-    function UploadProductImage(strName) {
-
-        var files = $("#imgProduct").get(0).files;
-        var fileData = new FormData();
-        fileData.append("fileName", strName);
-        for (var i = 0; i < files.length; i++) {
-            fileData.append("files", files[i]);
-        }
-
-        $.ajax({
-            async: true,
-            type: "POST",
-            url: $('#EditData').data('prod-upload-url'),
-            dataType: "json",
-            contentType: false, // Not to set any content header
-            processData: false, // Not to process data
-            data: fileData,
-            success: function (response) {
-                if (response.success) {
-                    //file name = response.data
-                }
-            },
-            error: function (xhr, txtStatus, errThrown) {
-                toastr.error('Error: ' + xhr.statusText, 'Edit Product', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-            }
-        });
-    }
-}
-
-function displayValidationErrors(errors) {
-
-    global.displayValidationErrors(errors);
-
-    if ($("#ProductCode").val() === '' || $("#ProductName").val() === '') {
-        $('.nav-tabs a[href="#tab_1"]').tab('show');
-        return;
-    }
-
-    if ($("#GLSalesAccount").val() === '' || $("#GLCogsAccount").val() === '') {
-        $('.nav-tabs a[href="#tab_2"]').tab('show');
-        return;
-    }
-}
-
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-            $('#imageProduct')
-                .attr('src', e.target.result);
-        };
-
-        reader.readAsDataURL(input.files[0]);
-    }
-}

@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $('#parentName').inputpicker({
         url: $('#EditData').data('menu-parent-url'),
@@ -22,58 +24,62 @@
     global.applyIsActiveSwitch($('#Is_Active').is(':checked'), false);
 
     $("#btnSaveEdit").on("click", SaveEdit);
+
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        //var info = $('#tblMenu').DataTable().page.info();
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('menu-edit-url'),
+            data: addRequestVerificationToken({
+                Id: $("#Id").val(),
+                nameOption: $("#nameOption").val(),
+                controller: $("#controller").val(),
+                action: $("#action").val(),
+                imageClass: $("#imageClass").val(),
+                status: $('#status').is(':checked'),
+                isParent: $('#isParent').is(':checked'),
+                parentId: $("#parentName").val() || 0,
+                area: $("#area").val(),
+                menuseq: $("#menuseq").val(),
+                Is_Active: $('#Is_Active').is(':checked')
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#editMenuModal').modal('hide');
+                    $('#editMenuContainer').html("");
+
+                    $("#tblMenu").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Menu', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Menu', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+                
+                toastr.error('Error: ' + reponseErr.message, 'Edit Menu', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
+    };
 });
 
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveEdit(event) {
-
-    event.preventDefault();
-
-    //var info = $('#tblMenu').DataTable().page.info();
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('menu-edit-url'),
-        data: addRequestVerificationToken({
-            Id: $("#Id").val(),
-            nameOption: $("#nameOption").val(),
-            controller: $("#controller").val(),
-            action: $("#action").val(),
-            imageClass: $("#imageClass").val(),
-            status: $('#status').is(':checked'),
-            isParent: $('#isParent').is(':checked'),
-            parentId: $("#parentName").val() || 0,
-            area: $("#area").val(),
-            menuseq: $("#menuseq").val(),
-            Is_Active: $('#Is_Active').is(':checked')
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#editMenuModal').modal('hide');
-                $('#editMenuContainer').html("");
-
-                $("#tblMenu").DataTable().ajax.reload(null, false);
-
-                toastr.success(response.message, 'Edit Menu');
-            }
-            else {
-                if (response.errors != null) {
-                    global.displayValidationErrors(response.errors);
-                } else {
-                    toastr.error(response.message, 'Edit Menu', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-                }
-            }
-
-        },
-        error: function (xhr, txtStatus, errThrown) {
-            toastr.error('Error: ' + xhr.statusText, 'Edit Menu', { closeButton: true, timeOut: 0, extendedTimeOut: 0 });
-        }
-    });
-
-};
