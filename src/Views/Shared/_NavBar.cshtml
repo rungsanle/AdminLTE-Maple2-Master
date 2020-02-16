@@ -29,6 +29,19 @@
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">MAIN NAVIGATION</li>
 
+            <li class="treeview @(Html.IsMenuActive("/Administrator") ? "active" : "")">
+                <a href="#">
+                    <i class="fa fa-database"></i> <span>Administrator</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @*<li class="@(Html.IsMenuActive("/Master/Department/Index") ? "active" : "")"><a href="~/Master/Department/Index"><i class="fa fa-circle-o"></i> Department</a></li>*@
+                    <li class="@(Html.IsMenuActive(Url.Action("Index", "User", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "User", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> User</a></li>
+                </ul>
+            </li>
+
             <li class="treeview @(Html.IsMenuActive("/Master") ? "active" : "")">
                 <a href="#">
                     <i class="fa fa-database"></i> <span>Master</span>
