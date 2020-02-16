@@ -1,4 +1,6 @@
 ﻿$(function () {
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
 
     $("#message-alert").hide();
     //Grid Table Config
@@ -21,14 +23,21 @@
                         text: '<i class="fa fa-file-text-o"></i> CSV',
                         title: 'User Master',
                         titleAttr: 'CSV'
+                    },
+                    {
+                        text: '<i class="fa fa-refresh"></i> Reload',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
                     }
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    "url": $('#IndexData').data('user-get-url'),
-                    "type": "GET",
-                    "datatype": "json"
+                    url: $('#IndexData').data('user-get-url'),
+                    type: "GET",
+                    async: true,
+                    datatype: "json"
                 },
                 columns: [
                     { "data": "UserCode", "className": "boldColumn", "autoWidth": false },
@@ -76,7 +85,9 @@
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: 10
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1 //force the use of Session Storage
             });
 
             //dt.on('draw', function () {
@@ -95,6 +106,14 @@
 
     // initialize the datatables
     userVM.init();
+
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtUser.page.info().page != 0) {
+                dtUser.page('first').draw('page');
+            }
+        }, 200);
+    }
 
 
     function addRequestVerificationToken(data) {
@@ -123,8 +142,12 @@
                     global.authenExpire();
                 }
 
-            }, error: function (xhr) {
-                alert('Create Error : ' + xhr);
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseText = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseText.Message, 'Create User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -180,9 +203,12 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('View Error : ' + xhr);
+            },
+            error: function (xhr, txtStatus, errThrown) {
 
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'View User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -211,9 +237,12 @@
                 } else {
                     global.authenExpire();
                 }
-            }, error: function (xhr) {
-                alert('Edit Error : ' + xhr);
+            },
+            error: function (xhr, txtStatus, errThrown) {
 
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'Edit User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 
@@ -234,32 +263,76 @@
         var userData = (dtUser.row(row).data());
         var userId = userData["Id"];
         var userName = userData["UserName"];
-        var con = confirm("Are you sure you want to delete this " + userName)
-        if (con) {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ id: userId }),
-                success: function (response) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this \"' + userName + '\"',
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: api,
+                            data: addRequestVerificationToken({ id: userId }),
+                            success: function (response) {
 
-                    if (response.success) {
+                                if (response.success) {
 
-                        userVM.refresh();
+                                    //userVM.refresh();
+                                    dtArrivalType.row(rowSelect).remove().draw(false);
 
-                        global.successAlert(response.message);
-                    }
-                    else {
-                        global.dangerAlert(response.message, 5000);
+                                    global.successAlert(response.message);
+                                }
+                                else {
+                                    global.dangerAlert(response.message, 5000);
+                                }
+                            },
+                            error: function (xhr) {
+                                global.dangerAlert("error", 5000);
+                            }
+                        });
+
+
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            async: true,
+                            data: addRequestVerificationToken({ id: arrTypeId }),
+                            success: function (response) {
+
+                                if (response.success) {
+
+                                    //arrTypeVM.refresh();
+                                    dtUser.row(rowSelect).remove().draw(false);
+
+                                    toastr.success(response.message, 'Delete User', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+
+                                toastr.error('Error: ' + reponseErr.message, 'Delete User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                            }
+                        });
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //userVM.refresh();
-        }
+            }
+        });
+
     });
 });
