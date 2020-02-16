@@ -80,8 +80,8 @@
                     { "width": "10%", "targets": 4 },
                     { "width": "9%", "targets": 5 },
                     { "width": "8%", "targets": 6 },
-                    { "className": "dt-center", "width": "6%", "targets": 7, "orderable": false },
-                    { "width": "9%", "targets": 8, "orderable": false }
+                    { "className": "dt-center", "width": "5%", "targets": 7, "orderable": false },
+                    { "width": "10%", "targets": 8, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

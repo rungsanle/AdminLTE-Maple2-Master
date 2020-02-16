@@ -33,7 +33,7 @@
                     }
                 ],
                 processing: true, // for show progress bar
-                autoWidth: true,
+                autoWidth: false,
                 ajax: {
                     url: $('#IndexData').data('arrtype-get-url'),    //"/Customer/GetCustomers",
                     type: "GET",
@@ -74,8 +74,8 @@
                     { "width": "26%", "targets": 1 },
                     { "width": "29%", "targets": 2 },
                     { "width": "13%", "targets": 3 },
-                    { "className": "dt-center", "width": "8%", "targets": 4, "orderable": false },
-                    { "width": "9%", "targets": 5, "orderable": false }
+                    { "className": "dt-center", "width": "7%", "targets": 4, "orderable": false },
+                    { "width": "10%", "targets": 5, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
