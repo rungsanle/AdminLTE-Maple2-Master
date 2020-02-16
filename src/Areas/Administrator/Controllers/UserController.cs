@@ -119,31 +119,38 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserCode,UserName,EmpCode,DeptId,Position,CompanyCode,aspnetuser_Id,UserImagePath,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_User m_User)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_User.Created_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var userBll = new UserBLL())
+                    m_User.Created_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await userBll.InsertUser(m_User);
+                        using (var userBll = new UserBLL())
+                        {
+                            resultObj = await userBll.InsertUser(m_User);
 
-                        _cache.Remove("CACHE_ADMINISTRATOR_USER");
+                            _cache.Remove("CACHE_ADMINISTRATOR_USER");
+                        }
+
+                        return Json(new { success = true, data = (M_User)resultObj.ObjectValue, message = "User Created." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_User, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_User)resultObj.ObjectValue, message = "User Created." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_User, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_User, message = "Created Faield" });
             }
-
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_User, message = "Created Faield" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         // GET: Administrator/User/Edit/5
@@ -198,32 +205,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("UserCode,UserName,EmpCode,DeptId,Position,CompanyCode,aspnetuser_Id,UserImagePath,Id,Is_Active,Created_Date,Created_By,Updated_Date,Updated_By")] M_User m_User)
         {
-            if (ModelState.IsValid)
+            try
             {
-                m_User.Updated_By = 1;
-
-                ResultObject resultObj;
-
-                try
+                if (ModelState.IsValid)
                 {
-                    using (var userBll = new UserBLL())
+                    m_User.Updated_By = 1;
+
+                    ResultObject resultObj;
+
+                    try
                     {
-                        resultObj = await userBll.UpdateUser(m_User);
+                        using (var userBll = new UserBLL())
+                        {
+                            resultObj = await userBll.UpdateUser(m_User);
 
-                        _cache.Remove("CACHE_ADMINISTRATOR_USER");
+                            _cache.Remove("CACHE_ADMINISTRATOR_USER");
+                        }
+
+                        return Json(new { success = true, data = (M_User)resultObj.ObjectValue, message = "User Update." });
                     }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, data = m_User, message = ex.Message });
+                    }
+                }
 
-                    return Json(new { success = true, data = (M_User)resultObj.ObjectValue, message = "User Update." });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, data = m_User, message = ex.Message });
-                }
+                var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                return Json(new { success = false, errors = err, data = m_User, message = "Update Failed" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
             }
 
-            var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-            return Json(new { success = false, errors = err, data = m_User, message = "Update Failed" });
-            
         }
 
         // POST: Administrator/User/Delete/5
