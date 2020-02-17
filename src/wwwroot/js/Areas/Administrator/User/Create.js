@@ -14,7 +14,8 @@
             global.removeValidationErrors('UserName');
         }
     });
-    //End----check clear require---//
+    //End----check clear require   user-add-url  dept-get-url ---//
+
     $('#DeptName').inputpicker({
         url: $('#CreateData').data('dept-get-url'),
         fields: [
@@ -28,6 +29,8 @@
         fieldText: 'DeptName',
         fieldValue: 'Id'
     });
+
+    //$('#DeptName').val($("#DeptId").val());
 
     /*-------------- BEGIN COMPANY CODE --------------*/
     var compCode = $('#CreateData').data('viewbag-compcode');
@@ -45,6 +48,7 @@
     global.applyDraggable();
 
     global.applyIsActiveSwitch(true, false);
+
 
     $("#btnSearchId").on("click", function (event) {
 

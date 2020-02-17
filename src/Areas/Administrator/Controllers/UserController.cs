@@ -17,6 +17,7 @@ using System.IO;
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
     [Area("Administrator")]
+    [RequestFormLimits(ValueCountLimit = int.MaxValue)]
     public class UserController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;

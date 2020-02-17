@@ -169,8 +169,16 @@ namespace Maple2.AdminLTE.Uil
                     template: "{controller}/{action=Index}/{id?}");
 
                 routes.MapRoute(
-                    name: "areas",
-                    template: "{area:exists}/{controller=Master}/{action=Index}/{id?}");
+                  name: "area",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                //routes.MapRoute(
+                //    name: "master_areas",
+                //    template: "{area=Master}/{controller}/{action=Index}/{id?}");
+
+                //routes.MapRoute(
+                //    name: "administrator_areas",
+                //    template: "{area=Administrator}/{controller}/{action=Index}/{id?}");
             });
 
             app.UseCookiePolicy();

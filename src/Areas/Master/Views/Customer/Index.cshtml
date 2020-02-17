@@ -82,14 +82,15 @@
                     </div>
                 </div>
                 <div class=" box-footer">
-    @*<button type="button" id="btnNewMachine" class="btn btn-primary">Create</button>*@
-    <button type="button" class="btn btn-create btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Customer", new { Area = "Master" })" id="btnCreateCust">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add
-    </button>
-    <button type="button" class="btn btn-upload btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Customer", new { Area = "Master" })" id="btnUpload">
-        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>&nbsp; Upload
-    </button>
-</div>
+                    @*<button type="button" id="btnNewMachine" class="btn btn-primary">Create</button>*@
+                    <button type="button" class="btn btn-create btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Customer", new { Area = "Master" })" id="btnCreateCust">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add
+                    </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-upload btn-sm" data-toggle="modal" data-url="@Url.Action("UploadData","Customer", new { Area = "Master" })" id="btnUpload">
+                        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>&nbsp; Upload
+                    </button>
+                </div>
             </div>
         </div>
         <!-- /.col -->

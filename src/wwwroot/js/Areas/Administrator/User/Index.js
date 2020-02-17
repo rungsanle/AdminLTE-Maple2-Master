@@ -2,6 +2,8 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
+    console.log($('#IndexData').data('user-get-url'));
+
     $("#message-alert").hide();
     //Grid Table Config
     userVM = {
@@ -64,6 +66,7 @@
                         }
                     },
                     {
+                        "autoWidth": true,
                         "render": function (data, type, user, meta) {
                             return '<a id="viewUser" class="btn btn-view btn-sm" data-toggle="tooltip" title="View" href="User/Details/' + user.Id + '"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>&nbsp;' +
                                 '<a id="editUser" class="btn btn-edit btn-sm" data-toggle="tooltip" title="Edit" href="User/Edit/' + user.Id + '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>&nbsp;' +
@@ -79,9 +82,9 @@
                     { "width": "10%", "targets": 4 },
                     { "width": "13%", "targets": 5 },
                     { "width": "10%", "targets": 6 },
-                    { "width": "20%", "targets": 7 },
+                    { "width": "18%", "targets": 7 },
                     { "className": "dt-center", "width": "6%", "targets": 8, "orderable": false },
-                    { "width": "8%", "targets": 9, "orderable": false }
+                    { "width": "10%", "targets": 9, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -273,30 +276,7 @@
                     btnClass: 'btn-confirm',
                     keys: ['shift', 'enter'],
                     action: function () {
-                        $.ajax({
-                            type: 'POST',
-                            async: true,
-                            url: api,
-                            data: addRequestVerificationToken({ id: userId }),
-                            success: function (response) {
-
-                                if (response.success) {
-
-                                    //userVM.refresh();
-                                    dtArrivalType.row(rowSelect).remove().draw(false);
-
-                                    global.successAlert(response.message);
-                                }
-                                else {
-                                    global.dangerAlert(response.message, 5000);
-                                }
-                            },
-                            error: function (xhr) {
-                                global.dangerAlert("error", 5000);
-                            }
-                        });
-
-
+                        
                         $.ajax({
                             type: 'POST',
                             url: api,

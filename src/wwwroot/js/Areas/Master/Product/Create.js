@@ -33,6 +33,7 @@
     //End----check clear require---//
 
     /*-------------- BEGIN PRODUCTION TYPE --------------*/
+    console.log($('#CreateData').data('prodtype-get-url'));
     $('#ProductionType').inputpicker({
         url: $('#CreateData').data('prodtype-get-url'),
         fields: [
