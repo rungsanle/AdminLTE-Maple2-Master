@@ -221,24 +221,24 @@
     };
 
 
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#imageMaterial')
-                    .attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
-
     //for clear cache image
     var num = Math.random();
     var imgSrc = $('#imageMaterial').attr("src") + "?v=" + num;
     $('#imageMaterial').attr("src", imgSrc);
 
+
 });
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imageMaterial')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+};
 

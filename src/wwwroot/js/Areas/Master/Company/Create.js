@@ -22,13 +22,13 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
-    function onFocusOut(ctl) {
+    //function onFocusOut(ctl) {
 
-        if (ctl.val() != '') {
-            document.querySelectorAll('.text-danger li')[0].remove();
-        }
+    //    if (ctl.val() != '') {
+    //        document.querySelectorAll('.text-danger li')[0].remove();
+    //    }
 
-    }
+    //}
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -135,19 +135,18 @@
         });
     };
 
-
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#imageLogo')
-                    .attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    };
-
 });
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imageLogo')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+};
 

@@ -378,35 +378,7 @@
 
     //$("#btnSaveCreate").on("click", testswitch);
 
-    /*-- BEGIN SEARCH MATERIAL TYPE --*/
-    function selectMatType(id, name) {
-
-        $("#MaterialTypeId").val(id);
-        $("#MaterialType").val(name);
-
-        $('#searchMatTypeIdModal').modal('hide');
-
-    }
-
-    function closeMatTypePopup() {
-        $('#searchMatTypeIdModal').modal('hide');
-    }
-    /*-- END SEARCH MATERIAL TYPE --*/
-
-    /*-- BEGIN SEARCH MACHINE --*/
-    function selectMc(id, code) {
-
-        $("#MachineId").val(id);
-        $("#Machine").val(code);
-
-        $('#searchMcIdModal').modal('hide');
-
-    }
-
-    function closeMcPopup() {
-        $('#searchMcIdModal').modal('hide');
-    }
-    /*-- END SEARCH MACHINE --*/
+    
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -487,7 +459,7 @@
                 }
                 else {
                     if (response.errors != null) {
-                        displayValidationErrors(response.errors);
+                        global.displayValidationErrors(response.errors);
                     } else {
                         toastr.error(response.message, 'Create Product', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
                     }
@@ -591,34 +563,48 @@
         //}
     }
 
-    function displayValidationErrors(errors) {
-
-        global.displayValidationErrors(errors);
-
-        if ($("#ProductCode").val() === '' || $("#ProductName").val() === '') {
-            $('.nav-tabs a[href="#tab_1"]').tab('show');
-            return;
-        }
-
-        if ($("#GLSalesAccount").val() === '' || $("#GLCogsAccount").val() === '') {
-            $('.nav-tabs a[href="#tab_2"]').tab('show');
-            return;
-        }
-
-    }
-
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#imageProduct')
-                    .attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
 });
+
+/*-- BEGIN SEARCH MATERIAL TYPE --*/
+function selectMatType(id, name) {
+
+    $("#MaterialTypeId").val(id);
+    $("#MaterialType").val(name);
+
+    $('#searchMatTypeIdModal').modal('hide');
+
+}
+
+function closeMatTypePopup() {
+    $('#searchMatTypeIdModal').modal('hide');
+}
+/*-- END SEARCH MATERIAL TYPE --*/
+
+/*-- BEGIN SEARCH MACHINE --*/
+function selectMc(id, code) {
+
+    $("#MachineId").val(id);
+    $("#Machine").val(code);
+
+    $('#searchMcIdModal').modal('hide');
+
+}
+
+function closeMcPopup() {
+    $('#searchMcIdModal').modal('hide');
+}
+/*-- END SEARCH MACHINE --*/
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imageProduct')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 

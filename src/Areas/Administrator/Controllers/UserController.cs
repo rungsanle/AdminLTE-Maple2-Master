@@ -10,6 +10,9 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Maple2.AdminLTE.Bll;
+using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
@@ -146,6 +149,41 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 
                 var err = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
                 return Json(new { success = false, errors = err, data = m_User, message = "Created Faield" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UploadUserImage(List<IFormFile> files)
+        {
+            //string fileName = string.Empty;
+            try
+            {
+                string fileName = Request.Form["fileName"];
+
+                var filesPath = $"{this._hostingEnvironment.WebRootPath}\\img\\users\\";
+
+                if (!Directory.Exists(filesPath))
+                {
+                    Directory.CreateDirectory(filesPath);
+                }
+
+                foreach (var file in files)
+                {
+                    var fullFilePath = Path.Combine(filesPath, fileName);
+
+                    if (file.Length <= 0)
+                    {
+                        continue;
+                    }
+
+                    GlobalFunction.SaveThumbnails(0.5, file.OpenReadStream(), fullFilePath);
+                }
+
+                return Json(new { success = true, data = fileName, message = files.Count + " Files Uploaded!" });
             }
             catch (Exception ex)
             {

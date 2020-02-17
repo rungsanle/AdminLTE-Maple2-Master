@@ -385,35 +385,7 @@
     /*-- END TABLE PRODUCT PROCESS --*/
     $("#btnSaveEdit").on("click", SaveEdit);
 
-    /*-- BEGIN SEARCH MATERIAL TYPE --*/
-    function selectMatType(id, name) {
-
-        $("#MaterialTypeId").val(id);
-        $("#MaterialType").val(name);
-
-        $('#searchMatTypeIdModal').modal('hide');
-
-    }
-
-    function closeMatTypePopup() {
-        $('#searchMatTypeIdModal').modal('hide');
-    }
-    /*-- END SEARCH MATERIAL TYPE --*/
-
-    /*-- BEGIN SEARCH MACHINE --*/
-    function selectMc(id, code) {
-
-        $("#MachineId").val(id);
-        $("#Machine").val(code);
-
-        $('#searchMcIdModal').modal('hide');
-
-    }
-
-    function closeMcPopup() {
-        $('#searchMcIdModal').modal('hide');
-    }
-    /*-- END SEARCH MACHINE --*/
+    
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -574,24 +546,53 @@
         }
     }
 
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#imageProduct')
-                    .attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-
     //for clear cache image
     var num = Math.random();
     var imgSrc = $('#imageProduct').attr("src") + "?v=" + num;
     $('#imageProduct').attr("src", imgSrc);
 
 });
+
+/*-- BEGIN SEARCH MATERIAL TYPE --*/
+function selectMatType(id, name) {
+
+    $("#MaterialTypeId").val(id);
+    $("#MaterialType").val(name);
+
+    $('#searchMatTypeIdModal').modal('hide');
+
+}
+
+function closeMatTypePopup() {
+    $('#searchMatTypeIdModal').modal('hide');
+}
+/*-- END SEARCH MATERIAL TYPE --*/
+
+/*-- BEGIN SEARCH MACHINE --*/
+function selectMc(id, code) {
+
+    $("#MachineId").val(id);
+    $("#Machine").val(code);
+
+    $('#searchMcIdModal').modal('hide');
+
+}
+
+function closeMcPopup() {
+    $('#searchMcIdModal').modal('hide');
+}
+/*-- END SEARCH MACHINE --*/
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#imageProduct')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 

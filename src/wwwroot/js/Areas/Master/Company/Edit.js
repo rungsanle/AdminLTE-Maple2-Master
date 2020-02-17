@@ -21,10 +21,7 @@
 
     $("#btnSaveEdit").on("click", SaveEdit);
 
-    //for clear cache image
-    var num = Math.random();
-    var imgSrc = $('#imageLogo').attr("src") + "?v=" + num;
-    $('#imageLogo').attr("src", imgSrc);
+
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -149,19 +146,24 @@
 
     }
 
-    function readURL(input) {
-
-        if (input.files && input.files[0]) {
-
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#imageLogo')
-                    .attr('src', e.target.result);
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+    //for clear cache image
+    var num = Math.random();
+    var imgSrc = $('#imageLogo').attr("src") + "?v=" + num;
+    $('#imageLogo').attr("src", imgSrc);
 
 });
+
+function readURL(input) {
+
+    if (input.files && input.files[0]) {
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#imageLogo')
+                .attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+};
 
