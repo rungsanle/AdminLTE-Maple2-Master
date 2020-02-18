@@ -121,7 +121,7 @@ namespace Maple2.AdminLTE.Bll
                         resultObj.RowAffected = await context.Database.ExecuteSqlCommandAsync("call sp_user_insert(@`strId`, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", parameters: sqlParams);
 
                         //new department after insert.
-                        var newUser = context.Material.FromSql("SELECT * FROM m_user WHERE Id = @`strId`;").ToListAsync();
+                        var newUser = context.User.FromSql("SELECT * FROM m_user WHERE Id = @`strId`;").ToListAsync();
                         resultObj.ObjectValue = newUser.Result[0];
 
                         transaction.Commit();
