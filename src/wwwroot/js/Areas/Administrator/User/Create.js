@@ -2,6 +2,8 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
+    $('input').attr('autocomplete', 'off');
+
     //Begin----check clear require---//
     $("#UserCode").on("focusout", function () {
         if ($("#UserCode").val() != '') {
@@ -23,9 +25,9 @@
             { name: 'DeptName', text: 'NAME', width: '70%' }
         ],
         width: '350px',
-        autoOpen: true,
-        selectMode: 'restore',
+        selectMode: 'tab',
         headShow: true,
+        autoOpen: true,
         fieldText: 'DeptName',
         fieldValue: 'Id'
     });

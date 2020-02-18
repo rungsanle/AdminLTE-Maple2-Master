@@ -62,7 +62,6 @@
                             // input.is(":focus")
                             // var input = $(this).find('input');
                             // dd(input.is(":focus"));
-
                             input.inputpicker('toggle');
                             
 

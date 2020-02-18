@@ -250,6 +250,7 @@ td.boldColumn {
 }
 
 .btn-create:hover,
+.btn-create:focus,
 .btn-create:active,
 .btn-create.hover {
     background-color: #e7e7e7;
@@ -262,8 +263,9 @@ td.boldColumn {
 }
 
 .btn-view:hover,
+.btn-view:focus,
 .btn-view:active,
-.btn-view.hover {
+.btn-view:hover {
     background-color: #e7e7e7;
 }
 
@@ -274,6 +276,7 @@ td.boldColumn {
 }
 
 .btn-edit:hover,
+.btn-edit:focus,
 .btn-edit:active,
 .btn-edit.hover {
     background-color: #e7e7e7;
@@ -286,6 +289,7 @@ td.boldColumn {
 }
 
 .btn-delete:hover,
+.btn-delete:focus,
 .btn-delete:active,
 .btn-delete.hover {
     background-color: #e7e7e7;
@@ -298,6 +302,7 @@ td.boldColumn {
 }
 
 .btn-save:hover,
+.btn-save:focus,
 .btn-save:active,
 .btn-save.hover {
     background-color: #e7e7e7;
@@ -310,6 +315,7 @@ td.boldColumn {
 }
 
 .btn-confirm:hover,
+.btn-confirm:focus,
 .btn-confirm:active,
 .btn-confirm.hover {
     background-color: #e7e7e7;
@@ -322,6 +328,7 @@ td.boldColumn {
 }
 
 .btn-cancel:hover,
+.btn-cancel:focus,
 .btn-cancel:active,
 .btn-cancel.hover {
     background-color: #e7e7e7;
@@ -334,6 +341,7 @@ td.boldColumn {
 }
 
 .btn-upload:hover,
+.btn-upload:focus,
 .btn-upload:active,
 .btn-upload.hover {
     background-color: #e7e7e7;
@@ -346,6 +354,7 @@ td.boldColumn {
 }
 
 .btn-browse:hover,
+.btn-browse:focus,
 .btn-browse:active,
 .btn-browse.hover {
     background-color: #e7e7e7;
@@ -358,6 +367,7 @@ td.boldColumn {
 }
 
 .btn-display:hover,
+.btn-display:focus,
 .btn-display:active,
 .btn-display.hover {
     background-color: #e7e7e7;
