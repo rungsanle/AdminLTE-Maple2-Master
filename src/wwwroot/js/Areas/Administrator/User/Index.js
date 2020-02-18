@@ -1,8 +1,10 @@
 ﻿$(function () {
+
+    //To solve Synchronous XMLHttpRequest warning
+    global.AjaxPrefilter();
+
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
-
-    console.log($('#IndexData').data('user-get-url'));
 
     $("#message-alert").hide();
     //Grid Table Config
@@ -125,6 +127,7 @@
     };
 
     //Add User
+    
     $("#btnCreateUser").on("click", function (event) {
         
 

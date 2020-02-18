@@ -352,6 +352,14 @@ global.resetValidationErrors = function() {
     };
 }
 
+//Solve Synchronous XMLHttpRequest warning
+global.AjaxPrefilter = function () {
+
+    $.ajaxPrefilter(function (options, original_Options, jqXHR) {
+        options.async = true;
+    });
+}
+
 global.setAppSettings = function (strKey, objJson) {
     localStorage.setItem(strKey, objJson);
 };

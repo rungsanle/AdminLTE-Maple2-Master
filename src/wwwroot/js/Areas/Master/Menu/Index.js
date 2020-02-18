@@ -4,6 +4,10 @@
 //--End sidebar-collapse--//
 
 $(function () {
+
+    //To solve Synchronous XMLHttpRequest warning
+    global.AjaxPrefilter();
+
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 

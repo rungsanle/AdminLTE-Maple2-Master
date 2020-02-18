@@ -1,4 +1,5 @@
 ﻿$(function () {
+
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
@@ -25,7 +26,7 @@
             { name: 'DeptName', text: 'NAME', width: '70%' }
         ],
         width: '350px',
-        selectMode: 'tab',
+        selectMode: 'restore',
         headShow: true,
         autoOpen: true,
         fieldText: 'DeptName',
@@ -175,13 +176,13 @@
         var strCompanyCode = $("#CompanyCode").val();
         var userFileName;
 
-        var fileLength = $("#fileImage").get(0).files.length;
+        var fileLength = $("#imgUser").get(0).files.length;
         if (fileLength > 0) {
 
-            var selFilename = $("#fileImage").get(0).files[0].name;
+            var selFilename = $("#imgUser").get(0).files[0].name;
             var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
 
-            userFileName = strUserCode + strCompanyCode + '.' + extension;
+            userFileName = strCompanyCode + '_' + strUserCode  + '.' + extension;
         }
 
         $.ajax({
