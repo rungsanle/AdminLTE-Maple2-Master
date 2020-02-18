@@ -3,7 +3,7 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    $('input').attr('autocomplete', 'off');
+
 
     //Begin----check clear require---//
     $("#UserCode").on("focusout", function () {

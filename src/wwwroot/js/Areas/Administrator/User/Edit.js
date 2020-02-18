@@ -1,4 +1,5 @@
 ﻿$(function () {
+
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
@@ -24,7 +25,7 @@
         ],
         width: '350px',
         autoOpen: true,
-        selectMode: 'restore',
+        selectMode: 'empty',
         headShow: true,
         fieldText: 'DeptName',
         fieldValue: 'Id'
@@ -171,13 +172,13 @@
         var strCompanyCode = $("#CompanyCode").val();
         var userFileName = $("#UserImagePath").val();
 
-        var fileLength = $("#fileImage").get(0).files.length;
+        var fileLength = $("#imgUser").get(0).files.length;
         if (fileLength > 0) {
 
-            var selFilename = $("#fileImage").get(0).files[0].name;
+            var selFilename = $("#imgUser").get(0).files[0].name;
             var extension = selFilename.substring(selFilename.lastIndexOf('.') + 1);
 
-            userFileName = strUserCode + strCompanyCode + '.' + extension;
+            userFileName = strCompanyCode + '_' + strUserCode + '.' + extension;
         }
 
         //var info = $('#tblMenu').DataTable().page.info();
@@ -260,9 +261,6 @@
             }
         });
     }
-
-
-
 });
 
 function readURL(input) {

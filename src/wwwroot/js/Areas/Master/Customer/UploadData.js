@@ -3,7 +3,6 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    $('input').attr('autocomplete', 'off');
 
     bs_input_file();
 
