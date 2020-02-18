@@ -157,6 +157,12 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             }
         }
 
+
+        public async Task<IActionResult> Register()
+        {
+            return await Task.Run(() => RedirectToPage("/Account/Register", new { area = string.Empty }));
+        }
+
         [HttpPost]
         public IActionResult UploadUserImage(List<IFormFile> files)
         {
