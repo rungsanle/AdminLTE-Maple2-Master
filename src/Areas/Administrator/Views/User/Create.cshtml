@@ -80,14 +80,13 @@
                 <div class="form-group">
                     <label asp-for="aspnetuser_Id" class="control-label input-sm col-md-3"></label>
                     <div class="col-md-5">
-                        <input asp-for="aspnetuser_Id" type="hidden" />
                         <div class="input-group">
                             <input asp-for="aspnetuser_Id" class="form-control input-sm" readonly="readonly" />
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-browse btn-sm btn-flat" data-toggle="modal" id="btnSearchMatType">
+                                <button type="button" class="btn btn-browse btn-sm btn-flat" data-toggle="modal" id="btnSearchId">
                                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                                 </button>
-                                <button type="button" class="btn btn-delete btn-sm btn-flat" id="btnRemoveMatType">
+                                <button type="button" class="btn btn-delete btn-sm btn-flat" id="btnRemoveId">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                             </span>
@@ -155,13 +154,15 @@
                             </thead>
                         </table>
                     </div>
-                    <input asp-for="aspnetuser_Id" type="hidden" />
+                    @Html.Hidden("hdSelectAppUser")
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                    </div>
                 </div>
-            </div>
+             </div>
         </div>
     </div>
 </div>

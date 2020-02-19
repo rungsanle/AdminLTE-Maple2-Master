@@ -265,8 +265,8 @@
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var userData = (dtUser.row(row).data());
+        var rowSelect = $(this).parents('tr')[0];
+        var userData = (dtUser.row(rowSelect).data());
         var userId = userData["Id"];
         var userName = userData["UserName"];
 
@@ -284,7 +284,7 @@
                             type: 'POST',
                             url: api,
                             async: true,
-                            data: addRequestVerificationToken({ id: arrTypeId }),
+                            data: addRequestVerificationToken({ id: userId }),
                             success: function (response) {
 
                                 if (response.success) {

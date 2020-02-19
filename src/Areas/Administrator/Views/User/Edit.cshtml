@@ -82,14 +82,13 @@
                 <div class="form-group">
                     <label asp-for="aspnetuser_Id" class="control-label input-sm col-md-3"></label>
                     <div class="col-md-5">
-                        <input asp-for="aspnetuser_Id" type="hidden" />
                         <div class="input-group">
                             <input asp-for="aspnetuser_Id" class="form-control input-sm" readonly="readonly" />
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-browse btn-sm btn-flat" data-toggle="modal" id="btnSearchMatType">
+                                <button type="button" class="btn btn-browse btn-sm btn-flat" data-toggle="modal" id="btnSearchId">
                                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                                 </button>
-                                <button type="button" class="btn btn-delete btn-sm btn-flat" id="btnRemoveMatType">
+                                <button type="button" class="btn btn-delete btn-sm btn-flat" id="btnRemoveId">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </button>
                             </span>
@@ -105,7 +104,7 @@
                             <img id="imageUser" src='@Url.Content("~/img/users/")@Model.UserImagePath' onerror="this.src='@Url.Content("~/img/")user_image_empty.png'" alt="User Image" style="max-width:100%;" />
                         </div>
                         <input id="imgUser" type="file" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);" />
-                        <span asp-validation-for="UserImagePath" class="text-danger"></span>
+                        <input asp-for="UserImagePath" type="hidden" />
                     </div>
                 </div>
 
@@ -129,6 +128,40 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="searchIdModal" tabindex="-1" role="dialog" aria-labelledby="SearchIdModal" aria-hidden="true" data-backdrop="static">
+    <div id="searchIdContainer">
+        <div class="modal-dialog" style="width:700px;">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" onclick="closePopup()">&times;</button>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-user"></i> SELECT LOGIN USER ID </h4>
+                </div>
+
+                <div class="box-body pad">
+                    <div class="table-responsive">
+                        <table id="tblAppUser" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>LOGIN USER ID</th>
+                                    <th>USER NAME</th>
+                                    <th>USER EMAIL</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    @Html.Hidden("hdSelectAppUser")
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

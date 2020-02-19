@@ -8,7 +8,7 @@
         ],
         width: '350px',
         autoOpen: true,
-        selectMode: 'restore',
+        selectMode: 'empty',
         headShow: true,
         fieldText: 'DeptName',
         fieldValue: 'Id'

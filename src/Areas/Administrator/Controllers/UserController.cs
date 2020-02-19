@@ -13,6 +13,7 @@ using Maple2.AdminLTE.Bll;
 using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
@@ -23,10 +24,14 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
+        private readonly UserManager<ApplicationUser> _userManager;
+
         public UserController(IHostingEnvironment hostingEnvironment,
+                              UserManager<ApplicationUser> userManager,
                                     IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
+            _userManager = userManager;
             _cache = memoryCache;
         }
 
@@ -342,6 +347,19 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> GetApplicationUser()
+        {
+            try
+            {
+                var lstAppUser = await _userManager.Users.ToListAsync();
+                return Json(new { data = lstAppUser });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
         }
 

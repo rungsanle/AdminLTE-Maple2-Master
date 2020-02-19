@@ -67,6 +67,7 @@
 
         event.preventDefault();
 
+        $('#hdSelectAppUser').val('');
         $('#aspnetuser_Id').val('');
 
 
@@ -80,6 +81,7 @@
 
         var value = $('#hdSelectAppUser').val();
 
+        //if (!(value == 'undefined' || value == null)) {
         if (isNaN(value)) {
             $("#aspnetuser_Id").val(value);
         }
@@ -116,10 +118,10 @@
                     }
                 ],
                 columnDefs: [
-                    { "className": "dt-header-center", "width": "45%", "targets": 0 },
+                    { "className": "dt-header-center", "width": "44%", "targets": 0 },
                     { "className": "dt-header-center", "width": "20%", "targets": 1 },
-                    { "className": "dt-header-center", "width": "30%", "targets": 2 },
-                    { "className": "dt-header-center", "width": "5%", "targets": 3, "orderable": false }
+                    { "className": "dt-header-center", "width": "28%", "targets": 2 },
+                    { "className": "dt-header-center", "width": "8%", "targets": 3, "orderable": false }
                 ],
                 order: [[0, "Id"]],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -129,7 +131,8 @@
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
 
-
+            //set width of input search.
+            $('div.dataTables_filter#tblAppUser_filter input[type = "search"]').css({ 'width': '200px' });
         },
 
         tbdestroy: function () {
@@ -146,16 +149,7 @@
     var imgSrc = $('#imageUser').attr("src") + "?v=" + num;
     $('#imageUser').attr("src", imgSrc);
 
-    function selectAppUser(id) {
-
-        $("#hdSelectAppUser").val(id);
-        $('#searchIdModal').modal('hide');
-
-    }
-
-    function closePopup() {
-        $('#searchIdModal').modal('hide');
-    }
+    
 
     function addRequestVerificationToken(data) {
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
@@ -262,6 +256,17 @@
         });
     }
 });
+
+function selectAppUser(id) {
+
+    $("#hdSelectAppUser").val(id);
+    $('#searchIdModal').modal('hide');
+
+}
+
+function closePopup() {
+    $('#searchIdModal').modal('hide');
+}
 
 function readURL(input) {
     if (input.files && input.files[0]) {
