@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Maple2.AdminLTE.Dal
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
