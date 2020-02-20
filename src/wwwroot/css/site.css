@@ -166,6 +166,12 @@ td.boldColumn {
     justify-content: center;
 }
 
+.modal-content {
+    border-radius: 8px;
+    border: 0.05em solid #dfdfdf !important;
+    border-color: #dfdfdf;
+}
+
 .modal.fade {
     background: none;
 }
@@ -238,9 +244,7 @@ td.boldColumn {
     cursor: pointer;
 }
 
-.modal-content {
-    border-radius: 8px;
-}
+
 
 /*-- For Button --*/
 .btn-create {

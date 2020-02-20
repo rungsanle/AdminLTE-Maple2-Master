@@ -38,6 +38,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="@(Html.IsMenuActive(Url.Action("Index", "User", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "User", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> User</a></li>
+                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Role", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "Role", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> Role</a></li>
                 </ul>
             </li>
 

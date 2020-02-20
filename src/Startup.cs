@@ -50,7 +50,7 @@ namespace Maple2.AdminLTE.Uil
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
             {
                 config.User.RequireUniqueEmail = true;    // уникальный email
                 config.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -._@+"; 

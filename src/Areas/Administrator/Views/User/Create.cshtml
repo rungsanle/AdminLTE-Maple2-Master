@@ -138,7 +138,7 @@
 
                 <div class="modal-header">
                     <button type="button" class="close" aria-hidden="true" onclick="closePopup()">&times;</button>
-                    <h4 class="modal-title"><i class="glyphicon glyphicon-user"></i> SELECT LOGIN USER ID </h4>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-user"></i> Select Application User </h4>
                 </div>
 
                 <div class="box-body pad">
@@ -153,15 +153,17 @@
                                 </tr>
                             </thead>
                         </table>
+                        @Html.Hidden("hdSelectAppUser")
                     </div>
-                    @Html.Hidden("hdSelectAppUser")
+
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
-                    </div>
-                </div>
              </div>
         </div>
     </div>

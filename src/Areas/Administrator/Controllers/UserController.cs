@@ -22,9 +22,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
     public class UserController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly IMemoryCache _cache;
-
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMemoryCache _cache;
 
         public UserController(IHostingEnvironment hostingEnvironment,
                               UserManager<ApplicationUser> userManager,
@@ -354,12 +353,30 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         {
             try
             {
+
+                if (_cache.TryGetValue("CACHE_ADMINISTRATOR_APPUSER", out List<ApplicationUser> c_lstAppUser))
+                {
+                    return Json(new { data = c_lstAppUser });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.NeverRemove
+                };
+
+
                 var lstAppUser = await _userManager.Users.ToListAsync();
+
+                _cache.Set("CACHE_ADMINISTRATOR_APPUSER", lstAppUser, options);
+
+
                 return Json(new { data = lstAppUser });
             }
             catch(Exception ex)
             {
-                throw ex;
+                return BadRequest(new { success = false, message = ex.Message });
             }
         }
 
