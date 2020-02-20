@@ -22,15 +22,14 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
     public class UserController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMemoryCache _cache;
 
+        //private readonly UserManager<ApplicationUser> _userManager;
+
         public UserController(IHostingEnvironment hostingEnvironment,
-                              UserManager<ApplicationUser> userManager,
                                     IMemoryCache memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
-            _userManager = userManager;
             _cache = memoryCache;
         }
 
@@ -349,36 +348,36 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             }
         }
 
-        public async Task<IActionResult> GetApplicationUser()
-        {
-            try
-            {
+        //public async Task<IActionResult> GetApplicationUser()
+        //{
+        //    try
+        //    {
 
-                if (_cache.TryGetValue("CACHE_ADMINISTRATOR_APPUSER", out List<ApplicationUser> c_lstAppUser))
-                {
-                    return Json(new { data = c_lstAppUser });
-                }
+        //        if (_cache.TryGetValue("CACHE_ADMINISTRATOR_APPUSER", out List<ApplicationUser> c_lstAppUser))
+        //        {
+        //            return Json(new { data = c_lstAppUser });
+        //        }
 
-                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
-                    SlidingExpiration = TimeSpan.FromSeconds(60),
-                    Priority = CacheItemPriority.NeverRemove
-                };
-
-
-                var lstAppUser = await _userManager.Users.ToListAsync();
-
-                _cache.Set("CACHE_ADMINISTRATOR_APPUSER", lstAppUser, options);
+        //        MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+        //        {
+        //            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+        //            SlidingExpiration = TimeSpan.FromSeconds(60),
+        //            Priority = CacheItemPriority.NeverRemove
+        //        };
 
 
-                return Json(new { data = lstAppUser });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-        }
+        //        var lstAppUser = await _userManager.Users.ToListAsync();
+
+        //        _cache.Set("CACHE_ADMINISTRATOR_APPUSER", lstAppUser, options);
+
+
+        //        return Json(new { data = lstAppUser });
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return BadRequest(new { success = false, message = ex.Message });
+        //    }
+        //}
 
     }
 }

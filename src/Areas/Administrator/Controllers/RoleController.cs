@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
@@ -34,7 +35,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             return await Task.Run(() => View());
         }
 
-        public IActionResult GetApplicationRoles()
+        public async Task<IActionResult> GetApplicationRoles()
         {
             try
             {
@@ -52,7 +53,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                 };
 
 
-                var lstAppRole =  _roleManager.Roles.ToList();
+                var lstAppRole = await _roleManager.Roles.ToListAsync();
 
                 _cache.Set("CACHE_ADMINISTRATOR_APPROLE", lstAppRole, options);
 

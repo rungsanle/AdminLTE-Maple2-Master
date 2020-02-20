@@ -57,8 +57,8 @@
                 ],
                 columnDefs: [
                     { "width": "30%", "targets": 0 },
-                    { "width": "62%", "targets": 1 },
-                    { "width": "8%", "targets": 2, "orderable": false }
+                    { "width": "60%", "targets": 1 },
+                    { "width": "10%", "targets": 2, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],

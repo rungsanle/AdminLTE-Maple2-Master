@@ -8,7 +8,7 @@
 <div id="CreateData"
      data-user-add-url="@Url.Action("Create", "User", new { Area = "Administrator" })"
      data-dept-get-url="@Url.Action("GetDepartment", "Department", new { Area = "Master" })"
-     data-appu-get-url="@Url.Action("GetApplicationUser", "User", new { Area = "Administrator" })"
+     data-appu-get-url="@Url.Action("GetApplicationUser", "AppUser", new { Area = "Administrator" })"
      data-user-upload-url="@Url.Action("UploadUserImage", "User", new { Area = "Administrator" })"
      data-viewbag-compcode="@ViewBag.CompCode">
 </div>
@@ -154,13 +154,14 @@
                             </thead>
                         </table>
                         @Html.Hidden("hdSelectAppUser")
-                    </div>
 
+                    </div>
                     <div class="modal-footer">
                         <div class="form-group">
                             <button type="button" class="btn btn-default btn-sm" onclick="closePopup()"><span class="fa fa-rotate-left" aria-hidden="true"></span>&nbsp;Cancel</button>
                         </div>
                     </div>
+
 
                 </div>
 

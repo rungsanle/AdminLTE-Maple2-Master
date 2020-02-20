@@ -95,6 +95,8 @@
 
     $("#btnSaveCreate").on("click", SaveCrate);
 
+    
+
     appUserVM = {
         dtAppUser: null,
         init: function () {
