@@ -49,7 +49,7 @@
 
                 var reponseErr = JSON.parse(xhr.responseText);
 
-                toastr.error('Error: ' + reponseErr.message, 'Edit User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                toastr.error('Error: ' + reponseErr.message, 'Edit Role', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
     }

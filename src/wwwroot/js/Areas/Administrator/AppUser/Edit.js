@@ -1,20 +1,23 @@
 ﻿$(function () {
 
+    //Get appSetting.json
+    var appSetting = global.getAppSettings('AppSettings');
+
     $("#UserName").on("focusout", function () {
         if ($("#UserName").val().length >= 6) {
-            $('#UserName_validationMessage li').remove();
+            global.removeValidationErrors('UserName');
         }
     });
 
     $("#Email").on("focusout", function () {
         if (isValidEmailAddress($("#Email").val())) {
-            $('#Email_validationMessage li').remove();
+            global.removeValidationErrors('Email');
         }
     });
 
     $("#Password").on("focusout", function () {
         if ($("#Password").val().length >= 6 && $('#Password_validationMessage li').text() === 'PASSWORD must be at least 6 characters.') {
-            $('#Password_validationMessage li').remove();
+            global.removeValidationErrors('Password');
         }
     });
 
@@ -96,124 +99,123 @@
         event.preventDefault();
 
         var api = $(this).attr("href");
-        var row = $(this).parents('tr')[0];
-        var appRoleData = (tblUserRole.row(row).data());
-
-       // alert(appRoleData);
+        var rowSelect = $(this).parents('tr')[0];
+        var appRoleData = (tblUserRole.row(rowSelect).data());
 
         var appuId = $("#Id").val();
         var rName = appRoleData[0];
 
-        var con = confirm("Are you sure you want to delete this " + rName)
-        if (con) {
+        $.confirm({
+            title: 'Please Confirm!',
+            content: 'Are you sure you want to delete this \"' + rName + '\"',
+            buttons: {
+                confirm: {
+                    text: 'Confirm',
+                    btnClass: 'btn-confirm',
+                    keys: ['shift', 'enter'],
+                    action: function () {
 
-            $.ajax({
-                type: 'POST',
-                url: api,
-                data: addRequestVerificationToken({ Id: appuId, RoleName: rName}),
-                success: function (response) {
+                        $.ajax({
+                            type: 'POST',
+                            url: api,
+                            async: true,
+                            data: addRequestVerificationToken({ Id: appuId, RoleName: rName }),
+                            success: function (response) {
 
-                    if (response.success) {
+                                if (response.success) {
 
-                        tblUserRole.row(row).remove().draw();
+                                    tblUserRole.row(rowSelect).remove().draw();
 
-                        $('#AddRole').empty();
+                                    $('#AddRole').empty();
 
-                        $.each(response.data, function (index, value) {
-                            $('#AddRole').append('<option value="' + value.Text + '">' + value.Text + '</option>');
+                                    $.each(response.data, function (index, value) {
+                                        $('#AddRole').append('<option value="' + value.Text + '">' + value.Text + '</option>');
+                                    });
+
+                                    $('#AddRole').val('');
+                                }
+                                else {
+                                    toastr.error(response.message, 'Delete Role', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                                }
+                            },
+                            error: function (xhr, txtStatus, errThrown) {
+
+                                var reponseErr = JSON.parse(xhr.responseText);
+
+                                toastr.error('Error: ' + reponseErr.message, 'Delete Role', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                            }
                         });
-
-                        $('#AddRole').val('');
-                    }
-                    else {
-                        global.dangerAlert(response.message, 5000);
                     }
                 },
-                error: function (xhr) {
-                    global.dangerAlert("error", 5000);
+                cancel: {
+                    text: 'Cancel',
+                    btnClass: 'btn-cancel',
+                    keys: ['enter'],
+                    action: function () {
+                    }
                 }
-            });
-        }
-        else {
-            //roleVM.refresh();
-        }
-        
-
-
-
+            }
+        });
     });
 
     $("#btnSaveEdit").on("click", SaveEdit);
 
-});
-
-function isValidEmailAddress(emailAddress) {
-    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-    return pattern.test(emailAddress);
-};
-
-function addRequestVerificationToken(data) {
-    data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
-    return data;
-};
-
-function SaveEdit(event) {
-
-    event.preventDefault();
-
-    resetValidationErrors();
-
-    $.ajax({
-        async: true,
-        type: "POST",
-        url: $('#EditData').data('appu-edit-url'),
-        data: addRequestVerificationToken({
-            Id: $("#Id").val(),
-            UserName: $("#UserName").val(),
-            Email: $("#Email").val(),
-            Password: $("#Password").val(),
-            PhoneNumber: $("#PhoneNumber").val()
-        }),
-        success: function (response) {
-
-            if (response.success) {
-
-                $('#editAppUserModal').modal('hide');
-                $('#editAppUserContainer').html("");
-
-                $("#tblAppUser").DataTable().ajax.reload(null, false);
-
-                global.successAlert(response.message);
-            }
-            else {
-                if (response.errors != null) {
-                    displayValidationErrors(response.errors);
-                } else {
-                    global.dangerAlert(response.message, 5000);
-                }
-            }
-
-        },
-        error: function () {
-            global.dangerAlert("error", 5000);
-        }
-    });
-}
-
-function displayValidationErrors(errors) {
-    $.each(errors, function (idx, errorMessage) {
-        var res = errorMessage.split("|");
-        $("#" + res[0] + "_validationMessage").append('<li>' + res[1] + '</li>');
-    });
-
-};
-
-function resetValidationErrors() {
-
-    var listItems = document.querySelectorAll('.text-danger li');
-    for (let i = 0; i < listItems.length; i++) {
-        if (listItems[i].textContent != null)
-            listItems[i].remove();
+    function isValidEmailAddress(emailAddress) {
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        return pattern.test(emailAddress);
     };
 
-}
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function SaveEdit(event) {
+
+        event.preventDefault();
+
+        global.resetValidationErrors();
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: $('#EditData').data('appu-edit-url'),
+            data: addRequestVerificationToken({
+                Id: $("#Id").val(),
+                UserName: $("#UserName").val(),
+                Email: $("#Email").val(),
+                Password: $("#Password").val(),
+                PhoneNumber: $("#PhoneNumber").val()
+            }),
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#editAppUserModal').modal('hide');
+                    $('#editAppUserContainer').html("");
+
+                    $("#tblAppUser").DataTable().ajax.reload(null, false);
+
+                    toastr.success(response.message, 'Edit Application User', { timeOut: appSetting.toastrSuccessTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                }
+                else {
+                    if (response.errors != null) {
+                        global.displayValidationErrors(response.errors);
+                    } else {
+                        toastr.error(response.message, 'Edit Application User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
+                }
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'Edit Application User', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+    }
+
+
+
+});
