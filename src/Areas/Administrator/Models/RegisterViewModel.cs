@@ -33,7 +33,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Models
         public string NameIdentifier { get; set; }
 
         [Display(Name = "Agreement")]
-        [IsTrueRequired(ErrorMessage = "You must agree the terms.")]
+        [IsTrueRequired(ErrorMessage = "IsAgree|You must agree the terms.")]
         public bool IsAgree { get; set; }
     }
 }

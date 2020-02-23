@@ -14,6 +14,9 @@ using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+using jsreport.AspNetCore;
+using jsreport.Types;
+using Maple2.AdminLTE.Uil.Areas.Administrator.Models;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
@@ -377,6 +380,42 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         //    {
         //        return BadRequest(new { success = false, message = ex.Message });
         //    }
+        //}
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Invoice()
+        {
+
+            HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+                .Configure((r) => r.Template.Chrome = new Chrome
+                {
+                    HeaderTemplate = null,
+                    DisplayHeaderFooter = false,
+                    Format = "A4",
+                    MarginTop = "1cm",
+                    MarginLeft = "1cm",
+                    MarginBottom = "1cm",
+                    MarginRight = "1cm"
+                });
+            return await Task.Run(() => View(InvoiceModel.Example()));
+        }
+
+        //[MiddlewareFilter(typeof(JsReportPipeline))]
+        //public IActionResult Invoice()
+        //{
+
+        //    HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+        //        .Configure((r) => r.Template.Chrome = new Chrome
+        //        {
+        //            HeaderTemplate = null,
+        //            DisplayHeaderFooter = false,
+        //            Format = "A4",
+        //            MarginTop = "1cm",
+        //            MarginLeft = "1cm",
+        //            MarginBottom = "1cm",
+        //            MarginRight = "1cm"
+        //        });
+        //    return View(InvoiceModel.Example());
         //}
 
     }

@@ -21,6 +21,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using BotDetect.Web;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Binary;
 
 namespace Maple2.AdminLTE.Uil
 {
@@ -113,6 +116,11 @@ namespace Maple2.AdminLTE.Uil
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            //Add jsreport
+            services.AddJsReport(new LocalReporting()
+                .UseBinary(JsReportBinary.GetBinary())
+                .AsUtility()
+                .Create());
 
             // Add Session services. 
             services.AddSession(options =>
@@ -180,6 +188,8 @@ namespace Maple2.AdminLTE.Uil
                 //    name: "administrator_areas",
                 //    template: "{area=Administrator}/{controller}/{action=Index}/{id?}");
             });
+
+
 
             app.UseCookiePolicy();
         }

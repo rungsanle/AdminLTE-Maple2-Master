@@ -18,6 +18,11 @@
     <!-- jquery-confirm -->
     <link rel="stylesheet" href="~/plugins/jquery-confirm/jquery-confirm.min.css">
 
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/plugins/iCheck/square/blue.css">
+
+    
+
     @RenderSection("Styles", required: false)
     <!-- Theme style -->
     <link rel="stylesheet" href="~/css/AdminLTE.min.css">
@@ -87,8 +92,11 @@
     <!-- jquery-confirm -->
     <script src="~/plugins/jquery-confirm/jquery-confirm.min.js"></script>
 
+    <!-- iCheck -->
+    <script src="~/plugins/iCheck/icheck.min.js"></script>
+
     <script>
-        
+
         var ROOT = '@Url.Content("~/")';
 
         global.applyDraggable();
@@ -96,7 +104,7 @@
         global.applyToastrOption();
 
         //toastr.options.positionClass = 'toast-bottom-right';
-        
+
 
         $(document).ready(function () {
 

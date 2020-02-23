@@ -3,11 +3,11 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    //$('input').iCheck({
-    //    checkboxClass: 'icheckbox_square-blue',
-    //    radioClass: 'iradio_square-blue',
-    //    increaseArea: '20%' // optional
-    //});
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '30%' // optional
+    });
 
     setTimeout(function () {
 
@@ -68,7 +68,8 @@
                 NameIdentifier: $("#NameIdentifier").val(),
                 Email: $("#Email").val(),
                 Password: $("#Password").val(),
-                ConfirmPassword: $('#ConfirmPassword').val()
+                ConfirmPassword: $('#ConfirmPassword').val(),
+                IsAgree: $('#IsAgree').is(':checked')
             }),
             success: function (response) {
 

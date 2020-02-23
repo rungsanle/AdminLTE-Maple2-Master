@@ -71,10 +71,11 @@
 
                 <div class="form-group">
                     <div class="col-md-4"></div>
-                    <div class="col-md-7">
+                    <div class="col-md-7" style="padding-left: 0px;">
                         <div class="checkbox icheck">
                             <label>
-                                <input asp-for="IsAgree" type="checkbox" required data-msg="You must agree terms for registering."> I agree to the <a href="#">terms</a>
+                                <input asp-for="IsAgree" type="checkbox" required data-msg="You must agree terms for registering.">&nbsp;&nbsp;I agree to the <a href="#">terms</a>
+                                <span asp-validation-for="IsAgree" class="text-danger"></span>
                             </label>
                         </div>
                     </div>
