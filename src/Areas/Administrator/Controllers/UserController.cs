@@ -433,5 +433,41 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         //    return View(InvoiceModel.Example());
         //}
 
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> ProductCard()
+        {
+            HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+                .Configure((r) => r.Template.Chrome = new Chrome
+                {
+                    HeaderTemplate = null,
+                    DisplayHeaderFooter = false,
+                    Format = "A4",
+                    MarginTop = "0.7cm",
+                    MarginLeft = "0.5cm",
+                    MarginBottom = "0.7cm",
+                    MarginRight = "0.5cm"
+                });
+            return await Task.Run(() => View(ProductCardModel.Example()));
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> ProductCard_Label()
+        {
+            HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+                .Configure((r) => r.Template.Chrome = new Chrome
+                {
+                    HeaderTemplate = null,
+                    DisplayHeaderFooter = false,
+                    Width = "8cm",
+                    Height = "5.5cm",
+                    MarginTop = "0.5cm",
+                    MarginLeft = "0.5cm",
+                    MarginBottom = "0.5cm",
+                    MarginRight = "0.5cm"
+                });
+            return await Task.Run(() => View(ProductCardModel.Example()));
+        }
+
+
     }
 }

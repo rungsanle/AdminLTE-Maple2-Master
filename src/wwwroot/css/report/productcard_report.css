@@ -1,0 +1,23 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 370px;
+    padding: 2px;
+    height: 213px;
+}
+
+.row {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.card {
+    border: 1px solid #eee;
+    padding: 10px;
+    background-color: whitesmoke;
+    height: 100%;
+}
