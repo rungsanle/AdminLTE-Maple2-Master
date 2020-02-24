@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Identity;
 using jsreport.AspNetCore;
 using jsreport.Types;
 using Maple2.AdminLTE.Uil.Areas.Administrator.Models;
+using QRCoder;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
@@ -385,6 +388,18 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> Invoice()
         {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(InvoiceModel.Example().Number, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+
+                using (Bitmap bitMap = qrCode.GetGraphic(20))
+                {
+                    bitMap.Save(ms, ImageFormat.Png);
+                    ViewBag.QRCodeImage = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
+                }
+            }
 
             HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
                 .Configure((r) => r.Template.Chrome = new Chrome
@@ -392,10 +407,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                     HeaderTemplate = null,
                     DisplayHeaderFooter = false,
                     Format = "A4",
-                    MarginTop = "1cm",
-                    MarginLeft = "1cm",
-                    MarginBottom = "1cm",
-                    MarginRight = "1cm"
+                    MarginTop = "0.5cm",
+                    MarginLeft = "0.5cm",
+                    MarginBottom = "0.5cm",
+                    MarginRight = "0.5cm"
                 });
             return await Task.Run(() => View(InvoiceModel.Example()));
         }
