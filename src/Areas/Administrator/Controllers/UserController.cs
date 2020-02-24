@@ -439,8 +439,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
                 .Configure((r) => r.Template.Chrome = new Chrome
                 {
-                    HeaderTemplate = null,
                     DisplayHeaderFooter = false,
+                    HeaderTemplate = null,
+                    FooterTemplate = null,
                     Format = "A4",
                     MarginTop = "0.7cm",
                     MarginLeft = "0.5cm",
@@ -456,8 +457,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
                 .Configure((r) => r.Template.Chrome = new Chrome
                 {
-                    HeaderTemplate = null,
                     DisplayHeaderFooter = false,
+                    HeaderTemplate = null,
+                    FooterTemplate = null,
                     Width = "8cm",
                     Height = "5.5cm",
                     MarginTop = "0.5cm",
