@@ -30,13 +30,17 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
+        public IJsReportMVCService JsReportMVCService { get; }
+
         //private readonly UserManager<ApplicationUser> _userManager;
 
         public UserController(IHostingEnvironment hostingEnvironment,
-                                    IMemoryCache memoryCache)
+                                    IMemoryCache memoryCache,
+                                    IJsReportMVCService jsReportMVCService)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
+            JsReportMVCService = jsReportMVCService;
         }
 
         // GET: Administrator/User
@@ -436,19 +440,30 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> ProductCard()
         {
-            HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
-                .Configure((r) => r.Template.Chrome = new Chrome
-                {
-                    DisplayHeaderFooter = false,
-                    HeaderTemplate = null,
-                    FooterTemplate = null,
-                    Format = "A4",
-                    MarginTop = "0.7cm",
-                    MarginLeft = "0.5cm",
-                    MarginBottom = "0.7cm",
-                    MarginRight = "0.5cm"
-                });
-            return await Task.Run(() => View(ProductCardModel.Example()));
+            try
+            {
+
+                var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
+                var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
+
+                HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+                    .Configure((r) => r.Template.Chrome = new Chrome
+                    {
+                        DisplayHeaderFooter = true,
+                        HeaderTemplate = header,
+                        FooterTemplate = footer,
+                        Format = "A4",
+                        MarginTop = "0.7cm",
+                        MarginLeft = "0.5cm",
+                        MarginBottom = "0.7cm",
+                        MarginRight = "0.5cm"
+                    });
+                return await Task.Run(() => View(ProductCardModel.Example()));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         [MiddlewareFilter(typeof(JsReportPipeline))]
@@ -469,6 +484,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                 });
             return await Task.Run(() => View(ProductCardModel.Example()));
         }
+
+
 
 
     }

@@ -6,7 +6,7 @@
     float: left;
     width: 370px;
     padding: 2px;
-    height: 213px;
+    height: 212px;
 }
 
 .row {
@@ -17,7 +17,13 @@
 
 .card {
     border: 1px solid #eee;
-    padding: 20px;
-    background-color: whitesmoke;
+    padding: 10px;
+    background-color: none;
     height: 100%;
+    position: relative;
 }
+
+
+
+
+

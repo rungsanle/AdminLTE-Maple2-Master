@@ -179,7 +179,8 @@
 
         //document.location = api;
         //window.open(api, "PopupWindow", 'width=100%,height=100%,top=0,left=0');
-        window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=700,height=850');
+        window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
+
 
     });
 

@@ -8,30 +8,68 @@
     <link href="~/css/report/productcard_report.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
-    @foreach (var item in Model.Items)
-    {
-        <div class="row">
-            <div class="column">
-                <div class="card">
-                    @if (item.QR_CODE != null)
-                    {
-                        <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
-                    }
-                    <p>Serial #: @item.SERIAL_NO</p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    @if (item.QR_CODE != null)
-                    {
-                        <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
-                    }
-                    <p>Serial #: @item.SERIAL_NO</p>
-                </div>
-            </div>
-        </div>
-    }
+    <div style="page-break-before: always;"></div>
+
+    @{
+        int i = 1;
+        foreach (var item in Model.Items)
+        {
+            if ((i % 2) != 0)
+            {
+            @:</div><div class="row">
+}
+<div class="column">
+    <div class="card">
+        <p>
+            @i
+        </p>
+        @if (item.QR_CODE != null)
+        {
+            <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
+        }
+        <p>Serial #: @item.SERIAL_NO</p>
+    </div>
+</div>
+
+@if ((i % 2) != 1)
+{
+    @:<div></div>
+}
+
+@if ((i % 10) == 0)
+{
+    <div style="page-break-before: always;"></div>
+}
+
+i++;
+}
+}
 
 </body>
 </html>
+
+
+@*<div class="column">
+    <div class="card">
+        <p>
+            @i
+        </p>
+        @if (item.QR_CODE != null)
+        {
+            <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
+        }
+        <p>Serial #: @item.SERIAL_NO</p>
+        {{$pdf.pageNumber}} / {{$pdf.pages.length}}
+    </div>
+</div>
+<div class="column">
+    <div class="card">
+        @if (item.QR_CODE != null)
+        {
+            <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
+        }
+        <p>Serial #: @item.SERIAL_NO</p>
+        {{$pdf.pageNumber}} / {{$pdf.pages.length}}
+    </div>
+</div>*@
 
