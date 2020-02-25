@@ -310,5 +310,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             
         }
 
+        public async Task<IActionResult> PrintModalData()
+        {
+            ViewBag.CompCode = "ALL*";
+            return await Task.Run(() => PartialView());
+        }
+
     }
 }

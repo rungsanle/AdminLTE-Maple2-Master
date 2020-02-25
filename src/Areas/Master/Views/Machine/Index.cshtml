@@ -56,11 +56,11 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="alert alert-success" id="message-alert" style="display:none">
+            @*<div class="alert alert-success" id="message-alert" style="display:none">
                 <button type="button" class="close" data-dismiss="alert">x</button>
                 <strong>Success! </strong>
                 <span id="sucAlertSpan">Machine Status</span>&nbsp;
-            </div>
+            </div>*@
             <div class="box">
                 @*<div class="box-header">
                         <h3 class="box-title">Hover Data Table</h3>
@@ -89,6 +89,10 @@
                     <button type="button" class="btn btn-create btn-sm" data-toggle="modal" data-url="@Url.Action("Create","Machine", new { Area = "Master" })" id="btnCreateMachine">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add
                     </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-url="@Url.Action("PrintModalData","Machine", new { Area = "Master" })" id="btnPrintMachine">
+                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>&nbsp; Print
+                    </button>
                 </div>
             </div>
         </div>
@@ -110,6 +114,11 @@
 
 <div class="modal fade" id="editMachineModal" tabindex="-1" role="dialog" aria-labelledby="EditMachineModal" aria-hidden="true" data-backdrop="static">
     <div id="editMachineContainer">
+    </div>
+</div>
+
+<div class="modal fade" id="printSelectMachineModal" tabindex="-1" role="dialog" aria-labelledby="PrintSelectMachineModal" aria-hidden="true" data-backdrop="static">
+    <div id="printSelectMachineContainer">
     </div>
 </div>
 

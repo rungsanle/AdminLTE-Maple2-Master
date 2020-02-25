@@ -6,7 +6,7 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    $("#message-alert").hide();
+    //$("#message-alert").hide();
     //Grid Table Config
     machineVM = {
         dtMc: null,
@@ -292,5 +292,30 @@
 
     });
 
+    //Show Machine for Select.
+    $("#btnPrintMachine").on("click", function (event) {
+
+        event.preventDefault();
+
+        var api = $(this).data("url");
+
+        $.get(api, function (data) {
+            if (data) {
+                $('#printSelectMachineContainer').html(data);
+                $('#printSelectMachineModal').modal('show');
+            } else {
+                global.authenExpire();
+            }
+
+        });
+    });
+
+    $("#printSelectMachineModal").on("shown.bs.modal", function () {
+
+    });
+    //clear html data for create new;
+    $("#printSelectMachineModal").on("hidden.bs.modal", function () {
+        $('#printSelectMachineContainer').html("");
+    });
 
 });
