@@ -438,7 +438,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = true, data = lstProd, message = ex.Message });
+                return Json(new { success = false, data = lstProd, message = ex.Message });
             }
         }
     }

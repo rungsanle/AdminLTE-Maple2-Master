@@ -44,7 +44,6 @@
   <ItemGroup>
     <Folder Include="Areas\Administrator\Data\" />
     <Folder Include="Areas\Master\Data\" />
-    <Folder Include="Areas\Master\Models\" />
     <Folder Include="wwwroot\img\compLogo\" />
   </ItemGroup>
   <ItemGroup>

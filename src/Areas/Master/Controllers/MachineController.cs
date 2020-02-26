@@ -10,6 +10,9 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
 using Microsoft.Extensions.Caching.Memory;
+using jsreport.AspNetCore;
+using Maple2.AdminLTE.Uil.Areas.Master.Models;
+using jsreport.Types;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -18,12 +21,15 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
+        public IJsReportMVCService JsReportMVCService { get; }
 
         public MachineController(IHostingEnvironment hostingEnvironment,
-                                 IMemoryCache memoryCache)
+                                 IMemoryCache memoryCache,
+                                 IJsReportMVCService jsReportMVCService)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
+            JsReportMVCService = jsReportMVCService;
         }
 
         // GET: Master/Machine
@@ -314,6 +320,37 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             ViewBag.CompCode = "ALL*";
             return await Task.Run(() => PartialView());
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> PrintMachine(List<M_Machine> lstSelMc)
+        {
+            try
+            {
+                var printMcLabel = lstSelMc.Cast<MachineLabelModel>();
+
+                var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
+                var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
+
+                HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
+                    .Configure((r) => r.Template.Chrome = new Chrome
+                    {
+                        DisplayHeaderFooter = true,
+                        HeaderTemplate = header,
+                        FooterTemplate = footer,
+                        Landscape = true,
+                        Format = "A4",
+                        MarginTop = "0.5cm",
+                        MarginLeft = "0.5cm",
+                        MarginBottom = "0.5cm",
+                        MarginRight = "0.5cm"
+                    });
+                return await Task.Run(() => View(printMcLabel));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
     }
