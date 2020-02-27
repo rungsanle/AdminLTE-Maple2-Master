@@ -13,6 +13,8 @@ using Microsoft.Extensions.Caching.Memory;
 using jsreport.AspNetCore;
 using Maple2.AdminLTE.Uil.Areas.Master.Models;
 using jsreport.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -322,11 +324,25 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             return await Task.Run(() => PartialView());
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [MiddlewareFilter(typeof(JsReportPipeline))]
-        public async Task<IActionResult> PrintMachine(List<M_Machine> lstSelMc)
+        public async Task<IActionResult> PrintMachine(List<M_Machine> lstSelMc)   //List<M_Machine> lstSelMc
         {
             try
             {
+
+                //var lstSelMc = JsonConvert.DeserializeObject<List<M_Machine>>(jlstSelMc);
+
+                //JObject o = JObject.Parse(jlstSelMc);
+                //JArray a = (JArray)o["lstSelMc"];
+
+
+                //List<M_Machine> lstSelMc = a.ToObject<List<M_Machine>>();
+                //List<M_Machine> lstSelMc = new List<M_Machine>();
+                //lstSelMc.Add(new M_Machine { Id = 1, MachineCode = "V001" });
+                
+
                 List<MachineLabelModel> printMcLabel = lstSelMc.ConvertAll(mc => new MachineLabelModel(mc));
                 //{
                 //                                            Id = mc.Id,
@@ -360,6 +376,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         MarginBottom = "0.5cm",
                         MarginRight = "0.5cm"
                     });
+
                 return await Task.Run(() => View(printMcLabel));
             }
             catch (Exception ex)

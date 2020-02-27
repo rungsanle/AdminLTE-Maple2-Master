@@ -159,36 +159,81 @@
             }
         }
 
-        var api = $('#PrintModalData').data('mc-print-url');  // + '?data=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
+
+        //console.log(JSON.stringify({ lstSelMc: printMachines }));
+
+        
+
+        var api = $('#PrintModalData').data('mc-print-url');   // + '?lstSelMc=' + JSON.stringify({ lstSelMc: printMachines });
+
+        //console.log(api);
+
+        //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+      
+        //var mapForm = document.createElement("form");
+        //mapForm.target = "Map";
+        //mapForm.method = "POST"; // or "post" if appropriate
+        //mapForm.action = api;
+
+        //var mapInput = document.createElement("input");
+        //mapInput.type = "json";
+        //mapInput.name = "data";
+        //mapInput.value = JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));   //JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
+        //mapForm.appendChild(mapInput);
+
+        //document.body.appendChild(mapForm);
+
+        //map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
+
+        //if (map) {
+        //    mapForm.submit();
+        //} else {
+        //    alert('You must allow popups for this map to work.');
+        //}
+
+
+
+
+
+        //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+
+        //var param = JSON.stringify(printMachines);
+
+        //console.log(JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines })));
+
+        //OpenWindowWithPost(api,
+        //    "width=730,height=345,left=100,top=100,resizable=yes,scrollbars=yes",
+        //    "data", JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines })));
 
         //alert(api);
 
-        var wpopup = window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+        //var wpopup = window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
 
         $.ajax({
-            async: true,
             type: "POST",
             url: api,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
+            //contentType: "application/json; charset=UTF-8",
             data: addRequestVerificationToken({ lstSelMc: printMachines }), 
             success: function (response) {
 
-                if (wpopup) {
-                    wpopup.focus();
-                }
-                //var w = window.open(null, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-                //window.open("data:application/pdf," + escape(response));
-                //window.open("data:application/pdf," + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-                //window.open("data:application/pdf," + response, 'PopupWindow', "width=800,height=600,location=no,menubar=no,status=no,titilebar=no,resizable=no")
-                //window.open("data:application/pdf," + response, '_blank');
 
-
+                //window.open("data:application/pdf," + encodeURI(response.data), 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
 
                 //if (response.success) {
+                //Here it is:
+                //Gets the model state
 
-                //    $('#printSelectMachineModal').modal('hide');
-                //    $('#printSelectMachineContainer').html("");
+                console.log('success!!');
+
+
+                //open new tab or window - according to configs of browser
+                window.open('data:application/pdf;base64,' + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+
+
+                    
+
+                    $('#printSelectMachineModal').modal('hide');
+                    $('#printSelectMachineContainer').html("");
 
                 //}
                 //else {
@@ -212,5 +257,6 @@
 
     }
 
+    
     
 });
