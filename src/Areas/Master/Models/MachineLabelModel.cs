@@ -15,9 +15,22 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Models
 
         public string QR_CODE { get; set; }
 
-        public MachineLabelModel() : base()
+        public MachineLabelModel(M_Machine mc)
         {
-            this.QR_CODE = BitmapText(base.MachineCode);
+            this.QR_CODE = BitmapText(mc.MachineCode);
+            this.Id = mc.Id;
+            this.MachineCode = mc.MachineCode;
+            this.MachineName = mc.MachineName;
+            this.MachineProdType = mc.MachineProdType;
+            this.MachineProdTypeName = mc.MachineProdTypeName;
+            this.MachineSize = mc.MachineSize;
+            this.MachineRemark = mc.MachineRemark;
+            this.CompanyCode = mc.CompanyCode;
+            this.Is_Active = mc.Is_Active;
+            this.Created_By = mc.Created_By;
+            this.Created_Date = mc.Created_Date;
+            this.Updated_By = mc.Updated_By;
+            this.Updated_Date = mc.Updated_Date;
         }
 
         private string BitmapText(string byteData)

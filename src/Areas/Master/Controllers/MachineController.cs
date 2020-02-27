@@ -327,7 +327,22 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             try
             {
-                var printMcLabel = lstSelMc.Cast<MachineLabelModel>();
+                List<MachineLabelModel> printMcLabel = lstSelMc.ConvertAll(mc => new MachineLabelModel(mc));
+                //{
+                //                                            Id = mc.Id,
+                //                                            MachineCode = mc.MachineCode,
+                //                                            MachineName = mc.MachineName,
+                //                                            MachineProdType = mc.MachineProdType,
+                //                                            MachineProdTypeName = mc.MachineProdTypeName,
+                //                                            MachineSize = mc.MachineSize,
+                //                                            MachineRemark = mc.MachineRemark,
+                //                                            CompanyCode = mc.CompanyCode,
+                //                                            Is_Active = mc.Is_Active,
+                //                                            Created_By = mc.Created_By,
+                //                                            Created_Date = mc.Created_Date,
+                //                                            Updated_By = mc.Updated_By,
+                //                                            Updated_Date = mc.Updated_Date
+                //                                        });
 
                 var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
                 var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });

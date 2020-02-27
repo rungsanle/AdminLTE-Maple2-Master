@@ -127,5 +127,90 @@
         }
     });
 
+    $("#btnPrintSelectMc").on("click", PrintMachineLabel);
+
+    function addRequestVerificationToken(data) {
+        data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+        return data;
+    };
+
+    function PrintMachineLabel(event) {
+
+        event.preventDefault();
+
+        var printMachines = new Array();
+        var jsonData = JSON.parse(JSON.stringify($('#tblSelMachine').dataTable().fnGetData()));
+
+        for (var obj in jsonData) {
+            if (jsonData.hasOwnProperty(obj)) {
+
+                var printMachine = {};
+                printMachine.Id = jsonData[obj]['Id'];
+                printMachine.MachineCode = jsonData[obj]['MachineCode'];
+                printMachine.MachineName = jsonData[obj]['MachineName'];
+                printMachine.MachineProdType = jsonData[obj]['MachineProdType'];
+                printMachine.MachineProdTypeName = jsonData[obj]['MachineProdTypeName'];
+                printMachine.MachineSize = jsonData[obj]['MachineSize'];
+                printMachine.MachineRemark = jsonData[obj]['MachineRemark'];
+                printMachine.CompanyCode = jsonData[obj]['CompanyCode'];
+                printMachine.Is_Active = jsonData[obj]['Is_Active'];;
+
+                printMachines.push(printMachine);
+            }
+        }
+
+        var api = $('#PrintModalData').data('mc-print-url');  // + '?data=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
+
+        //alert(api);
+
+        var wpopup = window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: api,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: addRequestVerificationToken({ lstSelMc: printMachines }), 
+            success: function (response) {
+
+                if (wpopup) {
+                    wpopup.focus();
+                }
+                //var w = window.open(null, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+                //window.open("data:application/pdf," + escape(response));
+                //window.open("data:application/pdf," + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+                //window.open("data:application/pdf," + response, 'PopupWindow', "width=800,height=600,location=no,menubar=no,status=no,titilebar=no,resizable=no")
+                //window.open("data:application/pdf," + response, '_blank');
+
+
+
+                //if (response.success) {
+
+                //    $('#printSelectMachineModal').modal('hide');
+                //    $('#printSelectMachineContainer').html("");
+
+                //}
+                //else {
+
+                //    if (response.errors != null) {
+                //        displayValidationErrors(response.errors);
+                //    } else {
+                //        toastr.error(response.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                //    }
+                //}
+
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+
+        });
+
+    }
+
     
 });

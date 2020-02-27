@@ -6,6 +6,7 @@
 <script src="~/js/Areas/Master/Machine/PrintModalData.js"></script>
 <div id="PrintModalData"
      data-mc-get-url="@Url.Action("GetMachine", "Machine", new { Area = "Master" })"
+     data-mc-print-url="@Url.Action("PrintMachine", "Machine", new { Area = "Master" })"
      data-viewbag-compcode="@ViewBag.CompCode"
      data-image-url="@Url.Content("~/img")">
 </div>
