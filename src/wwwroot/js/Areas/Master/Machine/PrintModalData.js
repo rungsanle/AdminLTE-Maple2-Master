@@ -140,6 +140,9 @@
 
         var printMachines = new Array();
         var jsonData = JSON.parse(JSON.stringify($('#tblSelMachine').dataTable().fnGetData()));
+        console.log(jsonData);
+
+
 
         for (var obj in jsonData) {
             if (jsonData.hasOwnProperty(obj)) {
@@ -159,12 +162,36 @@
             }
         }
 
+        var api = $('#PrintModalData').data('mc-print-url'); // + '?lstSelMc=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
 
-        //console.log(JSON.stringify({ lstSelMc: printMachines }));
+        $.ajax({
+            async: true,
+            cache: false,
+            type: 'POST',
+            url: api,
+            data: addRequestVerificationToken({ lstSelMc: printMachines }),
+            //xhrFields is what did the trick to read the blob to pdf
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response, status, xhr) {
 
-        
+                var blob = new Blob([response], { type: 'application/pdf' });
 
-        var api = $('#PrintModalData').data('mc-print-url');   // + '?lstSelMc=' + JSON.stringify({ lstSelMc: printMachines });
+                var fileURL = URL.createObjectURL(blob);
+
+                window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+
+                $('#printSelectMachineModal').modal('hide');
+                $('#printSelectMachineContainer').html("");
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'Upload Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
 
         //console.log(api);
 
@@ -209,51 +236,71 @@
 
         //var wpopup = window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
 
-        $.ajax({
-            type: "POST",
-            url: api,
-            //contentType: "application/json; charset=UTF-8",
-            data: addRequestVerificationToken({ lstSelMc: printMachines }), 
-            success: function (response) {
+        //$.ajax({
+        //    type: "POST",
+        //    url: api,
+        //    //contentType: "application/json; charset=UTF-8",
+        //    data: { lstSelMc: printMachines }, 
+        //    success: function (response) {
 
 
-                //window.open("data:application/pdf," + encodeURI(response.data), 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+        //        //window.open("data:application/pdf," + encodeURI(response.data), 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
 
-                //if (response.success) {
-                //Here it is:
-                //Gets the model state
+        //        //if (response.success) {
+        //        //Here it is:
+        //        //Gets the model state
 
-                console.log('success!!');
+        //        console.log('success!!');
 
-
-                //open new tab or window - according to configs of browser
-                window.open('data:application/pdf;base64,' + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+        //        alert('Success!!');
+        //        //open new tab or window - according to configs of browser
+        //        //window.open('data:application/pdf;base64,' + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
 
 
                     
 
-                    $('#printSelectMachineModal').modal('hide');
-                    $('#printSelectMachineContainer').html("");
+        //            $('#printSelectMachineModal').modal('hide');
+        //            $('#printSelectMachineContainer').html("");
 
-                //}
-                //else {
+        //        //}
+        //        //else {
 
-                //    if (response.errors != null) {
-                //        displayValidationErrors(response.errors);
-                //    } else {
-                //        toastr.error(response.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
-                //    }
-                //}
+        //        //    if (response.errors != null) {
+        //        //        displayValidationErrors(response.errors);
+        //        //    } else {
+        //        //        toastr.error(response.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+        //        //    }
+        //        //}
 
-            },
-            error: function (xhr, txtStatus, errThrown) {
+        //    },
+        //    error: function (xhr, txtStatus, errThrown) {
 
-                var reponseErr = JSON.parse(xhr.responseText);
+        //        var reponseErr = JSON.parse(xhr.responseText);
 
-                toastr.error('Error: ' + reponseErr.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
-            }
+        //        toastr.error('Error: ' + reponseErr.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+        //    }
 
-        });
+        //});
+
+        //$.ajax({
+        //    url: api,
+        //    type: 'POST',
+        //    cache: false,
+        //    async: true,
+        //    dataType: "html",
+        //    data: { lstSelMc: printMachines }
+        //})
+        //    .done(function (result) {
+
+        //        console.log(result);
+
+        //        window.open("data:application/octet-stream;charset=utf-16le;base64," + result, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+
+        //}).fail(function (xhr) {
+        //    console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+        //    });
+
+        
 
     }
 

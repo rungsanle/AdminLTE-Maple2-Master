@@ -177,9 +177,33 @@
 
         var api = $(this).data("url");
 
+        $.ajax({
+            async: true,
+            cache: false,
+            type: 'POST',
+            url: api,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response, status, xhr) {
+
+                var blob = new Blob([response], { type: 'application/pdf' });
+
+                var fileURL = URL.createObjectURL(blob);
+
+                window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
+            },
+            error: function (xhr, txtStatus, errThrown) {
+
+                var reponseErr = JSON.parse(xhr.responseText);
+
+                toastr.error('Error: ' + reponseErr.message, 'Print Product Card', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+            }
+        });
+
         //document.location = api;
         //window.open(api, "PopupWindow", 'width=100%,height=100%,top=0,left=0');
-        window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
+        //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
 
 
     });
