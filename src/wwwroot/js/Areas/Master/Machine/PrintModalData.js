@@ -6,6 +6,8 @@
     var appSetting = global.getAppSettings('AppSettings');
 
     //$("#message-alert").hide();
+    // Array holding selected row IDs
+    var rows_selected = [];
     //Grid Table Config
     selMcVM = {
         dtSelMc: null,
@@ -62,10 +64,14 @@
                 ],
                 columnDefs: [
                     {
-                        orderable: false,
-                        className: 'select-checkbox',
-                        width: "5%",
-                        targets: 0
+                        'targets': 0,
+                        'searchable': false,
+                        'orderable': false,
+                        'width': '5%',
+                        'className': 'dt-body-center',
+                        'render': function (data, type, full, meta) {
+                            return '<input type="checkbox">';
+                        }
                     },
                     { width: "15%", targets: 1 },
                     { width: "26%", targets: 2 },
@@ -81,7 +87,17 @@
                     style: 'multi',
                     selector: 'td:first-child'
                 },
-                order: [],
+                order: [1, 'asc'],
+                rowCallback: function (row, data, dataIndex) {
+                    // Get row ID
+                    var rowId = data[0];
+
+                    // If row ID is in the list of selected row IDs
+                    if ($.inArray(rowId, rows_selected) !== -1) {
+                        $(row).find('input[type="checkbox"]').prop('checked', true);
+                        $(row).addClass('selected');
+                    }
+                },
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: -1,
                 stateSave: true,
@@ -106,26 +122,127 @@
     // initialize the datatables
     selMcVM.init();
 
-    // Handle click on "Select all" control
-    $('#tblSelMachine-select-all').on('click', function () {
-        // Get all rows with search applied
-        var rows = dtSelMc.rows({ 'search': 'applied' }).nodes();
-        // Check/uncheck checkboxes for all rows in the table
-        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    // Handle click on checkbox
+    $('#tblSelMachine tbody').on('click', 'input[type="checkbox"]', function (e) {
+        var $row = $(this).closest('tr');
+
+        // Get row data
+        var data = dtSelMc.row($row).data();
+
+        alert(data);
+
+        // Get row ID
+        var rowId = data[0];
+
+        // Determine whether row ID is in the list of selected row IDs 
+        var index = $.inArray(rowId, rows_selected);
+
+        // If checkbox is checked and row ID is not in list of selected row IDs
+        if (this.checked && index === -1) {
+            rows_selected.push(rowId);
+
+            // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+        } else if (!this.checked && index !== -1) {
+            rows_selected.splice(index, 1);
+        }
+
+        if (this.checked) {
+            $row.addClass('selected');
+        } else {
+            $row.removeClass('selected');
+        }
+
+        // Update state of "Select all" control
+        updateDataTableSelectAllCtrl(dtSelMc);
+
+        // Prevent click event from propagating to parent
+        e.stopPropagation();
     });
 
-    $('#tblSelMachine tbody').on('change', 'input[type="checkbox"]', function () {
-        // If checkbox is not checked
-        if (!this.checked) {
-            var el = $('#tblSelMachine-select-all').get(0);
-            // If "Select all" control is checked and has 'indeterminate' property
-            if (el && el.checked && ('indeterminate' in el)) {
-                // Set visual state of "Select all" control
-                // as 'indeterminate'
-                el.indeterminate = true;
+    // Handle click on table cells with checkboxes
+    $('#tblSelMachine').on('click', 'tbody td, thead th:first-child', function (e) {
+        $(this).parent().find('input[type="checkbox"]').trigger('click');
+    });
+
+    // Handle click on "Select all" control
+    $('thead input[name="select_all"]', dtSelMc.table().container()).on('click', function (e) {
+
+        var rows = dtSelMc.rows({ 'search': 'applied' }).nodes();
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+
+        //if (this.checked) {
+        //    $('#tblSelMachine-select-all tbody input[type="checkbox"]:not(:checked)').trigger('click');
+        //} else {
+        //    $('#tblSelMachine-select-all tbody input[type="checkbox"]:checked').trigger('click');
+        //}
+
+        // Prevent click event from propagating to parent
+        e.stopPropagation();
+    });
+
+    // Handle table draw event
+    dtSelMc.on('draw', function () {
+        // Update state of "Select all" control
+        updateDataTableSelectAllCtrl(dtSelMc);
+    });
+
+    //
+    // Updates "Select all" control in a data table
+    //
+    function updateDataTableSelectAllCtrl(table) {
+        var $table = table.table().node();
+        var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+        var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+        var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
+        // If none of the checkboxes are checked
+        if ($chkbox_checked.length === 0) {
+            chkbox_select_all.checked = false;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
+
+            // If all of the checkboxes are checked
+        } else if ($chkbox_checked.length === $chkbox_all.length) {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
+
+            // If some of the checkboxes are checked
+        } else {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = true;
             }
         }
-    });
+    }
+
+    //// Handle click on "Select all" control
+    //$('#tblSelMachine-select-all').on('click', function () {
+    //    // Get all rows with search applied
+    //    var rows = dtSelMc.rows({ 'search': 'applied' }).nodes();
+    //    // Check/uncheck checkboxes for all rows in the table
+    //    $('input[type="checkbox"]', rows).prop('checked', this.checked);
+    //});
+
+    //$('#tblSelMachine tbody').on('change', 'input[type="checkbox"]', function () {
+    //    // If checkbox is not checked
+    //    if (!this.checked) {
+    //        var el = $('#tblSelMachine-select-all').get(0);
+    //        // If "Select all" control is checked and has 'indeterminate' property
+    //        if (el && el.checked && ('indeterminate' in el)) {
+    //            // Set visual state of "Select all" control
+    //            // as 'indeterminate'
+    //            el.indeterminate = true;
+    //        }
+    //    }
+    //});
+
+    //// Handle click on table cells with checkboxes
+    //$('#tblSelMachine-select-all').on('click', 'tbody td, thead th:first-child', function (e) {
+    //    $(this).parent().find('input[type="checkbox"]').trigger('click');
+    //});
 
     $("#btnPrintSelectMc").on("click", PrintMachineLabel);
 
@@ -140,8 +257,19 @@
 
         var printMachines = new Array();
         var jsonData = JSON.parse(JSON.stringify($('#tblSelMachine').dataTable().fnGetData()));
-        console.log(jsonData);
+        //console.log(jsonData);
+        // Iterate over all selected checkboxes
+        $.each(rows_selected, function (index, rowId) {
+            // Create a hidden element 
+            alert(rowId);
+        });
 
+        //var rows_selected = dtSelMc.column(0).checkboxes.selected();
+        //$.each(rows_selected, function (index, rowId) {
+        //    alert(rowId);
+        //});
+
+        
 
 
         for (var obj in jsonData) {
@@ -192,116 +320,7 @@
                 toastr.error('Error: ' + reponseErr.message, 'Upload Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
-
-        //console.log(api);
-
-        //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-      
-        //var mapForm = document.createElement("form");
-        //mapForm.target = "Map";
-        //mapForm.method = "POST"; // or "post" if appropriate
-        //mapForm.action = api;
-
-        //var mapInput = document.createElement("input");
-        //mapInput.type = "json";
-        //mapInput.name = "data";
-        //mapInput.value = JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));   //JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
-        //mapForm.appendChild(mapInput);
-
-        //document.body.appendChild(mapForm);
-
-        //map = window.open("", "Map", "status=0,title=0,height=600,width=800,scrollbars=1");
-
-        //if (map) {
-        //    mapForm.submit();
-        //} else {
-        //    alert('You must allow popups for this map to work.');
-        //}
-
-
-
-
-
-        //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-
-        //var param = JSON.stringify(printMachines);
-
-        //console.log(JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines })));
-
-        //OpenWindowWithPost(api,
-        //    "width=730,height=345,left=100,top=100,resizable=yes,scrollbars=yes",
-        //    "data", JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines })));
-
-        //alert(api);
-
-        //var wpopup = window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-
-        //$.ajax({
-        //    type: "POST",
-        //    url: api,
-        //    //contentType: "application/json; charset=UTF-8",
-        //    data: { lstSelMc: printMachines }, 
-        //    success: function (response) {
-
-
-        //        //window.open("data:application/pdf," + encodeURI(response.data), 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-
-        //        //if (response.success) {
-        //        //Here it is:
-        //        //Gets the model state
-
-        //        console.log('success!!');
-
-        //        alert('Success!!');
-        //        //open new tab or window - according to configs of browser
-        //        //window.open('data:application/pdf;base64,' + response, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-
-
-                    
-
-        //            $('#printSelectMachineModal').modal('hide');
-        //            $('#printSelectMachineContainer').html("");
-
-        //        //}
-        //        //else {
-
-        //        //    if (response.errors != null) {
-        //        //        displayValidationErrors(response.errors);
-        //        //    } else {
-        //        //        toastr.error(response.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
-        //        //    }
-        //        //}
-
-        //    },
-        //    error: function (xhr, txtStatus, errThrown) {
-
-        //        var reponseErr = JSON.parse(xhr.responseText);
-
-        //        toastr.error('Error: ' + reponseErr.message, 'Print Machine Label', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
-        //    }
-
-        //});
-
-        //$.ajax({
-        //    url: api,
-        //    type: 'POST',
-        //    cache: false,
-        //    async: true,
-        //    dataType: "html",
-        //    data: { lstSelMc: printMachines }
-        //})
-        //    .done(function (result) {
-
-        //        console.log(result);
-
-        //        window.open("data:application/octet-stream;charset=utf-16le;base64," + result, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-
-        //}).fail(function (xhr) {
-        //    console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
-        //    });
-
         
-
     }
 
     

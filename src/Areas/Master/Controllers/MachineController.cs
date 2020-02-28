@@ -343,7 +343,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         FooterTemplate = footer,
                         Landscape = true,
                         Format = "A4",
-                        MarginTop = "0.5cm",
+                        MarginTop = "2cm",
                         MarginLeft = "0.5cm",
                         MarginBottom = "0.5cm",
                         MarginRight = "0.5cm"

@@ -437,12 +437,13 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         //    return View(InvoiceModel.Example());
         //}
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> ProductCard()
         {
             try
             {
-
                 var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
                 var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
 
@@ -458,6 +459,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                         MarginBottom = "0.7cm",
                         MarginRight = "0.5cm"
                     });
+
                 return await Task.Run(() => View(ProductCardModel.Example()));
             }
             catch(Exception ex)
