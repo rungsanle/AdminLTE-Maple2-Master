@@ -9,7 +9,7 @@ namespace Maple2.AdminLTE.Bel
         public int Id { get; set; }
         public string MachineCode { get; set; }
         public string MachineName { get; set; }
-        public int MachineProdType { get; set; }
+        public int? MachineProdType { get; set; }
         public string MachineProdTypeName { get; set; }
         public string MachineSize { get; set; }
         public string MachineRemark { get; set; }

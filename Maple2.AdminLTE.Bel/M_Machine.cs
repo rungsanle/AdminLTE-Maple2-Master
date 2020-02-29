@@ -20,8 +20,7 @@ namespace Maple2.AdminLTE.Bel
         public string MachineName { get; set; }
 
         [Display(Name = "Machine Prod. Type")]
-        [Required(ErrorMessage = "MachineProdType|Machine Prod. Type Is Required!!")]
-        public int MachineProdType { get; set; }
+        public int? MachineProdType { get; set; }
 
         [NotMapped]
         [Display(Name = "Prod. Type")]
