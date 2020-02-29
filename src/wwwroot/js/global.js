@@ -369,4 +369,10 @@ global.getAppSettings = function (strKey) {
     return appSettings;
 };
 
+global.popupCenter = function (url, target, w, h) {
+    var y = window.outerHeight / 2 + window.screenY - (h / 2)
+    var x = window.outerWidth / 2 + window.screenX - (w / 2)
+    return window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+};
+
 

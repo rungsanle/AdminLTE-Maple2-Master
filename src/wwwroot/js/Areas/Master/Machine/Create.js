@@ -16,11 +16,6 @@
         }
     });
 
-    $("#MachineProdTypeName").on("change", function () {
-        if ($("#MachineProdTypeName").val() != '') {
-            global.removeValidationErrors('MachineProdTypeName');
-        }
-    });
     //End----check clear require---//
 
 
@@ -32,7 +27,7 @@
         ],
         width: '350px',
         autoOpen: true,
-        selectMode: 'restore',
+        selectMode: 'empty',
         headShow: true,
         fieldText: 'ProdTypeName',
         fieldValue: 'Id',

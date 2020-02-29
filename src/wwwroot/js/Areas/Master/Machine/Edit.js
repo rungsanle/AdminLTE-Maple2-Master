@@ -14,6 +14,7 @@
             global.removeValidationErrors('MachineName');
         }
     });
+
     //End----check clear require---//
 
     $('#MachineProdTypeName').inputpicker({
@@ -24,7 +25,7 @@
         ],
         width: '350px',
         autoOpen: true,
-        selectMode: 'restore',
+        selectMode: 'empty',
         headShow: true,
         fieldText: 'ProdTypeName',
         fieldValue: 'Id',

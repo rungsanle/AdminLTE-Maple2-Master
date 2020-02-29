@@ -6,8 +6,8 @@
     var appSetting = global.getAppSettings('AppSettings');
 
     //$("#message-alert").hide();
-    // Array holding selected row IDs
-    var rows_selected = [];
+    
+
     //Grid Table Config
     selMcVM = {
         dtSelMc: null,
@@ -33,12 +33,7 @@
                     datatype: "json"
                 },
                 columns: [
-                    {
-                        data: null, className: "text-center", searchable: false, orderable: false, autoWidth: false,
-                        render: function (data, type, full, meta) {
-                            return '<input type="checkbox" id="check_' + data.id + '" class="check" name="check" value="' + data.id + '">';
-                        },
-                    },
+                    { data: null, className: "text-center", autoWidth: false },
                     { data: "MachineCode", className: "boldColumn", autoWidth: false },
                     { data: "MachineName", autoWidth: false },
                     { data: "MachineProdType", autoWidth: false },
@@ -87,21 +82,22 @@
                     style: 'multi',
                     selector: 'td:first-child'
                 },
-                order: [1, 'asc'],
+                order: [],
+                lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                iDisplayLength: appSetting.tableDisplayLength,
+                stateSave: true,
+                stateDuration: -1, //force the use of Session Storage
                 rowCallback: function (row, data, dataIndex) {
                     // Get row ID
-                    var rowId = data[0];
+                    var rowId = data["Id"];
 
                     // If row ID is in the list of selected row IDs
                     if ($.inArray(rowId, rows_selected) !== -1) {
+
                         $(row).find('input[type="checkbox"]').prop('checked', true);
                         $(row).addClass('selected');
-                    }
-                },
-                lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                iDisplayLength: -1,
-                stateSave: true,
-                stateDuration: -1 //force the use of Session Storage
+                    } 
+                }
             });
 
             //dt.on('draw', function () {
@@ -110,8 +106,6 @@
 
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
-
-
         },
 
         refresh: function () {
@@ -122,6 +116,40 @@
     // initialize the datatables
     selMcVM.init();
 
+    //
+    // Updates "Select all" control in a data table
+    //
+    function updateDataTableSelectAllCtrl(table) {
+
+        var $table = table.table().node();
+        var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+        var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+        var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
+        // If none of the checkboxes are checked
+        if ($chkbox_checked.length === 0) {
+            chkbox_select_all.checked = false;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
+            // If all of the checkboxes are checked
+        } else if ($chkbox_checked.length === $chkbox_all.length) {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
+            // If some of the checkboxes are checked
+        } else {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = true;
+            }
+        }
+    }
+
+    // Array holding selected row IDs
+    var rows_selected = new Array();
+
     // Handle click on checkbox
     $('#tblSelMachine tbody').on('click', 'input[type="checkbox"]', function (e) {
         var $row = $(this).closest('tr');
@@ -129,18 +157,15 @@
         // Get row data
         var data = dtSelMc.row($row).data();
 
-        alert(data);
-
         // Get row ID
-        var rowId = data[0];
+        var rowData = data;
 
         // Determine whether row ID is in the list of selected row IDs 
-        var index = $.inArray(rowId, rows_selected);
+        var index = $.inArray(rowData, rows_selected);
 
         // If checkbox is checked and row ID is not in list of selected row IDs
         if (this.checked && index === -1) {
-            rows_selected.push(rowId);
-
+            rows_selected.push(rowData);
             // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
         } else if (!this.checked && index !== -1) {
             rows_selected.splice(index, 1);
@@ -167,14 +192,11 @@
     // Handle click on "Select all" control
     $('thead input[name="select_all"]', dtSelMc.table().container()).on('click', function (e) {
 
-        var rows = dtSelMc.rows({ 'search': 'applied' }).nodes();
-        $('input[type="checkbox"]', rows).prop('checked', this.checked);
-
-        //if (this.checked) {
-        //    $('#tblSelMachine-select-all tbody input[type="checkbox"]:not(:checked)').trigger('click');
-        //} else {
-        //    $('#tblSelMachine-select-all tbody input[type="checkbox"]:checked').trigger('click');
-        //}
+        if (this.checked) {
+            $('#tblSelMachine tbody input[type="checkbox"]:not(:checked)').trigger('click');
+        } else {
+            $('#tblSelMachine tbody input[type="checkbox"]:checked').trigger('click');
+        }
 
         // Prevent click event from propagating to parent
         e.stopPropagation();
@@ -186,37 +208,7 @@
         updateDataTableSelectAllCtrl(dtSelMc);
     });
 
-    //
-    // Updates "Select all" control in a data table
-    //
-    function updateDataTableSelectAllCtrl(table) {
-        var $table = table.table().node();
-        var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-        var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
-        var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
-
-        // If none of the checkboxes are checked
-        if ($chkbox_checked.length === 0) {
-            chkbox_select_all.checked = false;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = false;
-            }
-
-            // If all of the checkboxes are checked
-        } else if ($chkbox_checked.length === $chkbox_all.length) {
-            chkbox_select_all.checked = true;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = false;
-            }
-
-            // If some of the checkboxes are checked
-        } else {
-            chkbox_select_all.checked = true;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = true;
-            }
-        }
-    }
+    
 
     //// Handle click on "Select all" control
     //$('#tblSelMachine-select-all').on('click', function () {
@@ -255,40 +247,38 @@
 
         event.preventDefault();
 
-        var printMachines = new Array();
-        var jsonData = JSON.parse(JSON.stringify($('#tblSelMachine').dataTable().fnGetData()));
-        //console.log(jsonData);
         // Iterate over all selected checkboxes
-        $.each(rows_selected, function (index, rowId) {
-            // Create a hidden element 
-            alert(rowId);
-        });
+        //$.each(rows_selected, function (index, rowData) {
+        //    // Create a hidden element 
+        //    console.log(rowData);
+        //});
 
         //var rows_selected = dtSelMc.column(0).checkboxes.selected();
         //$.each(rows_selected, function (index, rowId) {
         //    alert(rowId);
         //});
 
-        
+        //var printMachines = new Array();
+        //var jsonData = JSON.parse(JSON.stringify($('#tblSelMachine').dataTable().fnGetData()));
 
 
-        for (var obj in jsonData) {
-            if (jsonData.hasOwnProperty(obj)) {
+        //for (var obj in jsonData) {
+        //    if (jsonData.hasOwnProperty(obj)) {
 
-                var printMachine = {};
-                printMachine.Id = jsonData[obj]['Id'];
-                printMachine.MachineCode = jsonData[obj]['MachineCode'];
-                printMachine.MachineName = jsonData[obj]['MachineName'];
-                printMachine.MachineProdType = jsonData[obj]['MachineProdType'];
-                printMachine.MachineProdTypeName = jsonData[obj]['MachineProdTypeName'];
-                printMachine.MachineSize = jsonData[obj]['MachineSize'];
-                printMachine.MachineRemark = jsonData[obj]['MachineRemark'];
-                printMachine.CompanyCode = jsonData[obj]['CompanyCode'];
-                printMachine.Is_Active = jsonData[obj]['Is_Active'];;
+        //        var printMachine = {};
+        //        printMachine.Id = jsonData[obj]['Id'];
+        //        printMachine.MachineCode = jsonData[obj]['MachineCode'];
+        //        printMachine.MachineName = jsonData[obj]['MachineName'];
+        //        printMachine.MachineProdType = jsonData[obj]['MachineProdType'];
+        //        printMachine.MachineProdTypeName = jsonData[obj]['MachineProdTypeName'];
+        //        printMachine.MachineSize = jsonData[obj]['MachineSize'];
+        //        printMachine.MachineRemark = jsonData[obj]['MachineRemark'];
+        //        printMachine.CompanyCode = jsonData[obj]['CompanyCode'];
+        //        printMachine.Is_Active = jsonData[obj]['Is_Active'];;
 
-                printMachines.push(printMachine);
-            }
-        }
+        //        printMachines.push(printMachine);
+        //    }
+        //}
 
         var api = $('#PrintModalData').data('mc-print-url'); // + '?lstSelMc=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
 
@@ -297,7 +287,7 @@
             cache: false,
             type: 'POST',
             url: api,
-            data: addRequestVerificationToken({ lstSelMc: printMachines }),
+            data: addRequestVerificationToken({ lstSelMc: rows_selected }),
             //xhrFields is what did the trick to read the blob to pdf
             xhrFields: {
                 responseType: 'blob'
@@ -308,7 +298,12 @@
 
                 var fileURL = URL.createObjectURL(blob);
 
-                window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+                //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
+                var w = global.popupCenter(fileURL, 'PopupWindow', 875, 660);
+                w.onload = function () {
+                    this.document.title = "Print Machine Label";
+                }
+
 
                 $('#printSelectMachineModal').modal('hide');
                 $('#printSelectMachineContainer').html("");
