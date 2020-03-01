@@ -282,6 +282,8 @@
 
         var api = $('#PrintModalData').data('mc-print-url'); // + '?lstSelMc=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
 
+        document.body.style.cursor = 'wait';
+
         $.ajax({
             async: true,
             cache: false,
@@ -295,15 +297,18 @@
             success: function (response, status, xhr) {
 
                 var blob = new Blob([response], { type: 'application/pdf' });
-
                 var fileURL = URL.createObjectURL(blob);
 
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-                var w = global.popupCenter(fileURL, 'PopupWindow', 875, 660);
-                w.onload = function () {
-                    this.document.title = "Print Machine Label";
-                }
+                var w = global.popupBottomR(fileURL, "Print Machine Label", '_blank', 875, 660);
 
+                document.body.style.cursor = 'default';
+                //w.onload = function () {
+                //    //this.document.title = "Print Machine Label";
+                //    setTimeout(function () {
+                //        w.document.title = "Print Machine Label";
+                //    }, 1800);
+                //}
 
                 $('#printSelectMachineModal').modal('hide');
                 $('#printSelectMachineContainer').html("");

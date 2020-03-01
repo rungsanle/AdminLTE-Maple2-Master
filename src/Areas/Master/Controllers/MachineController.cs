@@ -13,19 +13,24 @@ using Microsoft.Extensions.Caching.Memory;
 using jsreport.AspNetCore;
 using Maple2.AdminLTE.Uil.Areas.Master.Models;
 using jsreport.Types;
+using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class MachineController : Controller
+    public class MachineController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
         public IJsReportMVCService JsReportMVCService { get; }
 
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
         public MachineController(IHostingEnvironment hostingEnvironment,
                                  IMemoryCache memoryCache,
-                                 IJsReportMVCService jsReportMVCService)
+                                 IJsReportMVCService jsReportMVCService,
+                                 SignInManager<ApplicationUser> signInManager) : base(signInManager)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -42,6 +47,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             try
             {
+                var iResult = await base.GetCurUserIdAsync();
+
                 if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
                 {
                     return Json(new { data = c_lstMac });

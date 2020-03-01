@@ -4,15 +4,15 @@
 
 html, body {
     font-family: Tahoma;
-    font-size: 10pt;
+    font-size: 8pt;
 }
 
 .column {
     float: left;
     width: 533px;
-    padding: 2px;
+    padding: 10px;
     height: 330px;
-    border: 1px solid #eee;
+    border: 1px solid #000000;
 }
 
 .row {
@@ -22,9 +22,28 @@ html, body {
 }
 
 .card {
-    border: 1px solid #eee;
+    border: 1px solid #FF0000;
     padding: 10px;
-    background-color: none;
+    background-color: whitesmoke;
     height: 100%;
+    width: 100%;
     position: relative;
+}
+
+.label-header {
+    padding: 2px;
+    height: 10%;
+    text-align:left;
+    font-weight:bold;
+}
+
+.label-body {
+    padding: 2px;
+    height: 80%
+}
+
+.label-footer {
+    padding: 2px;
+    height: 10%;
+    text-align:right;
 }

@@ -1,5 +1,7 @@
 ﻿$(function () {
 
+
+
     //To solve Synchronous XMLHttpRequest warning
     global.AjaxPrefilter();
 

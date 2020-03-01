@@ -95,6 +95,14 @@ namespace Maple2.AdminLTE.Uil.Pages.Account
                         if (result.Succeeded)
                         {
                             _logger.LogInformation("User logged in.");
+
+                            //set user id for Application user
+                            user.UserId = 9;
+
+
+
+                            await _signInManager.UserManager.UpdateAsync(user);
+
                             return LocalRedirect(Url.GetLocalUrl(returnUrl));
                         }
                         if (result.RequiresTwoFactor)

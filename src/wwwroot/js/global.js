@@ -370,9 +370,22 @@ global.getAppSettings = function (strKey) {
 };
 
 global.popupCenter = function (url, target, w, h) {
-    var y = window.outerHeight / 2 + window.screenY - (h / 2)
-    var x = window.outerWidth / 2 + window.screenX - (w / 2)
+    var y = window.outerHeight / 2 + window.screenY - (h / 2);
+    var x = window.outerWidth / 2 + window.screenX - (w / 2);
     return window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+};
+
+global.popupBottomR = function (url, title, target, w, h) {
+    var y = (window.outerHeight - h) - 75;
+    var x = (window.outerWidth - w) - 15;
+    var w = window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+    w.onload = function () {
+        setTimeout(function () {
+            w.document.title = title;
+        }, 1800);
+    }
+
+    return w;
 };
 
 

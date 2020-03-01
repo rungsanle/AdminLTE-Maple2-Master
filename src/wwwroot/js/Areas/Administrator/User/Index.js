@@ -179,7 +179,7 @@
 
         //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
         var param;
-
+        document.body.style.cursor = 'wait';
         $.ajax({
             cache: false,
             type: 'POST',
@@ -195,8 +195,10 @@
 
                 var fileURL = window.URL.createObjectURL(blob);
 
-                window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
+                //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
+                var w = global.popupBottomR(fileURL, "Print Product Card", '_blank', 700, 850);
 
+                document.body.style.cursor = 'default';
 
                 //if (typeof window.navigator.msSaveBlob !== 'undefined') {
                 //    // IE doesn't allow using a blob object directly as link href.
