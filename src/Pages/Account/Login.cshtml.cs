@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BotDetect.Web.Mvc;
 using Maple2.AdminLTE.Bel;
+using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -97,11 +98,17 @@ namespace Maple2.AdminLTE.Uil.Pages.Account
                             _logger.LogInformation("User logged in.");
 
                             //set user id for Application user
-                            user.UserId = 9;
+                            var appUser = await _signInManager.UserManager.FindByIdAsync(user.Id);
+                            if(appUser != null)
+                            {
+                                using (var userBll = new UserBLL())
+                                {
+                                    appUser.UserId = await userBll.GetSystemUserId(user.Id);  //
+                                }
 
-
-
-                            await _signInManager.UserManager.UpdateAsync(user);
+                                await _signInManager.UserManager.UpdateAsync(appUser);
+                            }
+                            
 
                             return LocalRedirect(Url.GetLocalUrl(returnUrl));
                         }

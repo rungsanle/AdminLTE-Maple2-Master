@@ -251,6 +251,30 @@ namespace Maple2.AdminLTE.Bll
             }
         }
 
+        public async Task<int?> GetSystemUserId(string id)
+        {
+            try
+            {
+                using (var context = new MasterDbContext(contextOptions))
+                {
+
+                    MySqlParameter[] sqlParams = new MySqlParameter[] {
+                                             new MySqlParameter("strId", id)
+                    };
+
+                    var userResult = await context.User.FromSql("call sp_systemuser_get(?)", parameters: sqlParams).AsNoTracking().FirstOrDefaultAsync();
+
+                     return (userResult != null ? userResult.Id : (int?)null);
+
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         #endregion
     }
 }

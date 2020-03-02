@@ -25,12 +25,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         private readonly IMemoryCache _cache;
         public IJsReportMVCService JsReportMVCService { get; }
 
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
         public MachineController(IHostingEnvironment hostingEnvironment,
                                  IMemoryCache memoryCache,
                                  IJsReportMVCService jsReportMVCService,
-                                 SignInManager<ApplicationUser> signInManager) : base(signInManager)
+                                 UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -47,7 +45,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             try
             {
-                var iResult = await base.GetCurUserIdAsync();
+                //var iResult = await base.GetCurUserIdAsync();
 
                 if (_cache.TryGetValue("CACHE_MASTER_MACHINE", out List<M_Machine> c_lstMac))
                 {
@@ -141,7 +139,8 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Machine/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
+
             return await Task.Run(() => View());
         }
 
@@ -154,7 +153,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Machine.Created_By = 1;
+                m_Machine.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -188,7 +187,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -235,7 +234,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Machine.Updated_By = 1;
+                m_Machine.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -284,7 +283,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Machine.Updated_By = 1;
+                    m_Machine.Updated_By = await base.CurrentUserId();
 
                     using (var mcBll = new MachineBLL())
                     {
@@ -307,7 +306,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Machine.Updated_By = 1;
+                    m_Machine.Updated_By = await base.CurrentUserId();
 
                     resultObj = await mcBll.DeleteMachine(m_Machine);
 
@@ -325,7 +324,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> PrintModalData()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => PartialView());
         }
 
@@ -350,7 +349,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         FooterTemplate = footer,
                         Landscape = true,
                         Format = "A4",
-                        MarginTop = "2cm",
+                        MarginTop = "2.0cm",
                         MarginLeft = "0.5cm",
                         MarginBottom = "0.5cm",
                         MarginRight = "0.5cm"
