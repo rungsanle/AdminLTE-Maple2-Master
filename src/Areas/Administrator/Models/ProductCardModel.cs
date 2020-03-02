@@ -108,52 +108,53 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Models
                         PRODUCT_NAME = "PRODUCT NAME A",
                         BOX_QTY = 100,
                         QR_CODE = BitmapText("HOZ20200224000005")
-                    },
-                    new ItemModel()
-                    {
-                        JOB_NO = "A-12002000486",
-                        SERIAL_NO = "HOZ20200224000001",
-                        PRODUCT_NO = "PRODUCT A",
-                        PRODUCT_NAME = "PRODUCT NAME A",
-                        BOX_QTY = 100,
-                        QR_CODE = BitmapText("HOZ20200224000001")
-                    },
-                    new ItemModel()
-                    {
-                        JOB_NO = "A-12002000486",
-                        SERIAL_NO = "HOZ20200224000002",
-                        PRODUCT_NO = "PRODUCT A",
-                        PRODUCT_NAME = "PRODUCT NAME A",
-                        BOX_QTY = 100,
-                        QR_CODE = BitmapText("HOZ20200224000002")
-                    },
-                    new ItemModel()
-                    {
-                        JOB_NO = "A-12002000486",
-                        SERIAL_NO = "HOZ20200224000003",
-                        PRODUCT_NO = "PRODUCT A",
-                        PRODUCT_NAME = "PRODUCT NAME A",
-                        BOX_QTY = 100,
-                        QR_CODE = BitmapText("HOZ20200224000003")
-                    },
-                    new ItemModel()
-                    {
-                        JOB_NO = "A-12002000486",
-                        SERIAL_NO = "HOZ20200224000004",
-                        PRODUCT_NO = "PRODUCT A",
-                        PRODUCT_NAME = "PRODUCT NAME A",
-                        BOX_QTY = 100,
-                        QR_CODE = BitmapText("HOZ20200224000004")
-                    },
-                    new ItemModel()
-                    {
-                        JOB_NO = "A-12002000486",
-                        SERIAL_NO = "HOZ20200224000005",
-                        PRODUCT_NO = "PRODUCT A",
-                        PRODUCT_NAME = "PRODUCT NAME A",
-                        BOX_QTY = 100,
-                        QR_CODE = BitmapText("HOZ20200224000005")
                     }
+                    //,
+                    //new ItemModel()
+                    //{
+                    //    JOB_NO = "A-12002000486",
+                    //    SERIAL_NO = "HOZ20200224000001",
+                    //    PRODUCT_NO = "PRODUCT A",
+                    //    PRODUCT_NAME = "PRODUCT NAME A",
+                    //    BOX_QTY = 100,
+                    //    QR_CODE = BitmapText("HOZ20200224000001")
+                    //},
+                    //new ItemModel()
+                    //{
+                    //    JOB_NO = "A-12002000486",
+                    //    SERIAL_NO = "HOZ20200224000002",
+                    //    PRODUCT_NO = "PRODUCT A",
+                    //    PRODUCT_NAME = "PRODUCT NAME A",
+                    //    BOX_QTY = 100,
+                    //    QR_CODE = BitmapText("HOZ20200224000002")
+                    //},
+                    //new ItemModel()
+                    //{
+                    //    JOB_NO = "A-12002000486",
+                    //    SERIAL_NO = "HOZ20200224000003",
+                    //    PRODUCT_NO = "PRODUCT A",
+                    //    PRODUCT_NAME = "PRODUCT NAME A",
+                    //    BOX_QTY = 100,
+                    //    QR_CODE = BitmapText("HOZ20200224000003")
+                    //},
+                    //new ItemModel()
+                    //{
+                    //    JOB_NO = "A-12002000486",
+                    //    SERIAL_NO = "HOZ20200224000004",
+                    //    PRODUCT_NO = "PRODUCT A",
+                    //    PRODUCT_NAME = "PRODUCT NAME A",
+                    //    BOX_QTY = 100,
+                    //    QR_CODE = BitmapText("HOZ20200224000004")
+                    //},
+                    //new ItemModel()
+                    //{
+                    //    JOB_NO = "A-12002000486",
+                    //    SERIAL_NO = "HOZ20200224000005",
+                    //    PRODUCT_NO = "PRODUCT A",
+                    //    PRODUCT_NAME = "PRODUCT NAME A",
+                    //    BOX_QTY = 100,
+                    //    QR_CODE = BitmapText("HOZ20200224000005")
+                    //}
                 }
             };
         }

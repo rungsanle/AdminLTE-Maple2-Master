@@ -16,17 +16,19 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using Microsoft.Extensions.Caching.Memory;
 using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class CompanyController : Controller
+    public class CompanyController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public CompanyController(IHostingEnvironment hostingEnvironment,
-                                 IMemoryCache memoryCache)
+                                 IMemoryCache memoryCache,
+                                 UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -162,7 +164,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_Company.Created_By = 1;
+                    m_Company.Created_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -314,7 +316,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_Company.Updated_By = 1;
+                    m_Company.Updated_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -367,7 +369,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Company.Updated_By = 1;
+                    m_Company.Updated_By = await base.CurrentUserId();
 
                     using (CompanyBLL compBll = new CompanyBLL())
                     {
@@ -390,7 +392,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Company.Updated_By = 1;
+                    m_Company.Updated_By = await base.CurrentUserId();
 
                     resultObj = await compBll.DeleteCompany(m_Company);
 

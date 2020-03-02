@@ -13,18 +13,20 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
     [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public CustomerController(IHostingEnvironment hostingEnvironment,
-                                    IMemoryCache memoryCache)
+                                  IMemoryCache memoryCache,
+                                  UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -117,7 +119,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Customer/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -132,7 +134,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_Customer.Created_By = 1;
+                    m_Customer.Created_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -171,7 +173,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -220,7 +222,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_Customer.Updated_By = 1;
+                    m_Customer.Updated_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -274,7 +276,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Customer.Updated_By = 1;
+                    m_Customer.Updated_By = await base.CurrentUserId();
 
                     using (var custBll = new CustomerBLL())
                     {
@@ -296,7 +298,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Customer.Updated_By = 1;
+                    m_Customer.Updated_By = await base.CurrentUserId();
 
                     resultObj = await custBll.DeleteCustomer(m_Customer);
 
@@ -313,7 +315,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> UploadData()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => PartialView());
         }
 
@@ -362,10 +364,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadModelData(List<M_Customer> lstCust)
         {
+            var uId = await base.CurrentUserId();
 
             lstCust.ForEach(m =>
             {
-                m.Created_By = 1;
+                m.Created_By = uId;
             });
 
             try

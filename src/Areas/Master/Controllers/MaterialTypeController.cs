@@ -13,18 +13,20 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
     [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-    public class MaterialTypeController : Controller
+    public class MaterialTypeController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public MaterialTypeController(IHostingEnvironment hostingEnvironment,
-                                      IMemoryCache memoryCache)
+                                      IMemoryCache memoryCache,
+                                      UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -118,7 +120,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/MaterialType/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -131,7 +133,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_MaterialType.Created_By = 1;
+                m_MaterialType.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -165,7 +167,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -212,7 +214,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_MaterialType.Updated_By = 1;
+                m_MaterialType.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -261,7 +263,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_MaterialType.Updated_By = 1;
+                    m_MaterialType.Updated_By = await base.CurrentUserId();
 
                     using (var matTypeBll = new MaterialTypeBLL())
                     {
@@ -284,7 +286,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_MaterialType.Updated_By = 1;
+                    m_MaterialType.Updated_By = await base.CurrentUserId();
 
                     resultObj = await matTypeBll.DeleteMaterialType(m_MaterialType);
 
@@ -301,7 +303,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> UploadData()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => PartialView());
         }
 
@@ -350,10 +352,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadModelData(List<M_MaterialType> lstMatType)
         {
-
+            var uId = await base.CurrentUserId();
             lstMatType.ForEach(m =>
             {
-                m.Created_By = 1;
+                m.Created_By = uId;
             });
 
             try

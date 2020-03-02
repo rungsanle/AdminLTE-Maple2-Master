@@ -10,17 +10,20 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Identity;
+using Maple2.AdminLTE.Uil.Extensions;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class ProductionTypeController : Controller
+    public class ProductionTypeController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public ProductionTypeController(IHostingEnvironment hostingEnvironment,
-                                        IMemoryCache memoryCache)
+                                        IMemoryCache memoryCache,
+                                        UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -113,7 +116,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/ProductionType/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -126,7 +129,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_ProductionType.Created_By = 1;
+                m_ProductionType.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -160,7 +163,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -205,7 +208,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_ProductionType.Updated_By = 1;
+                m_ProductionType.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -254,7 +257,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_ProductionType.Updated_By = 1;
+                    m_ProductionType.Updated_By = await base.CurrentUserId();
 
                     using (var prodTypeBll = new ProductionTypeBLL())
                     {
@@ -276,7 +279,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_ProductionType.Updated_By = 1;
+                    m_ProductionType.Updated_By = await base.CurrentUserId();await base.CurrentUserId();
 
                     resultObj = await prodTypeBll.DeleteProductionType(m_ProductionType);
 

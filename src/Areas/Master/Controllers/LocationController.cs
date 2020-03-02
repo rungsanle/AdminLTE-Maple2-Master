@@ -10,17 +10,20 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
 using Microsoft.Extensions.Caching.Memory;
+using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class LocationController : Controller
+    public class LocationController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public LocationController(IHostingEnvironment hostingEnvironment,
-                                  IMemoryCache memoryCache)
+                                  IMemoryCache memoryCache,
+                                  UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -113,7 +116,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Location/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -126,7 +129,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Location.Created_By = 1;
+                m_Location.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -205,7 +208,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Location.Updated_By = 1;
+                m_Location.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -254,7 +257,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Location.Updated_By = 1;
+                    m_Location.Updated_By = await base.CurrentUserId();
 
                     using (var locationBll = new LocationBLL())
                     {
@@ -277,7 +280,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Location.Updated_By = 1;
+                    m_Location.Updated_By = await base.CurrentUserId();
 
                     resultObj = await locationBll.DeleteLocation(m_Location);
 

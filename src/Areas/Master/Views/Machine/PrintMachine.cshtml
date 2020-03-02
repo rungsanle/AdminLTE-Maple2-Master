@@ -6,6 +6,12 @@
 <html>
 <head>
     <link href="~/css/report/machinelabel_report.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function () {
+            var $html = $(document.getElementsByTagName('html')[0]);
+            $html.height(0);
+        }
+    </script>
 </head>
 <body>
     @{
@@ -53,7 +59,7 @@
 
                 @if ((i % 4) == 0)
                 {
-                    <div style="page-break-before: always;"></div>
+                    <div style="page-break-after:always;"></div>
                 }
                 i++;
             }

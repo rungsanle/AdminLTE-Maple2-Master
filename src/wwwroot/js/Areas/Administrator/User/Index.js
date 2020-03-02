@@ -178,22 +178,23 @@
         var api = $(this).data("url");
 
         //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
-        var param;
+        var param = null;
         document.body.style.cursor = 'wait';
         $.ajax({
             cache: false,
             type: 'POST',
             url: api,
             processing: true,
-            data: addRequestVerificationToken({param}),
+            data: addRequestVerificationToken({ param }),
             xhrFields: {
                 responseType: 'blob'
             },
             success: function (response, status, xhr) {
-                var filename = 'ProductCard.pdf';
-                var blob = new Blob([response], { type: 'application/pdf' });
+
+                var blob = new Blob([response], { type: 'application/pdf' });  //application/pdf
 
                 var fileURL = window.URL.createObjectURL(blob);
+
 
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
                 var w = global.popupBottomR(fileURL, "Print Product Card", '_blank', 700, 850);

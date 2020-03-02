@@ -10,17 +10,20 @@ using Maple2.AdminLTE.Dal;
 using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
+using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class DepartmentController : Controller
+    public class DepartmentController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public DepartmentController(IHostingEnvironment hostingEnvironment,
-                                    IMemoryCache memoryCache)
+                                    IMemoryCache memoryCache,
+                                    UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -114,7 +117,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Department/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -154,7 +157,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Department.Created_By = 1;
+                m_Department.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -187,7 +190,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -260,7 +263,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Department.Updated_By = 1;
+                m_Department.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -326,7 +329,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Department.Updated_By = 1;
+                    m_Department.Updated_By = await base.CurrentUserId();
 
                     using (var deptBll = new DepartmentBLL())
                     {
@@ -349,7 +352,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Department.Updated_By = 1;
+                    m_Department.Updated_By = await base.CurrentUserId();
 
                     resultObj = await deptBll.DeleteDepartment(m_Department);
 

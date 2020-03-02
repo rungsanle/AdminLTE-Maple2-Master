@@ -14,36 +14,41 @@
         int i = 1;
         foreach (var item in Model.Items)
         {
+            @if ((i % 4) == 0)
+            {
+                <div style="page-break-before:always;"></div>
+            }
+
             if ((i % 2) != 0)
             {
-            @:</div><div class="row">
-}
-<div class="column">
-    <div class="card">
-        <p>
-            @i
-        </p>
-        @if (item.QR_CODE != null)
-        {
-            <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
-        }
-        <p>Serial #: @item.SERIAL_NO</p>
-    </div>
-</div>
+                @:</div><div class="row">
+                }
+                <div class="column">
+                    <div class="card">
+                        <p>
+                            @i
+                        </p>
+                        @if (item.QR_CODE != null)
+                        {
+                            <img src="@item.QR_CODE" alt="" style="height:70px;width:70px" />
+                        }
+                        <p>Serial #: @item.SERIAL_NO</p>
+                    </div>
+                </div>
 
-@if ((i % 2) != 1)
-{
-    @:<div></div>
-}
+                @if ((i % 2) != 1)
+                {
+                    @:<div></div>
+                }
 
-@if ((i % 10) == 0)
-{
-    <div style="page-break-before: always;"></div>
-}
+                @if ((i % 10) == 0)
+                {
+                    <div style="page-break-after:always;"></div>
+                }
 
-i++;
-}
-}
+                i++;
+            }
+    }
 
 </body>
 </html>

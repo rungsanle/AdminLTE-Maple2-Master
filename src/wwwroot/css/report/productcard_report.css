@@ -1,12 +1,17 @@
 ﻿* {
     box-sizing: border-box;
+    
+}
+
+html {
+    height: 0px;
 }
 
 .column {
     float: left;
-    width: 370px;
+    width: 364px;
     padding: 2px;
-    height: 212px;
+    height: 213px;
 }
 
 .row {

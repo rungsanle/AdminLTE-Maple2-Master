@@ -455,9 +455,9 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                         FooterTemplate = footer,
                         Format = "A4",
                         MarginTop = "0.7cm",
-                        MarginLeft = "0.5cm",
+                        MarginLeft = "0.7cm",
                         MarginBottom = "0.7cm",
-                        MarginRight = "0.5cm"
+                        MarginRight = "0.7cm"
                     });
 
                 return await Task.Run(() => View(ProductCardModel.Example()));

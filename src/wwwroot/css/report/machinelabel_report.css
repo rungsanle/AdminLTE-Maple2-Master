@@ -9,22 +9,24 @@ html, body {
 
 .column {
     float: left;
-    width: 533px;
-    padding: 10px;
-    height: 330px;
-    border: 1px solid #000000;
+    width: 523px;
+    padding: 30px;
+    height: 365.2px;
+    border:none;
+    /*border: 1px solid #000000;*/
 }
 
 .row {
     content: "";
     display: table;
-    clear: both;
+    padding: 1px;
+    /*clear: both;*/
 }
 
 .card {
-    border: 1px solid #FF0000;
+    border: 1px solid #000000;
     padding: 10px;
-    background-color: whitesmoke;
+    background-color: transparent;
     height: 100%;
     width: 100%;
     position: relative;

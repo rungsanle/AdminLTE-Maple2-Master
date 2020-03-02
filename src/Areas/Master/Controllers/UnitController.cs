@@ -10,17 +10,20 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Identity;
+using Maple2.AdminLTE.Uil.Extensions;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class UnitController : Controller
+    public class UnitController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public UnitController(IHostingEnvironment hostingEnvironment,
-                              IMemoryCache memoryCache)
+                              IMemoryCache memoryCache,
+                              UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -114,7 +117,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Unit/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -127,7 +130,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Unit.Created_By = 1;
+                m_Unit.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -205,7 +208,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Unit.Updated_By = 1;
+                m_Unit.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -253,7 +256,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Unit.Updated_By = 1;
+                    m_Unit.Updated_By = await base.CurrentUserId();
 
                     using (var unitBll = new UnitBLL())
                     {
@@ -275,7 +278,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Unit.Updated_By = 1;
+                    m_Unit.Updated_By = await base.CurrentUserId();
 
                     resultObj = await unitBll.DeleteUnit(m_Unit);
 

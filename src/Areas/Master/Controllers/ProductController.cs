@@ -15,18 +15,20 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
     [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public ProductController(IHostingEnvironment hostingEnvironment,
-                                 IMemoryCache memoryCache)
+                                 IMemoryCache memoryCache,
+                                 UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -133,7 +135,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Product/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -146,7 +148,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Product.Created_By = 1;
+                m_Product.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -238,7 +240,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -283,7 +285,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Product.Updated_By = 1;
+                m_Product.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -331,7 +333,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Product.Updated_By = 1;
+                    m_Product.Updated_By = await base.CurrentUserId();
 
                     using (var prodBll = new ProductBLL())
                     {
@@ -353,7 +355,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Product.Updated_By = 1;
+                    m_Product.Updated_By = await base.CurrentUserId();
 
                     resultObj = await prodBll.DeleteProduct(m_Product);
 
@@ -370,7 +372,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
         public async Task<IActionResult> UploadData()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => PartialView());
         }
 
@@ -419,10 +421,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadModelData(List<M_Product> lstProd)
         {
-
+            var uId = await base.CurrentUserId();
             lstProd.ForEach(m =>
             {
-                m.Created_By = 1;
+                m.Created_By = uId;
             });
 
             try

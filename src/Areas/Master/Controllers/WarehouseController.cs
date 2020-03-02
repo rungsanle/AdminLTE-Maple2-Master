@@ -10,17 +10,20 @@ using Maple2.AdminLTE.Dal;
 using Microsoft.AspNetCore.Hosting;
 using Maple2.AdminLTE.Bll;
 using Microsoft.Extensions.Caching.Memory;
+using Maple2.AdminLTE.Uil.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class WarehouseController : Controller
+    public class WarehouseController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         public WarehouseController(IHostingEnvironment hostingEnvironment,
-                                   IMemoryCache memoryCache)
+                                   IMemoryCache memoryCache,
+                                   UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
@@ -113,7 +116,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         // GET: Master/Warehouse/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -126,7 +129,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Warehouse.Created_By = 1;
+                m_Warehouse.Created_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -160,7 +163,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = base.CurrentUserComp();
 
             try
             {
@@ -207,7 +210,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
         {
             if (ModelState.IsValid)
             {
-                m_Warehouse.Updated_By = 1;
+                m_Warehouse.Updated_By = await base.CurrentUserId();
 
                 ResultObject resultObj;
 
@@ -256,7 +259,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Warehouse.Updated_By = 1;
+                    m_Warehouse.Updated_By = await base.CurrentUserId();
 
                     using (var whBll = new WarehouseBLL())
                     {
@@ -279,7 +282,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         return NotFound();
                     }
 
-                    m_Warehouse.Updated_By = 1;
+                    m_Warehouse.Updated_By = await base.CurrentUserId();
 
                     resultObj = await whBll.DeleteWarehouse(m_Warehouse);
 

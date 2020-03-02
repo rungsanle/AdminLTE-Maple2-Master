@@ -349,10 +349,10 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         FooterTemplate = footer,
                         Landscape = true,
                         Format = "A4",
-                        MarginTop = "2.0cm",
-                        MarginLeft = "0.5cm",
-                        MarginBottom = "0.5cm",
-                        MarginRight = "0.5cm"
+                        MarginTop = "0.7cm",
+                        MarginLeft = "0.7cm",
+                        MarginBottom = "0.7cm",
+                        MarginRight = "0.7cm"
                     });
 
                 return await Task.Run(() => View(printMcLabel));
