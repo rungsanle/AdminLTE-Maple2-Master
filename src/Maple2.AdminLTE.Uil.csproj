@@ -6,12 +6,16 @@
     <RootNamespace>Maple2.AdminLTE.Uil</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Areas\Master\Views\Machine\Material\**" />
     <Compile Remove="Data\**" />
     <Compile Remove="Migrations\**" />
+    <Content Remove="Areas\Master\Views\Machine\Material\**" />
     <Content Remove="Data\**" />
     <Content Remove="Migrations\**" />
+    <EmbeddedResource Remove="Areas\Master\Views\Machine\Material\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Areas\Master\Views\Machine\Material\**" />
     <None Remove="Data\**" />
     <None Remove="Migrations\**" />
   </ItemGroup>

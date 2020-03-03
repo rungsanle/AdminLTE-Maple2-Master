@@ -1,12 +1,12 @@
 ﻿$(function () {
+
     //To solve Synchronous XMLHttpRequest warning
     global.AjaxPrefilter();
-
+        
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
     //$("#message-alert").hide();
-    
 
     //Grid Table Config
     selMcVM = {
@@ -279,6 +279,7 @@
         //        printMachines.push(printMachine);
         //    }
         //}
+        
 
         var api = $('#PrintModalData').data('mc-print-url'); // + '?lstSelMc=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
 
@@ -297,7 +298,12 @@
             success: function (response, status, xhr) {
 
                 var blob = new Blob([response], { type: 'application/pdf' });
+
+                //console.log('Result Blob: ' + blob);
+
                 var fileURL = URL.createObjectURL(blob);
+
+                //console.log('Result FileUrl: ' + fileURL);
 
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
                 var w = global.popupBottomR(fileURL, "Print Machine Label", '_blank', 875, 660);

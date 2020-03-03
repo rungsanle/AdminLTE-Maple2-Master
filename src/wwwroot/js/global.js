@@ -385,6 +385,12 @@ global.popupBottomR = function (url, title, target, w, h) {
         }, 1800);
     }
 
+    //w.addEventListener('onload', function () {
+    //    setTimeout(function () {
+    //        w.document.title = title;
+    //    }, 1800);
+    //}, false);
+
     return w;
 };
 

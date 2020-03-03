@@ -3,6 +3,7 @@
     ViewData["Title"] = "PrintModalData";
     Layout = null;
 }
+
 <script src="~/js/Areas/Master/Machine/PrintModalData.js"></script>
 <div id="PrintModalData"
      data-mc-get-url="@Url.Action("GetMachine", "Machine", new { Area = "Master" })"
@@ -16,7 +17,6 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title"><i class="glyphicon glyphicon-print"></i>&nbsp;Select Machine For Print</h4>
         </div>
-
         <div class="box-body pad">
             <div class="box-body">
                 <div class="table-responsive" style="height:570px;">

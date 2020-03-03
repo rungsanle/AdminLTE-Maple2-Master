@@ -15,6 +15,7 @@ using Maple2.AdminLTE.Uil.Areas.Master.Models;
 using jsreport.Types;
 using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 {
@@ -23,16 +24,22 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
-        public IJsReportMVCService JsReportMVCService { get; }
+        private readonly IConfiguration _config;
+        private readonly IJsReportMVCService _jsReport;
+
+        
+
 
         public MachineController(IHostingEnvironment hostingEnvironment,
                                  IMemoryCache memoryCache,
-                                 IJsReportMVCService jsReportMVCService,
+                                 IConfiguration config,
+                                 IJsReportMVCService jsReport,
                                  UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
-            JsReportMVCService = jsReportMVCService;
+            _config = config;
+            _jsReport = jsReport;
         }
 
         // GET: Master/Machine
@@ -338,8 +345,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
 
                 List<MachineLabelModel> printMcLabel = lstSelMc.ConvertAll(mc => new MachineLabelModel(mc));
 
-                var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
-                var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
+                if(printMcLabel != null)
+                    ViewBag.ItemCount = printMcLabel.Count();
+
+                var header = await _jsReport.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
+                var footer = await _jsReport.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
 
                 HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
                     .Configure((r) => r.Template.Chrome = new Chrome
@@ -348,11 +358,16 @@ namespace Maple2.AdminLTE.Uil.Areas.Master.Controllers
                         HeaderTemplate = header,
                         FooterTemplate = footer,
                         Landscape = true,
-                        Format = "A4",
-                        MarginTop = "0.7cm",
-                        MarginLeft = "0.7cm",
-                        MarginBottom = "0.7cm",
-                        MarginRight = "0.7cm"
+                        //Format = "A4",
+                        //MarginTop = "0.7cm",
+                        //MarginLeft = "0.7cm",
+                        //MarginBottom = "0.7cm",
+                        //MarginRight = "0.7cm"
+                        Format = _config["ReportSetting:Format"],
+                        MarginTop = _config["ReportSetting:MarginTop"],
+                        MarginLeft = _config["ReportSetting:MarginLeft"],
+                        MarginBottom = _config["ReportSetting:MarginBottom"],
+                        MarginRight = _config["ReportSetting:MarginRight"]
                     });
 
                 return await Task.Run(() => View(printMcLabel));
