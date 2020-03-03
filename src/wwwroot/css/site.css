@@ -377,9 +377,14 @@ td.boldColumn {
     background-color: #e7e7e7;
 }
 
+th input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+}
+
 td input[type="checkbox"] {
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
 }
 
 img.gridCheckbox {

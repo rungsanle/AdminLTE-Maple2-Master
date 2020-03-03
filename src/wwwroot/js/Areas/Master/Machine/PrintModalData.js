@@ -116,6 +116,14 @@
     // initialize the datatables
     selMcVM.init();
 
+    if (appSetting.defaultFirstPage == 1) {
+        setTimeout(function () {
+            if (dtSelMc.page.info().page != 0) {
+                dtSelMc.page('first').draw('page');
+            }
+        }, 200);
+    }
+
     //
     // Updates "Select all" control in a data table
     //

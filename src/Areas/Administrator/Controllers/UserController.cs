@@ -20,27 +20,31 @@ using Maple2.AdminLTE.Uil.Areas.Administrator.Models;
 using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Microsoft.Extensions.Configuration;
 
 namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
 {
     [Area("Administrator")]
     [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
-
-        public IJsReportMVCService JsReportMVCService { get; }
+        private readonly IConfiguration _config;
+        private readonly IJsReportMVCService _jsReport;
 
         //private readonly UserManager<ApplicationUser> _userManager;
 
         public UserController(IHostingEnvironment hostingEnvironment,
-                                    IMemoryCache memoryCache,
-                                    IJsReportMVCService jsReportMVCService)
+                              IMemoryCache memoryCache,
+                              IConfiguration config,
+                              IJsReportMVCService jsReport,
+                              UserManager<ApplicationUser> userManager) : base(userManager, memoryCache)
         {
             _hostingEnvironment = hostingEnvironment;
             _cache = memoryCache;
-            JsReportMVCService = jsReportMVCService;
+            _config = config;
+            _jsReport = jsReport;
         }
 
         // GET: Administrator/User
@@ -410,11 +414,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                 {
                     HeaderTemplate = null,
                     DisplayHeaderFooter = false,
-                    Format = "A4",
-                    MarginTop = "0.5cm",
-                    MarginLeft = "0.5cm",
-                    MarginBottom = "0.5cm",
-                    MarginRight = "0.5cm"
+                    Format = _config["ReportSetting:Format"],
+                    MarginTop = _config["ReportSetting:MarginTop"],
+                    MarginLeft = _config["ReportSetting:MarginLeft"],
+                    MarginBottom = _config["ReportSetting:MarginBottom"],
+                    MarginRight = _config["ReportSetting:MarginRight"]
                 });
             return await Task.Run(() => View(InvoiceModel.Example()));
         }
@@ -444,8 +448,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         {
             try
             {
-                var header = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
-                var footer = await JsReportMVCService.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
+                
+                ViewBag.ItemCount = 10;
+
+                var header = await _jsReport.RenderViewToStringAsync(HttpContext, RouteData, "HeaderReport", new { });
+                var footer = await _jsReport.RenderViewToStringAsync(HttpContext, RouteData, "FooterReport", new { });
 
                 HttpContext.JsReportFeature().Recipe(jsreport.Types.Recipe.ChromePdf)
                     .Configure((r) => r.Template.Chrome = new Chrome
@@ -453,11 +460,11 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                         DisplayHeaderFooter = true,
                         HeaderTemplate = header,
                         FooterTemplate = footer,
-                        Format = "A4",
+                        Format = _config["ReportSetting:Format"],
                         MarginTop = "0.7cm",
-                        MarginLeft = "0.7cm",
-                        MarginBottom = "0.7cm",
-                        MarginRight = "0.7cm"
+                        MarginLeft = _config["ReportSetting:MarginLeft"],
+                        MarginBottom = _config["ReportSetting:MarginBottom"],
+                        MarginRight = _config["ReportSetting:MarginRight"]
                     });
 
                 return await Task.Run(() => View(ProductCardModel.Example()));

@@ -5,7 +5,7 @@
 html, body {
     font-family: Tahoma;
     font-size: 6pt;
-    max-height: 98% !important;
+    max-height: 99% !important;
 }
 
 .column {
@@ -14,7 +14,7 @@ html, body {
     width: 528px;
     padding: 30px;
     /*height: 365.2px;*/
-    height: 338px;
+    height: 345px;
     /*border:none;*/
     border: 1px solid #000000;
 }
@@ -48,7 +48,7 @@ html, body {
 }
 
 .label-footer {
-    padding: 2px;
+    padding: 2px 0px 2px 2px;
     height: 10%;
     text-align:right;
 }
@@ -64,7 +64,7 @@ html, body {
 
 @media print {
     html, body {
-        height: 98%;
-        -webkit-print-color-adjust: exact;
+        margin-top:0px;
+        height: 99%;
     }
 }
