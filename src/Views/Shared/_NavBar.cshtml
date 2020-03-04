@@ -1,4 +1,6 @@
-﻿@inject Maple2.AdminLTE.Uil.Services.Profile.ProfileManager ProfileManager
+﻿
+@inject Maple2.AdminLTE.Uil.Services.Profile.ProfileManager ProfileManager
+@model IEnumerable<Maple2.AdminLTE.Bel.M_Menu>
 
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -27,49 +29,53 @@
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">MAIN NAVIGATION</li>
-
-            <li class="treeview @(Html.IsMenuActive("/Administrator") ? "active" : "")">
-                <a href="#">
-                    <i class="fa fa-database"></i> <span>Administrator</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
+            <li class="header"></li>
+            @*-- Begin Menu Authentication --*@
+            @foreach (var item in Model)
+            {
+                if (item.isParent == false && item.parentId == 0)
+                {
+            <li class="treeview @(Html.IsMenuActive("/Examples/Blank" + item.nameOption) ? "active" : "")">
+                <a href="/Examples/Blank">
+                    @*@Url.Action(item.action, item.controller, new { Area = item.area })*@
+                    <i class="@item.imageClass"></i>
+                    <span>@item.nameOption</span>
                 </a>
-                <ul class="treeview-menu">
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "User", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "User", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> User</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Role", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "Role", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> Role</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "AppUser", new { Area = "Administrator" })) ? "active" : "")"><a href="@Url.Action("Index", "AppUser", new { Area = "Administrator" })"><i class="fa fa-circle-o"></i> Application User</a></li>
-                </ul>
             </li>
+                }
+                else
+                {
+                    if (item.isParent == true)
+                    {
+                        <li class="treeview @(Html.IsMenuActive("/" + item.nameOption) ? "active" : "")">
+                            <a href="#">
+                                <i class="@item.imageClass"></i> <span>@item.nameOption</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                @foreach (var child in Model.Where(p => p.parentId == item.Id).OrderBy(o => o.menuseq))
+                                {
+                                    if (child.controller == null)
+                                    {
+                                        <li><a href="#">@child.nameOption</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="@(Html.IsMenuActive(Url.Action(child.action, child.controller, new { Area = child.area })) ? "active" : "")">
+                                            <a href="@Url.Action(child.action, child.controller, new { Area = child.area })"><i class="@child.imageClass"></i> <span>@child.nameOption</span></a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
+                }
+            }
+            @*-- End Menu Authentication --*@
 
-            <li class="treeview @(Html.IsMenuActive("/Master") ? "active" : "")">
-                <a href="#">
-                    <i class="fa fa-database"></i> <span>Master</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    @*<li class="@(Html.IsMenuActive("/Master/Department/Index") ? "active" : "")"><a href="~/Master/Department/Index"><i class="fa fa-circle-o"></i> Department</a></li>*@
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Company", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Company", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Company</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Department", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Department", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Department</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Menu", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Menu", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Menu</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "ArrivalType", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "ArrivalType", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Arrival Type</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Location", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Location", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Location</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Warehouse", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Warehouse", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Warehouse</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Machine", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Machine", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Machine</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "ProductionType", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "ProductionType", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Production Type</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Unit", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Unit", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Unit</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "MaterialType", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "MaterialType", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Material Type</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Process", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Process", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Process</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "RawMaterialType", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "RawMaterialType", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Raw Material Type</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Customer", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Customer", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Customer</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Vendor", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Vendor", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Vendor</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Material", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Material", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Material</a></li>
-                    <li class="@(Html.IsMenuActive(Url.Action("Index", "Product", new { Area = "Master" })) ? "active" : "")"><a href="@Url.Action("Index", "Product", new { Area = "Master" })"><i class="fa fa-circle-o"></i> Product</a></li>
-                </ul>
-            </li>
+
 
             <li class="treeview @(Html.IsMenuActive("/Dashboards") ? "active" : "")">
                 <a href="#">

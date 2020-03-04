@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Maple2.AdminLTE.Uil.Services.Profile.ProfileManager ProfileManager
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -21,7 +22,7 @@
     <!-- iCheck -->
     <link rel="stylesheet" href="~/plugins/iCheck/square/blue.css">
 
-    
+
 
     @RenderSection("Styles", required: false)
     <!-- Theme style -->
@@ -52,7 +53,12 @@
         @await Html.PartialAsync("_Header")
         <!-- =============================================== -->
         <!-- Left side column. contains the sidebar -->
-        @await Html.PartialAsync("_NavBar")
+
+
+        @*@ProfileManager.CurrentUser.UserId*@
+
+        @await Component.InvokeAsync("MenuAuthen", new { userId = ProfileManager.CurrentUser.UserId })
+        @*@await Html.PartialAsync("_NavBar")*@
         <!-- =============================================== -->
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

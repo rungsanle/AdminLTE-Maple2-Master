@@ -6,7 +6,15 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    //$("#message-alert").hide();
+    //$("#message-alert").hide
+    //--for check close print popup page.--
+    var wpopup_print;
+    $(window).focus(function () {
+        if (wpopup_print) {
+            wpopup_print.close();
+        }
+    });
+    //-------------------------------------
 
     //Grid Table Config
     selMcVM = {
@@ -59,14 +67,15 @@
                 ],
                 columnDefs: [
                     {
-                        'targets': 0,
-                        'searchable': false,
-                        'orderable': false,
-                        'width': '5%',
-                        'className': 'dt-body-center',
-                        'render': function (data, type, full, meta) {
-                            return '<input type="checkbox">';
-                        }
+                        searchable: false,
+                        orderable: false,
+                        width: "5%",
+                        className: "dt-body-center",
+                        data: "DT_RowId",
+                        render: function (data, type, full, meta) {
+                            return '<input type="checkbox" >';
+                        },
+                        targets: 0
                     },
                     { width: "15%", targets: 1 },
                     { width: "26%", targets: 2 },
@@ -85,6 +94,7 @@
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: appSetting.tableDisplayLength,
+
                 stateSave: true,
                 stateDuration: -1, //force the use of Session Storage
                 rowCallback: function (row, data, dataIndex) {
@@ -314,7 +324,7 @@
                 //console.log('Result FileUrl: ' + fileURL);
 
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
-                var w = global.popupBottomR(fileURL, "Print Machine Label", '_blank', 875, 660);
+                wpopup_print = global.popupBottomR(fileURL, "Print Machine Label", '_blank', 875, 660);
 
                 document.body.style.cursor = 'default';
                 //w.onload = function () {

@@ -129,7 +129,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
         // GET: Administrator/User/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
             return await Task.Run(() => View());
         }
 
@@ -144,7 +144,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_User.Created_By = 1;
+                    m_User.Created_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -223,7 +223,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                 return NotFound();
             }
 
-            ViewBag.CompCode = "ALL*";
+            ViewBag.CompCode = await base.CurrentUserComp();
 
             try
             {
@@ -271,7 +271,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    m_User.Updated_By = 1;
+                    m_User.Updated_By = await base.CurrentUserId();
 
                     ResultObject resultObj;
 
@@ -347,7 +347,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
                         return NotFound();
                     }
 
-                    m_User.Updated_By = 1;
+                    m_User.Updated_By = await base.CurrentUserId();
 
                     resultObj = await userBll.DeleteUser(m_User);
 
@@ -359,6 +359,39 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> GetMenuAuthen()
+        {
+            try
+            {
+                if (_cache.TryGetValue("CACHE_MENU_AUTHEN", out List<M_Menu> c_lstMenu))
+                {
+                    //return Json(new { data = c_lstMenu });
+                    return PartialView("~/Views/Shared/_NavBar.cshtml", c_lstMenu);
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.Low
+                };
+
+                using (var menuBll = new MenuBLL())
+                {
+                    var lstMenu = await menuBll.GetMenuAuthen(await base.CurrentUserId());
+
+                    _cache.Set("CACHE_MENU_AUTHEN", lstMenu, options);
+
+                    //return Json(new { data = lstMenu });
+                    return PartialView("~/Views/Shared/_NavBar.cshtml", lstMenu);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
             }
         }
 
