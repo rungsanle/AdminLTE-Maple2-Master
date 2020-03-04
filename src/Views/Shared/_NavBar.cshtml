@@ -29,19 +29,15 @@
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-            <li class="header"></li>
+            @*<li class="header"></li>*@
             @*-- Begin Menu Authentication --*@
             @foreach (var item in Model)
             {
                 if (item.isParent == false && item.parentId == 0)
                 {
-            <li class="treeview @(Html.IsMenuActive("/Examples/Blank" + item.nameOption) ? "active" : "")">
-                <a href="/Examples/Blank">
-                    @*@Url.Action(item.action, item.controller, new { Area = item.area })*@
-                    <i class="@item.imageClass"></i>
-                    <span>@item.nameOption</span>
-                </a>
-            </li>
+                    <li class="@(Html.IsMenuActive("/" + item.nameOption) ? "active" : "")">
+                        <a href="@Url.Action(item.action, item.controller, new { Area = item.area })"><i class="@item.imageClass"></i> <span>@item.nameOption</span></a>
+                    </li>
                 }
                 else
                 {

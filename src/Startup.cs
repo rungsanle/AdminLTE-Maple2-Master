@@ -175,7 +175,7 @@ namespace Maple2.AdminLTE.Uil
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                   name: "area",

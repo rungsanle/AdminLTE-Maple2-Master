@@ -51,6 +51,7 @@
     <Folder Include="wwwroot\img\compLogo\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Views\Home\Index.cshtml" />
     <None Include="wwwroot\plugins\bootstrap-switch\bootstrap-switch.min.js" />
     <None Include="wwwroot\plugins\Input-picker\jquery.inputpicker.js" />
     <None Include="wwwroot\plugins\Input-picker\res\spinner.svg" />

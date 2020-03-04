@@ -1,7 +1,8 @@
 ﻿@page
-@model IndexModel
+@model Maple2.AdminLTE.Uil.Views.Home.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Scripts {
     <script src="~/js/global.js"></script>
@@ -19,8 +20,6 @@
         };
 
         global.setAppSettings('AppSettings', JSON.stringify(_appSettings));
-
-        
 
     </script>
 }
@@ -54,7 +53,7 @@
             </div>
         </div>
         <div class="box-body">
-            Material Automation Production & Logistics EDI System!
+            Start creating your amazing application!
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
