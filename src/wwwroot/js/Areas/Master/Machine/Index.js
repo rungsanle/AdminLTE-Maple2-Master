@@ -14,10 +14,17 @@
         dtMc: null,
         init: function () {
             dtMc = $('#tblMachine').DataTable({
-                dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
+                dom: "<'row'<'col-sm-2'B><'col-sm-4'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
-                buttons: [
+                buttons:
+                [
+                    {
+                        text: '<i class="fa fa-cogs"></i>',
+                        action: function (e, dt, node, conf) {
+                            alert('click advance');
+                        }
+                    },
                     {
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel-o"></i> Excel',
@@ -36,6 +43,7 @@
                             dt.ajax.reload(null, false);
                         }
                     }
+                    
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
@@ -94,6 +102,33 @@
                 stateSave: true,
                 stateDuration: -1 //force the use of Session Storage
             });
+
+            //new $.fn.dataTable.Buttons(dtMc, {
+            //    buttons: [
+            //        {
+            //            extend: 'excelHtml5',
+            //            text: '<i class="fa fa-file-excel-o"></i> Excel',
+            //            title: 'Machine Master',
+            //            titleAttr: 'Excel'
+            //        },
+            //        {
+            //            extend: 'csvHtml5',
+            //            text: '<i class="fa fa-file-text-o"></i> CSV',
+            //            title: 'Machine Master',
+            //            titleAttr: 'CSV'
+            //        },
+            //        {
+            //            text: '<i class="fa fa-refresh"></i> Reload',
+            //            action: function (e, dt, node, config) {
+            //                dt.ajax.reload(null, false);
+            //            }
+            //        }
+            //    ]
+            //});
+
+            //dtMc.buttons(1, null).container().appendTo(
+            //    $('div.dataTables_length')
+            //);
 
             //dt.on('draw', function () {
             //    global.applyIcheckStyle();
