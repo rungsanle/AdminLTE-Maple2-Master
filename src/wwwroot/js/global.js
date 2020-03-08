@@ -379,11 +379,20 @@ global.popupBottomR = function (url, title, target, w, h) {
     var y = (window.outerHeight - h) - 75;
     var x = (window.outerWidth - w) - 15;
     var w = window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+
     w.onload = function () {
         setTimeout(function () {
             w.document.title = title;
         }, 1800);
-    }
+    }    //w.on('load', function (e) {
+    //    e.preventDefault();
+    //    setTimeout(function (ex) {
+    //        w.document.title = title;
+    //    }, 1800);
+
+    //})
+
+    
 
     //w.addEventListener('onload', function () {
     //    setTimeout(function () {

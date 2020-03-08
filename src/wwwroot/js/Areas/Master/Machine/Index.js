@@ -1,7 +1,5 @@
 ﻿$(function () {
 
-
-
     //To solve Synchronous XMLHttpRequest warning
     global.AjaxPrefilter();
 
@@ -14,36 +12,41 @@
         dtMc: null,
         init: function () {
             dtMc = $('#tblMachine').DataTable({
-                dom: "<'row'<'col-sm-2'B><'col-sm-4'l><'col-sm-6'f>>" +
+                dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons:
                 [
                     {
                         text: '<i class="fa fa-cogs"></i>',
+                        titleAttr: 'Advance Search',
+                        className: 'btn btn-default',
                         action: function (e, dt, node, conf) {
                             alert('click advance');
                         }
                     },
                     {
+                        text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
+                        titleAttr: 'Refresh',
+                        className: 'btn btn-default',
+                        action: function (e, dt, node, config) {
+                            dt.ajax.reload(null, false);
+                        }
+                    },
+                    {
                         extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
+                        className: 'btn btn-default',
                         title: 'Machine Master',
                         titleAttr: 'Excel'
                     },
                     {
                         extend: 'csvHtml5',
-                        text: '<i class="fa fa-file-text-o"></i> CSV',
+                        text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
+                        className: 'btn btn-default',
                         title: 'Machine Master',
                         titleAttr: 'CSV'
-                    },
-                    {
-                        text: '<i class="fa fa-refresh"></i> Reload',
-                        action: function (e, dt, node, config) {
-                            dt.ajax.reload(null, false);
-                        }
                     }
-                    
                 ],
                 processing: true, // for show progress bar
                 autoWidth: false,
@@ -106,34 +109,41 @@
             //new $.fn.dataTable.Buttons(dtMc, {
             //    buttons: [
             //        {
-            //            extend: 'excelHtml5',
-            //            text: '<i class="fa fa-file-excel-o"></i> Excel',
-            //            title: 'Machine Master',
-            //            titleAttr: 'Excel'
-            //        },
-            //        {
-            //            extend: 'csvHtml5',
-            //            text: '<i class="fa fa-file-text-o"></i> CSV',
-            //            title: 'Machine Master',
-            //            titleAttr: 'CSV'
-            //        },
-            //        {
-            //            text: '<i class="fa fa-refresh"></i> Reload',
-            //            action: function (e, dt, node, config) {
-            //                dt.ajax.reload(null, false);
+            //            text: '<i class="fa fa-search-plus"></i>',
+            //            className: 'btn btn-default btn-table',
+            //            titleAttr: 'Advance Search',
+            //            action: function (e, dt, node, conf) {
+            //                alert('click advance');
             //            }
             //        }
+            //        //,
+            //        //{
+            //        //    extend: 'csvHtml5',
+            //        //    text: '<i class="fa fa-file-text-o"></i> CSV',
+            //        //    title: 'Machine Master',
+            //        //    titleAttr: 'CSV'
+            //        //},
+            //        //{
+            //        //    text: '<i class="fa fa-refresh"></i> Reload',
+            //        //    action: function (e, dt, node, config) {
+            //        //        dt.ajax.reload(null, false);
+            //        //    }
+            //        //}
             //    ]
             //});
 
             //dtMc.buttons(1, null).container().appendTo(
-            //    $('div.dataTables_length')
+            //    $('div.dataTables_filter')
             //);
+                
+
+
 
             //dt.on('draw', function () {
             //    global.applyIcheckStyle();
             //});
 
+            //$("div.toolbar").html('<b>C</b>');  //< 'Inline toolbar' >
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
 

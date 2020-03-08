@@ -21,12 +21,13 @@
         dtSelMc: null,
         init: function () {
             dtSelMc = $('#tblSelMachine').DataTable({
-                dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                dom: "<'row'<'col-sm-2'B><'col-sm-5'l><'col-sm-5'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
                     {
-                        text: '<i class="fa fa-refresh"></i> Reload',
+                        text: '<i class="fa fa-refresh"></i>',
+                        titleAttr: 'Refresh',
                         action: function (e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
@@ -94,7 +95,6 @@
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 iDisplayLength: appSetting.tableDisplayLength,
-
                 stateSave: true,
                 stateDuration: -1, //force the use of Session Storage
                 rowCallback: function (row, data, dataIndex) {
@@ -116,6 +116,9 @@
 
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
+
+            //set width of input search.
+            $('div.dataTables_filter#tblSelMachine_filter input[type = "search"]').css({ 'width': '200px' });
         },
 
         refresh: function () {
