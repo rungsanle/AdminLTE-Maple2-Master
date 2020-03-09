@@ -62,9 +62,10 @@
     "Ionicons": "ionicons#^2.0.1",
     "jquery-ui": "1.11.4",
     "jszip": "v2.5.0",
-    "datatables-buttons": "1.5.4"
+    "datatables-buttons": "1.6.1"
   },
   "resolutions": {
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "datatables-buttons": "1.6.1"
   }
 }

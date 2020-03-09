@@ -53,6 +53,29 @@
   <ItemGroup>
     <None Include="Views\Home\Index.cshtml" />
     <None Include="wwwroot\plugins\bootstrap-switch\bootstrap-switch.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\css\common.scss" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\css\mixins.scss" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.bootstrap.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.bootstrap.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.bootstrap4.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.bootstrap4.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.colVis.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.colVis.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.flash.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.flash.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.foundation.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.foundation.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.html5.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.html5.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.jqueryui.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.jqueryui.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.print.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.print.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.semanticui.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\buttons.semanticui.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\dataTables.buttons.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\js\dataTables.buttons.min.js" />
+    <None Include="wwwroot\plugins\Buttons-1.6.1\swf\flashExport.swf" />
     <None Include="wwwroot\plugins\Input-picker\jquery.inputpicker.js" />
     <None Include="wwwroot\plugins\Input-picker\res\spinner.svg" />
   </ItemGroup>

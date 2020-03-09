@@ -15,16 +15,7 @@
                 dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
-                buttons:
-                [
-                    {
-                        text: '<i class="fa fa-cogs"></i>',
-                        titleAttr: 'Advance Search',
-                        className: 'btn btn-default',
-                        action: function (e, dt, node, conf) {
-                            alert('click advance');
-                        }
-                    },
+                buttons: [
                     {
                         text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
                         titleAttr: 'Refresh',
@@ -34,20 +25,62 @@
                         }
                     },
                     {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
-                        className: 'btn btn-default',
-                        title: 'Machine Master',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
-                        className: 'btn btn-default',
-                        title: 'Machine Master',
-                        titleAttr: 'CSV'
-                    }
+                    extend: 'collection',
+                    text: '<i class="fa fa-file-o">&nbsp;<p class="setfont">Export</p></i>',
+                    titleAttr: 'Export Option',
+                    className: 'btn btn-default',
+                    autoClose: true,
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
+                            className: 'btn btn-default',
+                            title: 'Machine Master',
+                            titleAttr: 'Excel'
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
+                            className: 'btn btn-default',
+                            title: 'Machine Master',
+                            titleAttr: 'CSV'
+                        }
+                    ]
+                }
                 ],
+                //buttons:
+                //[
+                //    {
+                //        text: '<i class="fa fa-cogs"></i>',
+                //        titleAttr: 'Advance Search',
+                //        className: 'btn btn-default',
+                //        action: function (e, dt, node, conf) {
+                //            alert('click advance');
+                //        }
+                //    },
+                //    {
+                //        text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
+                //        titleAttr: 'Refresh',
+                //        className: 'btn btn-default',
+                //        action: function (e, dt, node, config) {
+                //            dt.ajax.reload(null, false);
+                //        }
+                //    },
+                //    {
+                //        extend: 'excelHtml5',
+                //        text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
+                //        className: 'btn btn-default',
+                //        title: 'Machine Master',
+                //        titleAttr: 'Excel'
+                //    },
+                //    {
+                //        extend: 'csvHtml5',
+                //        text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
+                //        className: 'btn btn-default',
+                //        title: 'Machine Master',
+                //        titleAttr: 'CSV'
+                //    }
+                //],
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
