@@ -1,4 +1,5 @@
 ﻿using Maple2.AdminLTE.Bel;
+using Maple2.AdminLTE.Bll;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -15,6 +16,7 @@ namespace Maple2.AdminLTE.Uil.Services.Profile
         IHttpContextAccessor _httpContextAccessor;
 
         private ApplicationUser _currentUser;
+        private M_User _currentAuthenUser;
 
         public ProfileManager(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
@@ -43,5 +45,25 @@ namespace Maple2.AdminLTE.Uil.Services.Profile
         {
             return _userManager.IsEmailConfirmedAsync(user).Result;
         }
+
+        //public M_User CurrentAuthenUser
+        //{
+        //    get
+        //    {
+        //        if (_currentAuthenUser == null)
+        //        {
+        //            using (var userBll = new UserBLL())
+        //            {
+        //                var lstUser = await userBll.GetUser(CurrentUser.UserId);
+
+
+        //                user = lstUser.First();
+        //            }
+        //        }
+
+        //        return null;
+        //    }
+
+        //}
     }
 }
