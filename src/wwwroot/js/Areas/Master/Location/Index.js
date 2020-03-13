@@ -12,29 +12,43 @@
         dtLoc: null,
         init: function () {
             dtLoc = $('#tblLocation').DataTable({
-                dom: "<'row'<'col-sm-2'l><'col-sm-5'B><'col-sm-5'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
                     {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel-o"></i> Excel',
-                        title: 'Production Type Master',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        text: '<i class="fa fa-file-text-o"></i> CSV',
-                        title: 'Production Type Master',
-                        titleAttr: 'CSV'
-                    },
-                    {
-                        text: '<i class="fa fa-refresh"></i> Reload',
+                        text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
+                        titleAttr: 'Refresh',
                         action: function (e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
+                    },
+                    {
+                        extend: 'collection',
+                        text: '<i class="fa fa-file-o">&nbsp;<p class="setfont">Export</p></i>',
+                        titleAttr: 'Export Option',
+                        autoClose: true,
+                        buttons: [
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
+                                title: 'Location Master',
+                                titleAttr: 'Excel'
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
+                                title: 'Location Master',
+                                titleAttr: 'CSV'
+                            }
+                        ]
                     }
                 ],
+                initComplete: function () {
+                    var btns = $('.dt-button');
+                    btns.addClass('btn btn-default btn-sm');
+                    btns.removeClass('dt-button');
+                },
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {

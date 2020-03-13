@@ -13,41 +13,42 @@
         init: function () {
             dtMc = $('#tblMachine').DataTable({
                 dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
                     {
                         text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
                         titleAttr: 'Refresh',
-                        className: 'btn btn-default',
                         action: function (e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
                     },
                     {
-                    extend: 'collection',
-                    text: '<i class="fa fa-file-o">&nbsp;<p class="setfont">Export</p></i>',
-                    titleAttr: 'Export Option',
-                    className: 'btn btn-default',
-                    autoClose: true,
-                    buttons: [
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
-                            className: 'btn btn-default',
-                            title: 'Machine Master',
-                            titleAttr: 'Excel'
-                        },
-                        {
-                            extend: 'csvHtml5',
-                            text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
-                            className: 'btn btn-default',
-                            title: 'Machine Master',
-                            titleAttr: 'CSV'
-                        }
-                    ]
-                }
+                        extend: 'collection',
+                        text: '<i class="fa fa-file-o">&nbsp;<p class="setfont">Export</p></i>',
+                        titleAttr: 'Export Option',
+                        autoClose: true,
+                        buttons: [
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="fa fa-file-excel-o">&nbsp;<p class="setfont">Export XLS</p></i>',
+                                title: 'Machine Master',
+                                titleAttr: 'Excel'
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                text: '<i class="fa fa-file-text-o">&nbsp;<p class="setfont">Export CSV</p></i>',
+                                title: 'Machine Master',
+                                titleAttr: 'CSV'
+                            }
+                        ]
+                    }
                 ],
+                initComplete: function () {
+                    var btns = $('.dt-button');
+                    btns.addClass('btn btn-default btn-sm');
+                    btns.removeClass('dt-button');
+                },
                 //buttons:
                 //[
                 //    {
