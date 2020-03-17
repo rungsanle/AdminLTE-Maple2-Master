@@ -24,6 +24,8 @@ using BotDetect.Web;
 using jsreport.AspNetCore;
 using jsreport.Local;
 using jsreport.Binary;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace Maple2.AdminLTE.Uil
 {
@@ -92,7 +94,8 @@ namespace Maple2.AdminLTE.Uil
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/");
-
+                    options.Conventions.AllowAnonymousToFolder("/css");
+                    options.Conventions.AllowAnonymousToFolder("/img");
                     options.Conventions.AllowAnonymousToPage("/Error");
                     options.Conventions.AllowAnonymousToPage("/Account/AccessDenied");
                     options.Conventions.AllowAnonymousToPage("/Account/ConfirmEmail");
@@ -119,6 +122,9 @@ namespace Maple2.AdminLTE.Uil
             //Add jsreport
             services.AddJsReport(new LocalReporting()
                 .UseBinary(JsReportBinary.GetBinary())
+                .KillRunningJsReportProcesses()
+                .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+                .Configure(cfg => cfg.AllowedLocalFilesAccess().BaseUrlAsWorkingDirectory())
                 .AsUtility()
                 .Create());
 
@@ -159,8 +165,28 @@ namespace Maple2.AdminLTE.Uil
                 app.UseHsts();
             }
 
+            //for using https
             app.UseHttpsRedirection();
+
+
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\css")),
+                RequestPath = new PathString("/css")
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\img")),
+                RequestPath = new PathString("/img")
+            });
+
+
+
             //app.UseCookiePolicy();
 
             // configures Session middleware 
