@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <link rel="stylesheet" href="/css/report/machinelabel_report.css">
+    <link href="@ViewBag.FileRefPath\\css\\report\\machinelabel_report.css" rel="stylesheet" />
 </head>
 <body>
     @{
@@ -42,10 +42,13 @@
                                 <div>
                                     <h1>@item.MachineName</h1>
                                 </div>
+                                <div>
+                                    <p>@ViewBag.FileRefPath</p>
+                                </div>
                             </div>
                         </div>
                         <div class="label-footer">
-                            <img src="~/img/compLogo/ALL_LOGO.jpg" alt="" style="height:30px;width:70px" />
+                            <img src="@ViewBag.FileRefPath\\img\\compLogo\\ALL_LOGO.jpg" alt="" style="height:30px;width:70px" />
                         </div>
                     </div>
                 </div>
