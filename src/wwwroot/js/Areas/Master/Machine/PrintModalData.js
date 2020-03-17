@@ -342,9 +342,11 @@
             },
             error: function (xhr, txtStatus, errThrown) {
 
-                var reponseErr = JSON.parse(xhr.responseText);
+                document.body.style.cursor = 'default';
+               // alert(errThrown.message);
+               // var reponseErr = //JSON.parse(xhr.responseText);
 
-                toastr.error('Error: ' + reponseErr.message, 'Upload Material Type', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                toastr.error('Error: ' + txtStatus, 'Print Label Error', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
         
