@@ -1,5 +1,23 @@
 ﻿var global = {};
 
+global.applyToastrOption = function () {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-bottom-right",
+        "newestOnTop": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+}
+
 global.applyIcheckStyle = function () {
 
     //$('input[type="checkbox"], input[type="radio"]').iCheck({
@@ -312,3 +330,77 @@ global.numberWithCommas = function (number) {
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
 }
+
+global.displayValidationErrors = function (errors) {
+
+    $.each(errors, function (idx, errorMessage) {
+        var res = errorMessage.split("|");
+        $("span[data-valmsg-for='" + res[0] + "']").append('<li>' + res[1] + '</li>');
+    });
+}
+
+global.removeValidationErrors = function (id) {
+    $("span[data-valmsg-for='" + id + "'] li").remove();
+}
+
+global.resetValidationErrors = function() {
+
+    var listItems = document.querySelectorAll('.text-danger li');
+    for (let i = 0; i < listItems.length; i++) {
+        if (listItems[i].textContent != null)
+            listItems[i].remove();
+    };
+}
+
+//Solve Synchronous XMLHttpRequest warning
+global.AjaxPrefilter = function () {
+
+    $.ajaxPrefilter(function (options, original_Options, jqXHR) {
+        options.async = true;
+    });
+}
+
+global.setAppSettings = function (strKey, objJson) {
+    localStorage.setItem(strKey, objJson);
+};
+
+global.getAppSettings = function (strKey) {
+    var appSettings = JSON.parse(localStorage.getItem(strKey));
+    return appSettings;
+};
+
+global.popupCenter = function (url, target, w, h) {
+    var y = window.outerHeight / 2 + window.screenY - (h / 2);
+    var x = window.outerWidth / 2 + window.screenX - (w / 2);
+    return window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+};
+
+global.popupBottomR = function (url, title, target, w, h) {
+    var y = (window.outerHeight - h) - 75;
+    var x = (window.outerWidth - w) - 15;
+    var w = window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + y + ', left=' + x);
+
+    w.onload = function () {
+        setTimeout(function () {
+            w.document.title = title;
+        }, 1800);
+    }    //w.on('load', function (e) {
+    //    e.preventDefault();
+    //    setTimeout(function (ex) {
+    //        w.document.title = title;
+    //    }, 1800);
+
+    //})
+
+    
+
+    //w.addEventListener('onload', function () {
+    //    setTimeout(function () {
+    //        w.document.title = title;
+    //    }, 1800);
+    //}, false);
+
+    return w;
+};
+
+
