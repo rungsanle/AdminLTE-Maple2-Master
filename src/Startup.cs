@@ -186,7 +186,7 @@ namespace Maple2.AdminLTE.Uil
             });
 
 
-
+            //use cookie
             //app.UseCookiePolicy();
 
             // configures Session middleware 
