@@ -26,6 +26,7 @@ using jsreport.Local;
 using jsreport.Binary;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
+using System.Globalization;
 
 namespace Maple2.AdminLTE.Uil
 {
@@ -85,6 +86,9 @@ namespace Maple2.AdminLTE.Uil
             }
 
             services.AddDbContext<MasterDbContext>(options =>
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<TransactionDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
             //Imprement In-Memory Cache
@@ -167,6 +171,18 @@ namespace Maple2.AdminLTE.Uil
 
             //for using https
             app.UseHttpsRedirection();
+
+            //var supportedCultures = new[]
+            //{
+            //    new CultureInfo("en-US"),
+            //};
+
+            //app.UseRequestLocalization(new RequestLocalizationOptions
+            //{
+            //    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US"),
+            //    SupportedCultures = supportedCultures,
+            //    SupportedUICultures = supportedCultures
+            //});
 
 
             app.UseStaticFiles();

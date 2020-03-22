@@ -6,7 +6,15 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
-    $("#message-alert").hide();
+    //$("#message-alert").hide();
+    //--for check close print popup page.--
+    var wpopup_print;
+    $(window).focus(function () {
+        if (wpopup_print) {
+            wpopup_print.close();
+        }
+    });
+    //-------------------------------------
     //Grid Table Config
     userVM = {
         dtUser: null,
@@ -193,7 +201,8 @@
 
         //window.open(api, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
         var param = null;
-        document.body.style.cursor = 'wait';
+        global.setCursor('wait', 'wait');
+
         $.ajax({
             cache: false,
             type: 'POST',
@@ -211,9 +220,9 @@
 
 
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=700,height=850');
-                var w = global.popupBottomR(fileURL, "Print Product Card", '_blank', 700, 850);
+                wpopup_print = global.popupBottomR(fileURL, "Print Product Card", '_blank', 700, 850);
 
-                document.body.style.cursor = 'default';
+                global.setCursor('default', 'pointer');
 
                 //if (typeof window.navigator.msSaveBlob !== 'undefined') {
                 //    // IE doesn't allow using a blob object directly as link href.
@@ -249,9 +258,9 @@
             },
             error: function (xhr, txtStatus, errThrown) {
 
-                var reponseErr = JSON.parse(xhr.responseText);
+                global.setCursor('default', 'pointer');
 
-                toastr.error('Error: ' + reponseErr.message, 'Print Product Card', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                toastr.error('Error: ' + txtStatus, 'Print Product Card Error', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
             }
         });
 

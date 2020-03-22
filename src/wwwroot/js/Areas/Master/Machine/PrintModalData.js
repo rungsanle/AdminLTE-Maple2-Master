@@ -304,7 +304,7 @@
 
         var api = $('#PrintModalData').data('mc-print-url'); // + '?lstSelMc=' + JSON.stringify(addRequestVerificationToken({ lstSelMc: printMachines }));
 
-        document.body.style.cursor = 'wait';
+        global.setCursor('wait', 'wait');
 
         $.ajax({
             async: true,
@@ -329,7 +329,7 @@
                 //window.open(fileURL, 'PopupWindow', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=0,width=850,height=700');
                 wpopup_print = global.popupBottomR(fileURL, "Print Machine Label", '_blank', 875, 660);
 
-                document.body.style.cursor = 'default';
+                global.setCursor('default', 'pointer');
                 //w.onload = function () {
                 //    //this.document.title = "Print Machine Label";
                 //    setTimeout(function () {
@@ -342,7 +342,7 @@
             },
             error: function (xhr, txtStatus, errThrown) {
 
-                document.body.style.cursor = 'default';
+                global.setCursor('default', 'pointer');
                // alert(errThrown.message);
                // var reponseErr = //JSON.parse(xhr.responseText);
 

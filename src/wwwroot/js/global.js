@@ -34,6 +34,7 @@ global.applyDatepicker = function (id, showtoday) {
         autoclose: true,
         todayHighlight: true,
         todayBtn: "linked",
+        language: "en-US"
     });
 
     if (showtoday) {
@@ -402,5 +403,10 @@ global.popupBottomR = function (url, title, target, w, h) {
 
     return w;
 };
+
+global.setCursor = function (sCur, bCur) {
+    document.body.style.cursor = sCur;
+    $(".btn").css("cursor", bCur);
+}
 
 
