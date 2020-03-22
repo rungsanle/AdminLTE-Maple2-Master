@@ -617,19 +617,24 @@
         //console.log(arrDate);
 
         //var api = $('#CreateData').data('arrival-add-url');
-        jQuery.validator.methods["date"] = function (value, element) {
-            var result = true;
-            try {
-                $.datepicker.parseDate('dd-mm-yyyy', value);
-            }
-            catch (err) {
-                result = false;
-            }
+        //jQuery.validator.methods["date"] = function (value, element) {
+        //    var result = true;
+        //    try {
+        //        $.datepicker.parseDate('dd-mm-yyyy', value);
+        //    }
+        //    catch (err) {
+        //        result = false;
+        //    }
 
-            return result;
-        }
-    
-     
+        //    return result;
+        //}
+        //console.log($("#ArrivalDate").val());
+
+        //var useDate = moment($("#ArrivalDate").val(), "DD-MM-YYYY").format("DD-MM-YYYY");
+
+        //console.log(useDate);
+
+        //alert(useDate);
 
         $.ajax({
             async: true,

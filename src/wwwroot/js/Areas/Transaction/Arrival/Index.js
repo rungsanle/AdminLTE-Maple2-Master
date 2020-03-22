@@ -6,6 +6,8 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
+    moment.suppressDeprecationWarnings = true;
+
     //Grid Table Config
     arrHdrVM = {
         dtArrHdr: null,

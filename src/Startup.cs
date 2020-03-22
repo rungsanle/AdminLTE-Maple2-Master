@@ -172,17 +172,17 @@ namespace Maple2.AdminLTE.Uil
             //for using https
             app.UseHttpsRedirection();
 
-            //var supportedCultures = new[]
-            //{
-            //    new CultureInfo("en-US"),
-            //};
+            var supportedCultures = new[]
+            {
+                new CultureInfo("fr-FR"),
+            };
 
-            //app.UseRequestLocalization(new RequestLocalizationOptions
-            //{
-            //    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US"),
-            //    SupportedCultures = supportedCultures,
-            //    SupportedUICultures = supportedCultures
-            //});
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("fr-FR"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
 
             app.UseStaticFiles();

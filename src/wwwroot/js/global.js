@@ -34,7 +34,7 @@ global.applyDatepicker = function (id, showtoday) {
         autoclose: true,
         todayHighlight: true,
         todayBtn: "linked",
-        language: "en-US"
+        language: "fr-FR"
     });
 
     if (showtoday) {
@@ -83,15 +83,20 @@ global.localDate = function (locDate, optFormat = 'DD-MM-YYYY') {
     //if (locDate == null) return null;
     if (typeof locDate != 'undefined' && locDate) {
 
-        if (locDate instanceof Date) return locDate;
+        if (locDate instanceof Date) {
+            return locDate
+        };
 
         var resultDate = moment(locDate);
 
+        //.locale('en')
+
         if (!resultDate.isValid()) {
-            resultDate = moment(locDate, optFormat);
+            resultDate = moment(locDate, optFormat);   //moment(locDate, optFormat).locale('en');
         }
 
-        return resultDate.format(optFormat);
+        return resultDate.format(optFormat);    //resultDate.locale('en').format(optFormat); 
+
     } else {
         return '';
     }
