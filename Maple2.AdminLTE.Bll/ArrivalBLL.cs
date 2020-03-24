@@ -45,6 +45,8 @@ namespace Maple2.AdminLTE.Bll
         private AppConfiguration appSetting;
         private DbContextOptions contextOptions;
 
+        private string compCode = string.Empty;
+
         #endregion
 
         public ArrivalBLL()
@@ -55,6 +57,19 @@ namespace Maple2.AdminLTE.Bll
                             .UseMySql(appSetting.ConnectionString)
                             .Options;
         }
+
+        public ArrivalBLL(string company_code)
+        {
+            appSetting = new AppConfiguration();
+
+            contextOptions = new DbContextOptionsBuilder()
+                            .UseMySql(appSetting.ConnectionString)
+                            .Options;
+
+            this.compCode = company_code;
+        }
+
+
 
         #region Method Member
 
@@ -96,6 +111,60 @@ namespace Maple2.AdminLTE.Bll
                     });
                 }
                    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<T_Arrival_Header>> GetArrival(string arrno, string docno, int? arrType, int? rawMatType, DateTime? arrdateF, DateTime? arrdateT, DateTime? docdateF, DateTime? docdateT)
+        {
+            try
+            {
+                using (var context = new TransactionDbContext(contextOptions))
+                {
+                    MySqlParameter[] sqlParams = new MySqlParameter[] {
+                                             new MySqlParameter("strArrivalNo", arrno),
+                                             new MySqlParameter("strDocumentNo", docno),
+                                             new MySqlParameter("strArrivalTypeId", arrType),
+                                             new MySqlParameter("strRawMatTypeId", rawMatType),
+                                             new MySqlParameter("strArrivalDateF", arrdateF),
+                                             new MySqlParameter("strArrivalDateT", arrdateT),
+                                             new MySqlParameter("strDocRefDateF", docdateF),
+                                             new MySqlParameter("strDocRefDateT", docdateT),
+                                             new MySqlParameter("strCompanyCode", this.compCode),
+
+                    };
+
+                    var objList = await context.Query<T_Arrival_HeaderObj>().FromSql("call sp_arrival_hdr_gets(?, ?, ?, ?, ?, ?, ?, ?, ?)", parameters: sqlParams).ToListAsync();
+
+                    return objList.ConvertAll(a => new T_Arrival_Header
+                    {
+                        Id = a.Id,
+                        ArrivalNo = a.ArrivalNo,
+                        ArrivalDate = a.ArrivalDate,
+                        RawMatTypeId = a.RawMatTypeId,
+                        RawMatTypeName = a.RawMatTypeName,
+                        VendorId = a.VendorId,
+                        VendorCode = a.VendorCode,
+                        VendorName = a.VendorName,
+                        VendorAddress = a.VendorAddress,
+                        ArrivalTypeId = a.ArrivalTypeId,
+                        ArrivalTypeName = a.ArrivalTypeName,
+                        PurchaseOrderNo = a.PurchaseOrderNo,
+                        DocRefNo = a.DocRefNo,
+                        DocRefDate = a.DocRefDate,
+                        ArrivalRemark = a.ArrivalRemark,
+                        CompanyCode = a.CompanyCode,
+                        Is_Active = a.Is_Active,
+                        Created_Date = a.Created_Date,
+                        Created_By = a.Created_By,
+                        Updated_Date = a.Updated_Date,
+                        Updated_By = a.Updated_By
+                    });
+                }
+
             }
             catch (Exception ex)
             {
