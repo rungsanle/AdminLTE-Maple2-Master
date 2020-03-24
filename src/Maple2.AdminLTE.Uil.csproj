@@ -54,7 +54,6 @@
     <Folder Include="Areas\Administrator\Data\" />
     <Folder Include="Areas\Master\Data\" />
     <Folder Include="Areas\Transaction\Data\" />
-    <Folder Include="Areas\Transaction\Models\" />
     <Folder Include="wwwroot\img\compLogo\" />
   </ItemGroup>
   <ItemGroup>

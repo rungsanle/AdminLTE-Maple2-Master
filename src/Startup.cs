@@ -49,6 +49,12 @@ namespace Maple2.AdminLTE.Uil
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // The Tempdata provider cookie is not essential. Make it essential
+            // so Tempdata is functional when tracking is disabled.
+            services.Configure<CookieTempDataProviderOptions>(options => {
+                options.Cookie.IsEssential = true;
+            });
+
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -202,8 +208,7 @@ namespace Maple2.AdminLTE.Uil
             });
 
 
-            //use cookie
-            //app.UseCookiePolicy();
+            
 
             // configures Session middleware 
             app.UseSession();
@@ -232,8 +237,7 @@ namespace Maple2.AdminLTE.Uil
                 //    template: "{area=Administrator}/{controller}/{action=Index}/{id?}");
             });
 
-
-
+            //use cookie
             app.UseCookiePolicy();
         }
     }

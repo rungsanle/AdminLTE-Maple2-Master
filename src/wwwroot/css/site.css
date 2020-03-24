@@ -211,8 +211,19 @@ td.boldColumn {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2d2d2', endColorstr='#d2d2d2',GradientType=0 ); /* IE6-9 */
 }
 
+.modal-header-search {
+    border-radius: 8px 8px 0px 0px;
+    height: 38px !important;
+    border-bottom: 1px solid #ccc !important;
+    padding: 5px 10px 5px 5px;
+}
+
 .modal-footer {
     height: 50px !important;
+}
+
+.modal-footer-search {
+    height: 38px !important;
 }
 
 .form-control.text-code {
@@ -419,6 +430,19 @@ p.setfont {
 .btn-display.hover {
     background-color: #e7e7e7;
 }
+
+.btn-search {
+    background-color: #f4f4f4;
+    color: #444;
+    border-color: #ddd;
+}
+
+    .btn-search:hover,
+    .btn-search:focus,
+    .btn-search:active,
+    .btn-search.hover {
+        background-color: #e7e7e7;
+    }
 
 th input[type="checkbox"] {
     width: 17px;

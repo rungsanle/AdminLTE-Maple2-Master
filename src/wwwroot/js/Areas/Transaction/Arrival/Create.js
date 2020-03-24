@@ -628,7 +628,9 @@
 
         //    return result;
         //}
-        //console.log($("#ArrivalDate").val());
+        console.log($("#ArrivalDate").val());
+
+        console.log(global.localDate($("#ArrivalDate").val()));
 
         //var useDate = moment($("#ArrivalDate").val(), "DD-MM-YYYY").format("DD-MM-YYYY");
 

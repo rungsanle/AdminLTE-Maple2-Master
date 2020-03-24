@@ -28,7 +28,7 @@ global.applyIcheckStyle = function () {
 
 global.applyDatepicker = function (id, showtoday) {
 
-    $("input[id$='" + id + "']").inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
+    $("input[id$='" + id + "']").inputmask('dd-mm-yyyy', { placeholder: 'dd-mm-yyyy' });
     $("input[id$='" + id + "']").datepicker({
         format: 'dd-mm-yyyy',
         autoclose: true,
@@ -41,6 +41,23 @@ global.applyDatepicker = function (id, showtoday) {
         $("input[id$='" + id + "']").datepicker('setDate', 'today');
     }
 }
+
+global.applyDatepickerS = function (id, showtoday, inpFormat = 'dd-mm-yyyy', picFormat = 'dd-mm-yyyy') {
+
+    $("input[id$='" + id + "']").inputmask(inpFormat, { placeholder: inpFormat });
+    $("input[id$='" + id + "']").datepicker({
+        format: picFormat,
+        autoclose: true,
+        todayHighlight: true,
+        todayBtn: "linked",
+        language: "fr-FR"
+    });
+
+    if (showtoday) {
+        $("input[id$='" + id + "']").datepicker('setDate', 'today');
+    }
+}
+
 
 global.showDatepicker = function (id) {
     //$("input[id$='" + id + "']").datepicker("destroy");

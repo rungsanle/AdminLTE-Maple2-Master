@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Maple2.AdminLTE.Bel;
 using Maple2.AdminLTE.Bll;
+using Maple2.AdminLTE.Uil.Areas.Transaction.Models;
 using Maple2.AdminLTE.Uil.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +33,74 @@ namespace Maple2.AdminLTE.Uil.Areas.Transaction.Controllers
             return await Task.Run(() => View());
         }
 
+        public async Task<IActionResult> GetSearchArrivalType()
+        {
+            try
+            {
+                if (_cache.TryGetValue("CACHE_MASTER_ARRIVALTYPE", out List<M_ArrivalType> c_lstArrType))
+                {
+                    return Json(new { data = c_lstArrType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.Low
+                };
+
+                using (var arrTypeBll = new ArrivalTypeBLL())
+                {
+                    var lstArrType = await arrTypeBll.GetArrivalType(null);
+
+                    _cache.Set("CACHE_MASTER_ARRIVALTYPE", lstArrType, options);
+
+                    return Json(new { data = lstArrType });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> GetSearchRawMaterialType()
+        {
+            try
+            {
+                if (_cache.TryGetValue("CACHE_MASTER_RAWMATTYPE", out List<M_RawMaterialType> c_lstRawMatType))
+                {
+                    return Json(new { data = c_lstRawMatType });
+                }
+
+                MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(300),
+                    SlidingExpiration = TimeSpan.FromSeconds(60),
+                    Priority = CacheItemPriority.Low
+                };
+
+                using (var rawMatTypeBll = new RawMaterialTypeBLL())
+                {
+                    var lstRawMatType = await rawMatTypeBll.GetRawMaterialType(null);
+
+                    _cache.Set("CACHE_MASTER_RAWMATTYPE", lstRawMatType, options);
+
+                    return Json(new { data = lstRawMatType });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+
+            //RawMaterial Type DbContext
+            //using (var rawMatTypeBll = new RawMaterialTypeBLL())
+            //{
+            //    return Json(new { data = await rawMatTypeBll.GetRawMaterialType(null) });
+            //}
+        }
+
         public async Task<IActionResult> GetArrival()
         {
             try
@@ -39,6 +108,24 @@ namespace Maple2.AdminLTE.Uil.Areas.Transaction.Controllers
                 using (var arrBll = new ArrivalBLL())
                 {
                     var lstArr = await arrBll.GetArrival(null);
+
+                    return Json(new { data = lstArr });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        public async Task<IActionResult> GetSearchArrival([Bind("ArrivalNo,DocRefNo,ArrivalTypeId,RawMatTypeId,ArrivalDateF,ArrivalDateT,DocRefDateF,DocRefDateT")] AdvSearchArrivalModel advArrModel)
+        {
+            try
+            {
+                using (var arrBll = new ArrivalBLL(await base.CurrentUserComp()))
+                {
+                    var lstArr = await arrBll.GetArrival(advArrModel.ArrivalNo, advArrModel.DocRefNo, advArrModel.ArrivalTypeId, 
+                        advArrModel.RawMatTypeId, advArrModel.ArrivalDateF, advArrModel.ArrivalDateT, advArrModel.DocRefDateF, advArrModel.DocRefDateT);
 
                     return Json(new { data = lstArr });
                 }
@@ -295,26 +382,34 @@ namespace Maple2.AdminLTE.Uil.Areas.Transaction.Controllers
         {
             try
             {
-                if (_cache.TryGetValue("CACHE_MASTER_MATERIAL_BYRAWTYPE", out List<M_Material> c_lstMat))
-                {
-                    if (string.IsNullOrEmpty(vcode))
-                    {
-                        return Json(new { success = true, data = c_lstMat, message = "Get Material Success" });
-                    }
-                    else
-                    {
-                        M_Material m_Material = c_lstMat.Find(m => m.MaterialCode == vcode);
+                object matTypeId = TempData.Peek("MatTypeId");
 
-                        if (m_Material != null)
+                if ((int?)matTypeId == rawMatTypeId)
+                {
+                    if (_cache.TryGetValue("CACHE_MASTER_MATERIAL_BYRAWTYPE", out List<M_Material> c_lstMat))
+                    {
+                        if (string.IsNullOrEmpty(vcode))
                         {
-                            return Json(new { success = true, data = m_Material, message = "Get Material Success" });
+                            return Json(new { success = true, data = c_lstMat, message = "Get Material Success" });
                         }
                         else
                         {
-                            return Json(new { success = false, data = string.Empty, message = "Material Not Found" });
+                            M_Material m_Material = c_lstMat.Find(m => m.MaterialCode == vcode);
+
+                            if (m_Material != null)
+                            {
+                                return Json(new { success = true, data = m_Material, message = "Get Material Success" });
+                            }
+                            else
+                            {
+                                return Json(new { success = false, data = string.Empty, message = "Material Not Found" });
+                            }
                         }
                     }
                 }
+
+                TempData["MatTypeId"] = rawMatTypeId;
+                TempData.Keep("MatTypeId");
 
                 MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
                 {

@@ -6,18 +6,30 @@
     //Get appSetting.json
     var appSetting = global.getAppSettings('AppSettings');
 
+    //Not show warning when convert date.
     moment.suppressDeprecationWarnings = true;
+
+    moment().format("YYYY-MM-DD[T]HH:mm:ss");
 
     //Grid Table Config
     arrHdrVM = {
         dtArrHdr: null,
-        init: function () {
+        init: function (api, params) {
 
             dtArrHdr = $('#tblArrival').DataTable({
                 dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
+                    {
+                        id: 'btnSearchAPI',
+                        text: '<i class="fa fa-cogs">&nbsp;<p class="setfont">Search</p></i>',
+                        titleAttr: 'Advance Search',
+                        action: function (e, dt, node, conf) {
+                            //$('#advanceSearchModal').modal('show');
+                        },
+                        className: 'data-searchapi'
+                    },
                     {
                         text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
                         titleAttr: 'Refresh',
@@ -50,14 +62,19 @@
                     var btns = $('.dt-button');
                     btns.addClass('btn btn-default btn-sm');
                     btns.removeClass('dt-button');
+
+                    $('.data-searchapi')
+                        .attr('data-toggle', 'modal')
+                        .attr('data-target', '#advanceSearchModal');
                 },
                 processing: false, // for show progress bar
                 autoWidth: false,
                 ajax: {
-                    url: $('#IndexData').data('arrival-get-url'),    //"/Customer/GetCustomers",
+                    url: api,   //$('#IndexData').data('arrival-get-url'),    //"/Customer/GetCustomers",
                     type: "GET",
                     async: true,
                     datatype: "json",
+                    data: (params),
                     error: function (xhr, txtStatus, errThrown) {
 
                         var reponseErr = JSON.parse(xhr.responseText);
@@ -159,7 +176,8 @@
     }
 
     // initialize the datatables
-    arrHdrVM.init();
+    //arrHdrVM.init();
+    arrHdrVM.init($('#IndexData').data('arrival-get-url'), null);
 
     if (appSetting.defaultFirstPage == 1) {
         setTimeout(function () {
@@ -173,6 +191,46 @@
         data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
         return data;
     };
+
+    $("#advanceSearchModal").on("shown.bs.modal", function () {
+        //
+    });
+
+    $("#btnSearchArrival").on("click", function (event) {
+        event.preventDefault();
+
+        $('#advanceSearchModal').modal('hide');
+
+        
+
+        var objParam = {
+            ArrivalNo: $("#txtS_ArrivalNo").val().toUpperCase(),
+            DocRefNo: $("#txtS_DocRefNo").val().toUpperCase(),
+            ArrivalTypeId: $("#txtS_ArrivalTypeId").val(),
+            RawMatTypeId: $("#txtS_RawMatTypeId").val(),
+            ArrivalDateF: $("#txtS_ArrivalDateF").data('datepicker').getFormattedDate('yyyy-mm-dd'),
+            ArrivalDateT: $("#txtS_ArrivalDateT").data('datepicker').getFormattedDate('yyyy-mm-dd'),
+            DocRefDateF: $("#txtS_DocRefDateF").data('datepicker').getFormattedDate('yyyy-mm-dd'),
+            DocRefDateT: $("#txtS_DocRefDateT").data('datepicker').getFormattedDate('yyyy-mm-dd')
+        };
+
+        //console.log(global.localDate($("#Item2_ArrivalDateF").datepicker({ format: 'DD-MM-YYYY' }), 'YYYY-MM-DDThh:mm:ss'));
+
+        //console.log($("#txtS_ArrivalDateF").datepicker('getDate'));  //.toISOString()
+
+        $('#tblArrival').dataTable().fnClearTable();
+        $('#tblArrival').dataTable().fnDestroy();
+
+        arrHdrVM.init($('#IndexData').data('arrival-gets-url'), objParam);
+
+        if (appSetting.defaultFirstPage == 1) {
+            setTimeout(function () {
+                if (dtArrHdr.page.info().page != 0) {
+                    dtArrHdr.page('first').draw('page');
+                }
+            }, 300);
+        }
+    });
 
     //Add Company
     $("#btnCreateArrival").on("click", function (event) {
@@ -375,5 +433,45 @@
 
     });
 
+
+    global.applyInputPicker(
+        $("#txtS_ArrivalTypeId").prop("id"),
+        $('#IndexData').data('arrtype-gets-url'),
+        [
+            { name: 'ArrivalTypeName', text: 'ARRIVAL TYPE', width: '100%' }
+        ],
+        '180px',
+        true,
+        'empty',
+        false,
+        'Id',
+        'ArrivalTypeName'
+    );
+
+    $('#txtS_ArrivalTypeId').val('');
+
+    global.applyInputPicker(
+        $("#txtS_RawMatTypeId").prop("id"),
+        $('#IndexData').data('rawmattype-gets-url'),
+        [
+            { name: 'RawMatTypeName', text: 'RAW MAT TYPE', width: '100%' }
+        ],
+        '180px',
+        true,
+        'empty',
+        false,
+        'Id',
+        'RawMatTypeName'
+    );
+
+    $('#txtS_RawMatTypeId').val('');
+
+    //Search Arrival Date
+    global.applyDatepicker($("#txtS_ArrivalDateF").prop("id"), false);
+    global.applyDatepicker($("#txtS_ArrivalDateT").prop("id"), false);
+
+    //Search Document Date
+    global.applyDatepicker($("#txtS_DocRefDateF").prop("id"), false);
+    global.applyDatepicker($("#txtS_DocRefDateT").prop("id"), false);
 
 });
