@@ -9,13 +9,18 @@
     //Not show warning when convert date.
     moment.suppressDeprecationWarnings = true;
 
-    moment().format("YYYY-MM-DD[T]HH:mm:ss");
+    //moment().format("YYYY-MM-DD[T]HH:mm:ss");
 
+    
     //Grid Table Config
+    var page = 0;
+
     arrHdrVM = {
+        
         dtArrHdr: null,
         init: function (api, params) {
 
+            //$.fn.dataTable.moment('DD-MM-YYYY');
             dtArrHdr = $('#tblArrival').DataTable({
                 dom: "<'row'<'col-sm-4'B><'col-sm-2'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -85,7 +90,7 @@
                 columns: [
                     { "data": "ArrivalNo", "className": "boldColumn", "autoWidth": false },
                     {
-                        "data": "ArrivalDate", "autoWidth": false, "type": "date", "render": function (value) {
+                        "data": "ArrivalDate", "autoWidth": false, "type": "date-eu", "render": function (value) {
 
                             return global.localDate(value);
                             //if (value === null) return "";
@@ -97,6 +102,7 @@
                             //return (("0" + dt.getDate()).slice(-2) + "-" + ("0" + (dt.getMonth() + 1)).slice(-2) + "-" + dt.getFullYear());
                         }
                     },
+                    { "data": "ArrivalTypeName", "autoWidth": false },
                     { "data": "RawMatTypeName", "autoWidth": false },
                     { "data": "VendorCode", "autoWidth": false },
                     { "data": "VendorName", "autoWidth": false },
@@ -140,17 +146,18 @@
                     }
                 ],
                 columnDefs: [
-                    { "width": "8%", "targets": 0 },
-                    { "className": "dt-center", "width": "8%", "targets": 1 },
-                    { "width": "10%", "targets": 2 },
-                    { "width": "10%", "targets": 3 },
-                    { "width": "13%", "targets": 4 },
-                    { "width": "12%", "targets": 5 },
-                    { "width": "10%", "targets": 6 },
+                    { "width": "10%", "targets": 0 },
+                    { "width": "7%", "targets": 1, "className": "dt-center" },
+                    { "width": "8%", "targets": 2 },
+                    { "width": "8%", "targets": 3 },
+                    { "width": "8%", "targets": 4 },
+                    { "width": "14%", "targets": 5 },
+                    { "width": "8%", "targets": 6 },
                     { "width": "8%", "targets": 7 },
                     { "width": "7%", "targets": 8 },
-                    { "className": "dt-center", "width": "6%", "targets": 9, "orderable": false },
-                    { "width": "8%", "targets": 10, "orderable": false }
+                    { "width": "7%", "targets": 9 },
+                    { "width": "5%", "targets": 10, "className": "dt-center", "orderable": false },
+                    { "width": "10%", "targets": 11, "orderable": false }
                 ],
                 order: [],
                 lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -164,20 +171,37 @@
             //    global.applyIcheckStyle();
             //});
 
+            //keep the current page after sorting
+            dtArrHdr.on('order', function () {
+                if (dtArrHdr.page() !== page) {
+                    dtArrHdr.page(page).draw('page');
+                }
+            });
+
+            dtArrHdr.on('page', function () {
+                page = dtArrHdr.page();
+            });
+
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
 
 
         },
 
-        refresh: function () {
-            dtArrHdr.ajax.reload();
+        refresh: function () {  //reload ajax reload
+            dtArrHdr.ajax.reload(null, false);
+        },
+
+        removeSorting: function () {  //remove order/sorting
+            dtArrHdr.order([]).draw(false);
         }
     }
 
     // initialize the datatables
     //arrHdrVM.init();
     arrHdrVM.init($('#IndexData').data('arrival-get-url'), null);
+
+    arrHdrVM.removeSorting();
 
     if (appSetting.defaultFirstPage == 1) {
         setTimeout(function () {
@@ -201,7 +225,7 @@
 
         $('#advanceSearchModal').modal('hide');
 
-        
+        console.log($("#txtS_ArrivalDateF").data('datepicker').getFormattedDate('yyyy-mm-dd'));
 
         var objParam = {
             ArrivalNo: $("#txtS_ArrivalNo").val().toUpperCase(),

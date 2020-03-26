@@ -51,7 +51,8 @@ namespace Maple2.AdminLTE.Uil
 
             // The Tempdata provider cookie is not essential. Make it essential
             // so Tempdata is functional when tracking is disabled.
-            services.Configure<CookieTempDataProviderOptions>(options => {
+            services.Configure<CookieTempDataProviderOptions>(options =>
+            {
                 options.Cookie.IsEssential = true;
             });
 
@@ -133,7 +134,7 @@ namespace Maple2.AdminLTE.Uil
             services.AddJsReport(new LocalReporting()
                 .UseBinary(JsReportBinary.GetBinary())
                 .KillRunningJsReportProcesses()
-                .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+                .RunInDirectory(Path.Combine(Directory.GetCurrentDirectory(), "jsreport"))
                 .Configure(cfg => cfg.AllowedLocalFilesAccess().BaseUrlAsWorkingDirectory())
                 .AsUtility()
                 .Create());
@@ -193,22 +194,22 @@ namespace Maple2.AdminLTE.Uil
 
             app.UseStaticFiles();
 
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\css")),
-                RequestPath = new PathString("/css")
-            });
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\css")),
+            //    RequestPath = new PathString("/css")
+            //});
 
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\img")),
-                RequestPath = new PathString("/img")
-            });
+            //app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\img")),
+            //    RequestPath = new PathString("/img")
+            //});
 
 
-            
+
 
             // configures Session middleware 
             app.UseSession();

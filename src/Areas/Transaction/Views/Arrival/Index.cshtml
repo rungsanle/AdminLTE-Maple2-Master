@@ -23,6 +23,7 @@
     <!-- DataTables -->
     <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/plugins/datatables.net/sorting/date-eu.js"></script>
     <!-- Buttons -->
     <script src="~/plugins/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
     <script src="~/bower_components/datatables-buttons/js/dataTables.buttons.js"></script>
@@ -78,6 +79,7 @@
                                 <tr>
                                     <th>@Html.DisplayNameFor(model => model.ArrivalNo)</th>
                                     <th>@Html.DisplayNameFor(model => model.ArrivalDate)</th>
+                                    <th>@Html.DisplayNameFor(model => model.ArrivalTypeName)</th>
                                     <th>@Html.DisplayNameFor(model => model.RawMatTypeName)</th>
                                     <th>@Html.DisplayNameFor(model => model.VendorCode)</th>
                                     <th>@Html.DisplayNameFor(model => model.VendorName)</th>

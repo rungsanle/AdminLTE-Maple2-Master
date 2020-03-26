@@ -16,6 +16,8 @@
     });
     //-------------------------------------
     //Grid Table Config
+    var page = 0;
+
     userVM = {
         dtUser: null,
         init: function () {
@@ -63,7 +65,14 @@
                     url: $('#IndexData').data('user-get-url'),
                     type: "GET",
                     async: true,
-                    datatype: "json"
+                    datatype: "json",
+                    data: null,
+                    error: function (xhr, txtStatus, errThrown) {
+
+                        var reponseErr = JSON.parse(xhr.responseText);
+
+                        toastr.error('Error: ' + reponseErr.message, 'Get User Error', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
                 },
                 columns: [
                     { "data": "UserCode", "className": "boldColumn", "autoWidth": false },
@@ -121,6 +130,17 @@
             //    global.applyIcheckStyle();
             //});
 
+            //keep the current page after sorting
+            dtUser.on('order', function () {
+                if (dtUser.page() !== page) {
+                    dtUser.page(page).draw('page');
+                }
+            });
+
+            dtUser.on('page', function () {
+                page = dtUser.page();
+            });
+
             $('div.dataTables_filter input').addClass('form-control input-sm');
             $('div.dataTables_length select').addClass('form-control input-sm');
 
@@ -128,11 +148,17 @@
 
         refresh: function () {
             dtUser.ajax.reload();
+        },
+
+        removeSorting: function () {  //remove order/sorting
+            dtUser.order([]).draw(false);
         }
     }
 
     // initialize the datatables
     userVM.init();
+
+    userVM.removeSorting();
 
     if (appSetting.defaultFirstPage == 1) {
         setTimeout(function () {
