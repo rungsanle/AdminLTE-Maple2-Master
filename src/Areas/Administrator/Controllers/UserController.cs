@@ -391,6 +391,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             }
             catch (Exception ex)
             {
+                string excLog = ex.Message;
                 return BadRequest();
             }
         }
@@ -504,6 +505,7 @@ namespace Maple2.AdminLTE.Uil.Areas.Administrator.Controllers
             }
             catch(Exception ex)
             {
+                string excLog = ex.Message;
                 return BadRequest();
             }
         }
