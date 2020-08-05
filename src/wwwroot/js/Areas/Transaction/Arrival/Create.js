@@ -212,13 +212,15 @@
 
     /*---------------BEGIN MATERIAL SEARCH-----------------*/
 
-    $("#btnSearchMaterial").on("click", function (event) {
+    //$("#btnSearchMaterial").on("click", function (event) {
 
-        event.preventDefault();
-        $('#searchMaterialModal').modal('show');
-        matVM.init();
+    //    event.preventDefault();
 
-    });
+    //    $('#searchMaterialModal').modal('show');
+
+    //    matVM.init();
+
+    //});
 
     $("#searchMaterialModal").on("hidden.bs.modal", function (event) {
 
@@ -345,11 +347,24 @@
 
         $('#searchMaterialModal').modal('hide');
 
+        //test by jack
+        var curAddRow = (dtArrDtl.row(':last').data());
+        console.log(curAddRow);
+
+        curAddRow["MaterialCode"] = itemData["MaterialCode"];
+        curAddRow["MaterialName"] = itemData["MaterialName"];
+
+        dtArrDtl.row(':last').data(curAddRow).draw(false);
+        //$('#tblArrivalDtl').dataTable().fnUpdate(curAddRow, 5, undefined, false);
+
+        console.log('OK');
+
+
         $('#ItemId').val(itemData["Id"]);
         $('#ItemCode').val(itemData["MaterialCode"]);
         $('#ItemName').val(itemData["MaterialName"]);
 
-        $('#ItemQty').focus();
+        //$('#ItemQty').focus();
 
     });
 
@@ -394,6 +409,7 @@
             var url = $('#CreateData').data('arrdtl-get-url') + "/0";
 
             dtArrDtl = $('#tblArrivalDtl').DataTable({
+                //dom: 'frtip',
                 processing: true,
                 ajax: {
                     "url": url,
@@ -410,28 +426,68 @@
                     },
                     { "data": "PoLineNo", "autoWidth": false },
                     { "data": "MaterialId", "autoWidth": false },
-                    { "data": "MaterialCode", "autoWidth": false },
+                    {
+                        "data": "MaterialCode", "autoWidth": false,
+                        render: function (data, type, prod, meta) {
+
+                            if (prod.RecordFlag < 0) {
+                                return '<div class="input-group">' +
+                                    '<input class="form-control input-sm text-bold text-box single-line" id="ItemCode" name="ItemCode" type="text" value="">' +
+                                    '<span class="input-group-btn">' +
+                                    '<button type="button" class="btn btn-default btn-sm btn-flat" data-toggle="tooltip" title="Search Material" id="searchItem">' +
+                                    '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>' +
+                                    '</button>' +
+                                    '</span>' +
+                                    '</div>';
+                            }
+                            else {
+                                return ditem;
+                            }
+                        }
+                    },
                     { "data": "MaterialName", "autoWidth": false },
                     { "data": "MaterialDesc", "autoWidth": false },
                     //{ "data": "OrderQty", "autoWidth": false, render: $.fn.dataTable.render.number(',', '.', 4, '') },
                     {
                         "data": "OrderQty", "autoWidth": false,
-                        "render": function (ditem) {
-                            //return "<input type='text' value='" + ditem + "'/>";
-                            return "<input class='form-control input-sm text-align-right text-box single-line' style='width:95px' id='OrderQty' min='0' type='number' value='" + ditem + "' autocomplete='off' />";
+                        "render": function (data, type, prod, meta) {
+                        
+                            //return "<input class='form-control input-sm text-align-right text-box single-line' style='width:100%' id='OrderQty' min='0' type='number' value='" + ditem + "' autocomplete='off' />";
+
+                            if (prod.RecordFlag < 0) {
+                                return "<input class='form-control input-sm text-align-right text-box single-line' style='width:100%' id='ItemQty' name='ItemQty' min='0' type='number' value='0' autocomplete='off'>";
+                            } else {
+                                return "<input class='form-control input-sm text-align-right text-box single-line' style='width:100%' id='OrderQty' min='0' type='number' value='" + data + "' autocomplete='off' />";
+                            }
                         }
                     },
                     { "data": "RecvQty", "autoWidth": false, render: $.fn.dataTable.render.number(',', '.', 4, '') },
-                    { "data": "LotNo", "autoWidth": false },
-                    //{ "data": "LotDate", "autoWidth": false },
                     {
-                        "data": "LotDate", "autoWidth": false, "type": "date", "render": function (value) {
-
-                            return global.localDate(value);
-
+                        data: "LotNo", autoWidth: false,
+                        render: function (ditem) {
+                            return "<input class='form-control input-sm text-box single-line' style='width:100%' id='LotNo' name='LotNo' type='text' value=''>";
                         }
                     },
-                    { "data": "DetailRemark", "autoWidth": false },
+                    //{ "data": "LotDate", "autoWidth": false },
+                    {
+                        "data": "LotDate", "autoWidth": false, "type": "date",
+                        "render": function (value) {
+                            var hCode = "<div class='input-group date'>" +
+                                "<input class='form-control input-sm text-box single-line' data-val='true' data-val-date='The field LOT DATE must be a date.' id='LotDate' name='LotDate' type='datetime' value=''>" +
+                                "<span class='input-group-addon' onclick='global.showDatepicker(\'LotDate\');'>" +
+                                    "<i class='fa fa-calendar'></i>" +
+                                    "</span>" +
+                                "</div>";
+                            return hCode;
+                            //return global.localDate(value);
+                        }
+                    },
+                    {
+                        "data": "DetailRemark", "autoWidth": false,
+                        render: function (ditem) {
+                            return "<input class='form-control input-sm text-box single-line' style='width:100%' id='ItemRemark' name='ItemRemark' type='text' value=''>";
+                        }
+                    },
                     { "data": "NoOfLabel", "autoWidth": false },
                     { "data": "GenLabelStatus", "autoWidth": false },
                     { "data": "CompanyCode", "autoWidth": false },
@@ -461,7 +517,7 @@
                     { "width": "0%", "targets": 15, "visible": false },  //RecordFlag
                     { "width": "4%", "targets": 16 }    //Action
                 ],
-                scrollY: '235px',
+                scrollY: '350px',
                 scrollX: false,
                 scrollCollapse: true,
                 autoWidth: false,
@@ -472,7 +528,7 @@
                 info: true,
                 language: {
                     info: "Total _TOTAL_ records",
-                    infoEmpty: "No records available"
+                    infoEmpty: ""
                 },
                 lengthChange: false,
                 responsive: true
@@ -488,13 +544,51 @@
         }
     }
 
-
+    
 
     arrDtlVM.init();
+
+    //$("div.toolbar").html(
+    //    '<table id="tblAddMaterial" style="width: 100%;" border="1">' +
+    //    '<tbody>' +
+    //    '<tr>' +
+    //    '<td style="width:3%">No</td>' +
+    //    '<td style="width:15%">' +
+    //    '<input id="ItemId" name="ItemId" type="hidden" value="">' +
+    //    '<div class="input-group">' +
+    //        '<input class="form-control input-sm text-bold text-box single-line" id="ItemCode" name="ItemCode" type="text" value="">' +
+    //            '<span class="input-group-btn">' +
+    //                '<button type="button" class="btn btn-default btn-sm btn-flat" data-toggle="tooltip" title="Search Material" id="btnSearchMaterial">' +
+    //                    '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>' +
+    //                '</button>' +
+    //            '</span>' +
+    //    '</div>' +
+    //    '</td >' +
+    //    '<td style="width:21%">&nbsp;</td>' +
+    //    '<td style="width:8%">&nbsp;</td>' +
+    //    '<td style="width:8%">&nbsp;</td>' +
+    //    '<td style="width:11%">&nbsp;</td>' +
+    //    '<td style="width:8%">&nbsp;</td>' +
+    //    '<td style="width:12%">&nbsp;</td>' +
+    //    '<td style="width:4%">&nbsp;</td>' +
+    //    '<td style="width:6%">&nbsp;</td>' +
+    //    '<td style="width:4%">&nbsp;</td>' +
+    //    '</tr>' +
+    //    '</tbody>' +
+    //    '</table >');
 
     setTimeout(function () {
         dtArrDtl.columns.adjust().draw();
     }, 200);
+
+    $('#tblArrivalDtl').on('click', '#searchItem', function (event) {
+
+        event.preventDefault();
+
+        $('#searchMaterialModal').modal('show');
+
+        matVM.init();
+    });
 
     //Delete
     $('#tblArrivalDtl').on('click', '#delItem', function (event) {
@@ -555,6 +649,9 @@
 
     /*-------------- END ARRIVAL DETAIL --------------*/
 
+    var ctlId = $("#LotDate").prop("id");
+    alert(ctlId);
+
     global.applyDatepicker($("#LotDate").prop("id"), true);
 
 
@@ -587,6 +684,48 @@
                 GenLabelStatus: 'G',
                 CompanyCode: $("#CompanyCode").val(),
                 RecordFlag: 2 //new record
+            }).draw(false);
+
+            dtArrDtl.column(1, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            }).draw(false);
+
+            $('.dataTables_scrollBody').scrollTop($('.dataTables_scrollBody')[0].scrollHeight);
+        }
+
+        ClearPanelItemDetail();
+
+    });
+
+    $("#btnAddDtl").on("click", function (event) {
+
+        event.preventDefault();
+
+        var itemCode = $('#ItemCode').val();
+        var poLine = 0;
+
+        var noExist = true;   //CheckDuplicateArrDtl(itemCode, poLine);
+
+        if (noExist) {
+
+            dtArrDtl.row.add({
+                Id: 0,
+                ArrivalId: 0,
+                LineNo: dtArrDtl.data().length + 1,
+                PoLineNo: 0,
+                MaterialId: -1,
+                MaterialCode: '',
+                MaterialName: '',
+                MaterialDesc: '',
+                OrderQty: 0,
+                RecvQty: 0,
+                LotNo: '',
+                LotDate: null,
+                DetailRemark: '',
+                NoOfLabel: 0,
+                GenLabelStatus: '',
+                CompanyCode: $("#CompanyCode").val(),
+                RecordFlag: -1 
             }).draw(false);
 
             dtArrDtl.column(1, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
