@@ -17,6 +17,8 @@
     //-------------------------------------
 
     //Grid Table Config
+    var page_p = 0;
+
     selMcVM = {
         dtSelMc: null,
         init: function () {
@@ -26,20 +28,32 @@
                      "<'row'<'col-sm-6'i><'col-sm-6'p>>",
                 buttons: [
                     {
-                        text: '<i class="fa fa-refresh"></i>',
+                        text: '<i class="fa fa-refresh">&nbsp;<p class="setfont">Refresh</p></i>',
                         titleAttr: 'Refresh',
                         action: function (e, dt, node, config) {
                             dt.ajax.reload(null, false);
                         }
                     }
                 ],
+                initComplete: function () {
+                    var btns = $('.dt-button');
+                    btns.addClass('btn btn-default btn-sm');
+                    btns.removeClass('dt-button');
+                },
                 processing: true, // for show progress bar
                 autoWidth: false,
                 ajax: {
                     url: $('#PrintModalData').data('mc-get-url'),     
                     type: "GET",
                     async: true,
-                    datatype: "json"
+                    datatype: "json",
+                    data: null,
+                    error: function (xhr, txtStatus, errThrown) {
+
+                        var reponseErr = JSON.parse(xhr.responseText);
+
+                        toastr.error('Error: ' + reponseErr.message, 'Get Machine Error', { timeOut: appSetting.toastrErrorTimeout, extendedTimeOut: appSetting.toastrExtenTimeout });
+                    }
                 },
                 columns: [
                     { data: null, className: "text-center", autoWidth: false },
@@ -114,6 +128,17 @@
             //    global.applyIcheckStyle();
             //});
 
+            //keep the current page after sorting
+            dtSelMc.on('order', function () {
+                if (dtSelMc.page() !== page_p) {
+                    dtSelMc.page(page_p).draw('page');
+                }
+            });
+
+            dtSelMc.on('page', function () {
+                page_p = dtSelMc.page();
+            });
+
             $('div.dataTables_filter input').addClass('form-control');
             $('div.dataTables_length select').addClass('form-control');
 
@@ -123,11 +148,17 @@
 
         refresh: function () {
             dtSelMc.ajax.reload();
+        },
+
+        removeSorting: function () {  //remove order/sorting
+            dtSelMc.order([]).draw(false);
         }
     }
 
     // initialize the datatables
     selMcVM.init();
+
+    selMcVM.removeSorting();
 
     if (appSetting.defaultFirstPage == 1) {
         setTimeout(function () {
