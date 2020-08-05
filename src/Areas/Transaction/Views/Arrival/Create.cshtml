@@ -20,7 +20,7 @@
     }
 
     .dataTables_scrollBody {
-        height: 235px;
+        height: 350px;
         overflow-y: scroll !important;
     }
 
@@ -35,6 +35,10 @@
         -webkit-appearance: none;
         margin: 0;
     }
+
+    .dataTables_info {
+        display: none;
+    }
 </style>
 <script src="~/js/Areas/Transaction/Arrival/Create.js"></script>
 <div id="CreateData"
@@ -47,9 +51,11 @@
      data-viewbag-compcode="@ViewBag.CompCode">
 </div>
 
-<div class="modal-dialog modal-lg" style="width:1350px;">
+<div class="modal-dialog modal-full">
+
+
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header-search">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add</h4>
         </div>
@@ -194,7 +200,7 @@
                         <div class="box-body">
 
                             <div class="form-group row">
-                                <div class="form-group col-sm-2">
+                                @*<div class="form-group col-sm-2">
                                     <label class="control-label input-sm" for="ItemCode">Item Code</label>
                                     <input id="ItemId" name="ItemId" type="hidden" value="">
                                     <div class="input-group">
@@ -205,15 +211,15 @@
                                             </button>
                                         </span>
                                     </div>
-                                </div>
+                                </div>*@
                                 <div class="form-group col-sm-3">
                                     <label class="control-label input-sm" for="ItemName">ITEM NAME</label>
                                     <input class="form-control input-sm col-sm-3 text-box single-line" id="ItemName" name="ItemName" readonly="readonly" type="text" value="">
                                 </div>
-                                <div class="form-group col-sm-1">
+                                @*<div class="form-group col-sm-1">
                                     <label class="control-label input-sm" for="ItemQty">Qty</label>
                                     <input class="form-control input-sm text-align-right text-box single-line" id="ItemQty" name="ItemQty" min="0" type="number" value="">
-                                </div>
+                                </div>*@
                                 <div class="form-group col-sm-2">
                                     <label class="control-label input-sm" for="LotNo">LOT NO</label>
                                     <input class="form-control input-sm text-box single-line" id="LotNo" name="LotNo" type="text" value="">
@@ -235,6 +241,8 @@
 
                             <div class="form-group row">
                                 <div class="form-group col-sm-2">
+                                    <div class="space-height"></div>
+                                    <button type="button" id="btnAddDtl" class="btn btn-default pull-right btn-sm"><span class="fa fa-indent" aria-hidden="true"></span>&nbsp;Add Record</button>
                                 </div>
                                 <div class="form-group col-sm-4">
                                 </div>
@@ -251,6 +259,7 @@
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body table-responsive no-padding">
+
                             <table id="tblArrivalDtl" class="table table-striped table-bordered table-hover table-sm">
                                 <thead>
                                     <tr>
@@ -274,6 +283,7 @@
                                     </tr>
                                 </thead>
                             </table>
+
                         </div>
                         <!-- /.box-body -->
                     </div>
